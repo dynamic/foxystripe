@@ -1,0 +1,66 @@
+<?php
+/**
+ *
+ * @package FoxyStripe
+ *
+ */
+
+class OptionGroup extends DataObject{
+
+	static $db = array('Title' => 'Text');
+	
+	function getCMSFields(){
+		$fields = new FieldSet();
+		$fields->push(new TextField('Title', 'Option Group Name'));
+		$this->extend('getCMSFields', $fields);
+		
+		
+		return $fields;
+	}
+	
+	public function requireDefaultRecords() {
+		parent::requireDefaultRecords();
+		if(!DataObject::get_one('OptionGroup', "`Title` = 'None'")) {
+			$do = new OptionGroup();
+			$do->Title = "None";
+			$do->write();
+		}
+	}
+	public function onBeforeDelete(){
+		
+		//make sure that if we delete this option group, we change the group all option items with this group to the 'None' group.
+		$items = DataObject::get('OptionItem', "ProductOptionGroupID = {$this->ID}");
+		$noneGroup = DataObject::get_one("OptionGroup", "`Title` = 'None'");
+		
+		if($items->Count() > 0){
+			foreach($items as $item){
+				$item->ProductOptionGroupID = $noneGroup->ID;
+				$item->write();
+			}
+		}
+		parent::onBeforeDelete();
+	}
+	
+	function canDelete(){
+		switch($this->Title){
+			case 'None':
+				return false;
+				break;
+			default:
+				return true;
+				break;
+		}
+		return true;
+	}
+	function canEdit(){
+		switch($this->Title){
+			case 'None':
+				return false;
+				break;
+			default:
+				return true;
+				break;
+		}
+		return true;
+	}
+}
