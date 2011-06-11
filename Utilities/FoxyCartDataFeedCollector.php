@@ -46,7 +46,4 @@ class FoxyCartDataFeedCollector extends Page_Controller {
 		$this->extend('handleDecryptedFeed',$encrypted, $decrypted);
     }
     
-    public function handleFetchAppTest(){
-    	$this->extend('testFetchApp');
-    }
 }
