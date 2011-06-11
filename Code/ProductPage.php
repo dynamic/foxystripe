@@ -271,7 +271,7 @@ JS;
 	function AddToCartForm(){
 		$form = "<div class='addToCartContainer'>";
 		$form .= "<label for='quantity'>Quantity</label><div class='foxycart_qty'><input type='text' name='quantity' value='1' /></div>";
-		$form .= sprintf("<div class='checkoutbtn'<input type='submit' value='%s' class='submit' /><span class='submitPrice' id='SubmitPrice%s'>%s $%2.2f</span></div>",
+		$form .= sprintf("<div class='checkoutbtn'><input type='submit' value='%s' class='submit' /><span class='submitPrice' id='SubmitPrice%s'>%s $%2.2f</span></div>",
 			'Add to Cart',
 			$this->ID,
 			$this->Title,
