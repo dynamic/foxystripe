@@ -14,6 +14,7 @@ class OptionGroup extends DataObject{
 		$fields->push(new TextField('Title', 'Option Group Name'));
 		$this->extend('getCMSFields', $fields);
 		
+		Debug::message(DataObject::get('OptionItem', "ProductOptionGroupID = {$this->ID}"));
 		
 		return $fields;
 	}
@@ -27,18 +28,18 @@ class OptionGroup extends DataObject{
 		}
 	}
 	public function onBeforeDelete(){
+		parent::onBeforeDelete();
 		
-		//make sure that if we delete this option group, we change the group all option items with this group to the 'None' group.
+		//make sure that if we delete this option group, we reassign the group's option items to the 'None' group.
 		$items = DataObject::get('OptionItem', "ProductOptionGroupID = {$this->ID}");
-		$noneGroup = DataObject::get_one("OptionGroup", "`Title` = 'None'");
 		
-		if($items->Count() > 0){
+		if(isset($items)){
+			$noneGroup = DataObject::get_one("OptionGroup", "`Title` = 'None'");
 			foreach($items as $item){
 				$item->ProductOptionGroupID = $noneGroup->ID;
 				$item->write();
 			}
 		}
-		parent::onBeforeDelete();
 	}
 	
 	function canDelete(){

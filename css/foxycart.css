@@ -3,26 +3,33 @@
 	margin: 0;
 }
 
-html body{
-
+body {
+    background: none transparent;
+    margin: 0;
+    padding: 0;
 }
 
 form.foxycart label{
 	margin:0;
 }
 
+table thead #fc_cart_head{
+	border: 1px solid rgb(102, 102, 102);
+}
+
 /* Product Page */
 
-form span.submitPrice{
+form span.submitPrice,
+div.addToCartContainer span.submitPrice{
 	font-size:12px;
 	color:#666;
 	font-weight: bold;
 }
 
 form div.addToCartContainer{
-	margin:20px 0;
+	margin:14px 0 20px;
 }
-form div.addToCartContainer input{
+form div.addToCartContainer input.submit{
 	background:#cda15c none;
 	padding:3px 7px;
 	border:1px solid #fff;
@@ -32,7 +39,7 @@ form div.addToCartContainer input{
 	font-size: 11px;
 	cursor: pointer;
 }
-form div.addToCartContainer input:hover{
+form div.addToCartContainer input.submit:hover{
 	background:#9ea9bb none;
 }
 
@@ -45,4 +52,24 @@ form div.foxycartOptionsContainer{
 form div.addToCartContainer{
 	float:left;
 	clear:left;
+}
+form div.foxycart_qty{
+	padding-bottom:20px;
+}
+
+form.foxycartForm label{
+	color:#333;
+}
+
+/* checkout */
+
+#fc_checkout_container input.fc_text{
+	width:392px;
+	background:#e5e5e5;
+	border:1px solid #999;
+}
+#fc_checkout_container label.fc_pre, 
+#fc_checkout_container span.fc_pre, 
+#fc_receipt_container span.fc_pre{
+	text-align: left;
 }

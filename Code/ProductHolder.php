@@ -12,7 +12,7 @@ class ProductHolder extends Page {
 	);
 	
 	public static $has_one = array(
-		'ProductImage' => 'Image'
+		'PreviewImage' => 'Image'
 	);
 	static $defaults = array(
 		
@@ -20,7 +20,7 @@ class ProductHolder extends Page {
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
 		
-		$fields->addFieldToTab('Root.Content.Image', new ImageField('ProductImage', 'Product Image'));
+		$fields->addFieldToTab('Root.Content.Image', new ImageField('PreviewImage', 'Preview Image'));
 		return $fields;
 	}
 }

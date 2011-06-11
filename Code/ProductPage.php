@@ -155,19 +155,12 @@ class ProductPage extends Page {
 	}
 	
 	function PurchaseForm(){
-	
-		if(!$this->ProductOptions()){
-			// if there are no product options..
-			return self::SingleProductForm();
-			
-		} else{
-			return self::ProductOptionsForm();
-		}
+		return self::ProductOptionsForm();
 	}
 	
 	function SingleProductForm(){
 		//make sure to urlencode url params
-		return sprintf('<div class="addToCartContainer"><a href="%s?name=%s&price=%2.2f&code=%s&category=%s&weight=%s&image=%s">Buy %s for $%2.2f</a></div>',
+		return sprintf('<div class="addToCartContainer"><a href="%s?name=%s&price=%2.2f&code=%s&category=%s&weight=%s&image=%s"><span class="addToCart">Add To Cart</span><span class="submitPrice">%s $%2.2f</span></a></div>',
 			self::getFormTag(),
 			($this->ReceiptTitle) ? $this->dbObject('ReceiptTitle')->URLATT() : $this->dbObject('Title')->URLATT(),
 			$this->Price,
@@ -180,12 +173,120 @@ class ProductPage extends Page {
 		);
 	}
 	
-	function selectField($name = null, $optionSet = null){
-		if($optionSet && $name){
-			if($name != 'None'){
-				$selectField = "<label for='{$name}'>$name</label><select name='{$name}'>";
+	function ProductOptionsForm(){
+		$form = $this->StartForm();
+		$form .= $this->AddBaseProductDetails();
+		$form .= $this->ProductOptionsSet();
+		$form .= $this->AddToCartForm();
+		$form .= $this->EndForm();
+		return $form;
+	}
+	
+	
+	
+	function StartForm(){
+		//start form
+		$formclass = 'foxycartForm';
+		$form = sprintf('<form action="%s" method="post" accept-charset="utf-8" class="foxycart %s" id="product%s">',
+			self::getFormTag(),
+			$formclass,
+			$this->ID
+		);
+		return $form;
+	}
+	function EndForm(){
+		return "</form>";
+	}
+	
+	function AddBaseProductDetails(){
+		$form = $this->hiddenTag('name', ($this->ReceiptTitle) ? htmlspecialchars($this->ReceiptTitle) : htmlspecialchars($this->Title));
+		$form .= $this->hiddenTag('category',$this->Category()->Code);
+		$form .= $this->hiddenTag('code', $this->Code);
+		$form .= $this->hiddenTag('price', $this->Price);
+		if($img = $this->PreviewImage()) $form .= $this->hiddenTag('image', $img->PaddedImage(80,80)->absoluteURL);
+		return $form;
+	}
+	
+	function ProductOptionsSet(){
+		$options = $this->ProductOptions();
+		$grp = $options->groupBy('ProductOptionGroupID');
+		
+		
+		$form = "<div class='foxycartOptionsContainer'>";
+		foreach($grp as $id=>$optionSet){
+			$optionGroupTitle = DataObject::get_by_id('OptionGroup',$id)->Title;
+			$form .= $this->selectField($optionGroupTitle, $id, $optionSet);
+		}
+		$form .= "</div>";
+		
+		
+		$script = <<<JS
+jQuery(function(){
+	
+	jQuery('.foxycartOptionsContainer select').change(function(){
+		refreshAddToCartPrice();
+	});
+	
+	function refreshAddToCartPrice(){
+	
+		var addCartDiv = jQuery('form.foxycartForm#product{$this->ID}');
+		var baseName = jQuery(addCartDiv).find('input[name=\'name\']').val();
+		var basePrice = parseFloat(jQuery(addCartDiv).find('input[name=\'price\']').val());
+		
+		var newProductPrice = basePrice;
+		
+		jQuery('form.foxycartForm#product{$this->ID} select').each(function(){
+		
+			var currentOption = jQuery(this).val();
+			//get an array of the modifiers
+			currentOption = currentOption.substring(currentOption.lastIndexOf('{')+1, currentOption.lastIndexOf('}')).split('|');
+			
+			//build a different array of key-value pairs, options[p,c,w] = value
+			//more reliable than hoping price is the first array index of currentOption..
+			var options = [];
+			for(i=0; i< currentOption.length; i++){
+				var k = currentOption[i].substr(0,1);
+				var val = currentOption[i].substr(1);
+				options[k] = val;
+			}
+			var pricemodifier = options['p'].substr(0,1); // return +,-,:
+			
+			if(pricemodifier == ':'){
+				newProductPrice = parseFloat(options['p'].substr(1));
 			} else {
-				$selectField = "<select name='{$name}'>";
+				newProductPrice = newProductPrice+parseFloat(options['p']);
+			}
+		});
+		jQuery('form.foxycartForm#product{$this->ID} .submitPrice').html(baseName+' $'+newProductPrice.toFixed(2));
+	}
+	if(jQuery('.foxycartOptionsContainer select').length > 0) refreshAddToCartPrice();
+});
+JS;
+
+		Requirements::customScript($script);
+		
+		return $form;
+	}
+	
+	function AddToCartForm(){
+		$form = "<div class='addToCartContainer'>";
+		$form .= "<label for='quantity'>Quantity</label><div class='foxycart_qty'><input type='text' name='quantity' value='1' /></div>";
+		$form .= sprintf("<div class='checkoutbtn'<input type='submit' value='%s' class='submit' /><span class='submitPrice' id='SubmitPrice%s'>%s $%2.2f</span></div>",
+			'Add to Cart',
+			$this->ID,
+			$this->Title,
+			$this->Price
+		);
+		$form .= "</div>";
+		return $form;
+	}
+	
+	function selectField($name = null, $id = null, $optionSet = null){
+		if($optionSet && $id && $name){
+			if($name != 'None'){
+				$selectField = "<label for='{$name}'>$name</label><select name='{$name}' id='{$id}'>";
+			} else {
+				$selectField = "<label for='{$name}'>&nbsp;</label><select name='{$name}' id='{$id}'>";
 			}
 			foreach($optionSet as $option){
 				
@@ -203,26 +304,14 @@ class ProductPage extends Page {
 					$modWeight,
 					$modCode,
 					$option->Title,
-					($option->PriceModifier != 0) ? ': ('.OptionItem::getOptionModifierActionSymbol($option->PriceModifierAction, $returnWithPlusMinus=true).'$'.$modPrice.')' : ''
+					($option->PriceModifier != 0) ? ': ('.OptionItem::getOptionModifierActionSymbol($option->PriceModifierAction, $returnWithOnlyPlusMinus=true).'$'.$modPrice.')' : ''
 				);
 			}
 			$selectField .= '</select>';
 			return $selectField;
 		}
 	}
-	
-	function ProductOptionsSet(){
-		$options = $this->ProductOptions();
-		$grp = $options->groupBy('ProductOptionGroupID');
-		$form = "<div class='foxycartOptionsContainer'>";
-		foreach($grp as $id=>$optionSet){
-			$optionGroupTitle = DataObject::get_by_id('OptionGroup',$id)->Title;
-			$form .= $this->selectField($optionGroupTitle, $optionSet);
-		}
-		$form .= "</div>";
-		return $form;
-	}
-	
+		
 	function hiddenTag($name=null, $val=null){
 		return sprintf('<input type="hidden" name="%s" value="%s" />',
 			$name,
@@ -230,44 +319,12 @@ class ProductPage extends Page {
 		);
 	}
 	
-	function AddToCartForm(){
-		$form = "<div class='addToCartContainer'>";		
-		$form .= $this->hiddenTag('name', ($this->ReceiptTitle) ? htmlspecialchars($this->ReceiptTitle) : htmlspecialchars($this->Title));
-		$form .= $this->hiddenTag('category',$this->Category()->Code);
-		$form .= $this->hiddenTag('code', $this->Code);
-		$form .= $this->hiddenTag('price', $this->Price);
-		
-		$form .= sprintf('<input type="submit" value="%s" class="submit" /><span class="submitPrice" id="SubmitPrice%s">%s $%2.2f</span>',
-			'Add to Cart',
-			$this->ID,
-			$this->Title,
-			$this->Price
-		);
-		$form .= "</div>";
-		return $form;
-	}
-	
-	
-	
-	function ProductOptionsForm(){
-		//start form
-		$formclass = 'foxycartForm';
-		$form = sprintf('<form action="%s" method="post" accept-charset="utf-8" class="foxycart %s">',
-			self::getFormTag(),
-			$formclass
-		);
-		$form .= $this->ProductOptionsSet();
-		$form .= $this->AddToCartForm();
-		$form .= "</form>";
-		
-		return $form;
-		
-	}
 }
 
 class ProductPage_Controller extends Page_Controller {
 	public function init(){
-		Requirements::css('FoxyStripe/css/foxycart.css');
 		parent::init();
+		Requirements::css('FoxyStripe/css/foxycart.css');
+		Requirements::customScript("window.jQuery || document.write('<script src=\'//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js\'><\/script>');");
 	}
 }
