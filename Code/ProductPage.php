@@ -203,7 +203,7 @@ class ProductPage extends Page {
 		$form .= $this->hiddenTag('category',$this->Category()->Code);
 		$form .= $this->hiddenTag('code', $this->Code);
 		$form .= $this->hiddenTag('price', $this->Price);
-		if($img = $this->PreviewImage()) $form .= $this->hiddenTag('image', $img->PaddedImage(80,80)->absoluteURL);
+		if($this->PreviewImage()->Exists()) $form .= $this->hiddenTag('image', $this->PreviewImage()->PaddedImage(80,80)->absoluteURL);
 		return $form;
 	}
 	
