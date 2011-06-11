@@ -14,8 +14,6 @@ class OptionGroup extends DataObject{
 		$fields->push(new TextField('Title', 'Option Group Name'));
 		$this->extend('getCMSFields', $fields);
 		
-		Debug::message(DataObject::get('OptionItem', "ProductOptionGroupID = {$this->ID}"));
-		
 		return $fields;
 	}
 	
