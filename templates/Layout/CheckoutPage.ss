@@ -1,4 +1,4 @@
-<div class="typograpiy contentLayout">
+<div class="typography contentLayout">
     $Content
 	^^cart^^
 	^^checkout^^
