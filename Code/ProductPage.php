@@ -23,7 +23,13 @@ class ProductPage extends Page {
 		'ProductImages' => 'ProductImage',
 		'ProductOptions' => 'OptionItem'
 	);
-
+	public function populateDefaults(){
+          parent::populateDefaults();
+          if(!$this->Category){
+               $cat = DataObject::get_one('ProductCategory', "`Code`='DEFAULT'");
+               $this->CategoryID = $cat->ID;
+          }
+     }
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
 		
@@ -132,31 +138,36 @@ class ProductPage extends Page {
 		return $fields;
 	}
 	
-	public function onBeforeWrite(){
-		if(!$this->Category){
-			$cat = DataObject::get_one('ProductCategory', "`Code`='DEFAULT'");
-			$this->CategoryID = $cat->ID;
-		}
-		parent::onBeforeWrite();
-	}
-	
 	public function onBeforeDelete(){
-		if($this->ProductOptions()) $this->ProductOptions()->delete();
-		if($this->ProductImages()) $this->ProductImages()->delete();
-		parent::onBeforeDelete(); 
-	}
+          if($this->Status != "Published"){
+               if($this->ProductOptions()){
+                    $options = $this->getComponents('ProductOptions');
+                    foreach($options as $option){
+                         $option->delete();
+                    }
+               }
+               if($this->ProductImages()){
+                    //delete product image dataobjects, not the images themselves.
+                    $images = $this->getComponents('ProductImages');
+                    foreach($images as $image){
+                         $image->delete();
+                    }
+               }
+          }
+          parent::onBeforeDelete();
+     }
 	
-	public function getCMSValidator() {
-		return new RequiredFields('Price', 'Weight', 'Code');
-	}
+     public function getCMSValidator() {
+          return new RequiredFields('Price', 'Weight', 'Code');
+     }
 	
-	public function getFormTag(){
-		return FoxyCart::FormActionURL();
-	}
+     public function getFormTag(){
+          return FoxyCart::FormActionURL();
+     }
 	
-	function PurchaseForm(){
-		return self::ProductOptionsForm();
-	}
+     function PurchaseForm(){
+          return self::ProductOptionsForm();
+     }
 	
 	function SingleProductForm(){
 		//make sure to urlencode url params
