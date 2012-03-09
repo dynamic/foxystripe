@@ -72,13 +72,16 @@ class OptionItem extends DataObject{
 		return '';
 	}
 	
-	function weightModifierWithSymbol(){
+	function getWeightModifierWithSymbol(){
 		return self::getOptionModifierActionSymbol($this->WeightModifierAction).$this->WeightModifier;
 	}
-	function priceModifierWithSymbol(){
+	function getPriceModifierWithSymbol(){
 		return self::getOptionModifierActionSymbol($this->PriceModifierAction).$this->PriceModifier;
 	}
-	function codeModifierWithSymbol(){
+	function getCodeModifierWithSymbol(){
 		return self::getOptionModifierActionSymbol($this->CodeModifierAction).$this->CodeModifier;
+	}
+	function getProductOptionGroupTitle(){
+		return $this->ProductOptionGroup()->Title;
 	}
 }

@@ -77,7 +77,7 @@ class ProductPage extends Page {
 		
 		$fields->addFieldToTab('Root.Content.Details',$optgrpfield);
 		
-		/*
+		
 		//functions do not work in FieldList with DataObjectManager
 		$optionSet = new $hmctf(
 			$this,
@@ -88,23 +88,7 @@ class ProductPage extends Page {
 				'weightModifierWithSymbol' => 'Weight Modifier',
 				'priceModifierWithSymbol' => 'Price Modifier',
 				'codeModifierWithSymbol' => 'Code Modifier',
-				'ProductOptionGroup.Title' => 'Option Group'
-			),
-			'getCMSFields',
-			'',
-			'ProductOptionGroupID'
-		);
-		*/
-		$optionSet = new $hmctf(
-			$this,
-			'ProductOptions',
-			'OptionItem',
-			array(
-				'Title' => 'Title',
-				'WeightModifier' => 'Weight Modifier',
-				'PriceModifier' => 'Price Modifier',
-				'CodeModifier' => 'Code Modifier',
-				'ProductOptionGroupID' => 'Option Group'
+				'productOptionGroupTitle' => 'Option Group'
 			),
 			'getCMSFields',
 			'',
