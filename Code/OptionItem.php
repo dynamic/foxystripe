@@ -60,7 +60,7 @@ class OptionItem extends DataObject{
 		return $fields;
 	}
 	
-	function getOptionModifierActionSymbol($oma, $returnWithOnlyPlusMinus=false){
+	public static function getOptionModifierActionSymbol($oma, $returnWithOnlyPlusMinus=false){
 		switch($oma){
 			case 'Add':
 				return '+';

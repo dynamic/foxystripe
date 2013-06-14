@@ -8,5 +8,3 @@
  * 
  *
  */
- 
- FoxyCart::setFoxycartStoreName('dynamic');

@@ -40,7 +40,7 @@ class OptionGroup extends DataObject{
 		}
 	}
 	
-	function canDelete(){
+	function canDelete($member = NULL){
 		switch($this->Title){
 			case 'None':
 				return false;
@@ -51,7 +51,7 @@ class OptionGroup extends DataObject{
 		}
 		return true;
 	}
-	function canEdit(){
+	function canEdit($member = NULL){
 		switch($this->Title){
 			case 'None':
 				return false;

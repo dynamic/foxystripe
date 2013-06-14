@@ -33,7 +33,7 @@ class ProductCategory extends DataObject {
 			$do->write();
 		}
 	}
-	function canDelete(){
+	function canDelete($member = NULL){
 		switch($this->Code){
 			case 'DEFAULT':
 				return false;
@@ -44,7 +44,7 @@ class ProductCategory extends DataObject {
 		}
 		return true;
 	}
-	function canEdit(){
+	function canEdit($member = NULL){
 		switch($this->Code){
 			case 'DEFAULT':
 				return false;
