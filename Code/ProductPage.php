@@ -6,7 +6,9 @@
  */
 
 class ProductPage extends Page {
+
 	public static $allowed_children = 'none';
+	
 	public static $db = array(
 		'Price' => 'Float',
 		'Weight' => 'Float',
@@ -43,14 +45,20 @@ class ProductPage extends Page {
 			$hmctf = 'HasManyDataOBjectManager';
 		}
 		
-		$fields->addFieldToTab('Root.Content.Details', new TextField('ReceiptTitle', '(Optional) Product Title for Receipt'));
+		$fields->addFieldToTab('Root.Details', new TextField('ReceiptTitle', '(Optional) Product Title for Receipt'));
 		
-		$fields->addFieldToTab('Root.Content.Details', new NumericField('Price', 'Base Price (in US dollars)'));
-		$fields->addFieldToTab('Root.Content.Details', new TextField('Code', 'SKU / Code'));
-		$fields->addFieldToTab('Root.Content.Details', new NumericField('Weight', 'Base Weight'));
+		$fields->addFieldToTab('Root.Details', new NumericField('Price', 'Base Price (in US dollars)'));
+		$fields->addFieldToTab('Root.Details', new TextField('Code', 'SKU / Code'));
+		$fields->addFieldToTab('Root.Details', new NumericField('Weight', 'Base Weight'));
 		
-		$fields->addFieldToTab('Root.Content.Details', new LiteralField('ProductCategory', '<h2>Product Category</h2>'));
-		$fields->addFieldToTab('Root.Content.Details',
+		$fields->addFieldToTab('Root.Details', new LiteralField('ProductCategory', '<h2>Product Category</h2>'));
+		
+		$config = GridFieldConfig_RecordEditor::create();
+		$config->addComponent(new GridFieldHasOneRelationHandler($this, 'Category'));
+		$fields->addFieldToTab('Root.Details', GridField::create('Category', 'Category', ProductCategory::get(), $config));
+		
+		/* removed Dynamic 
+		$fields->addFieldToTab('Root.Details',
 			new $hoctf(
 			$this,
 			"Category", 
@@ -61,9 +69,14 @@ class ProductPage extends Page {
 			),
 			'getCMSFields'
 		));
+		*/
 		
-		$fields->addFieldToTab('Root.Content.Details', new LiteralField('OptionGroups', '<h2>Option Groups</h2><p>Option Groups represent groups of options like size, color, etc</p>'));
+		$fields->addFieldToTab('Root.Details', new LiteralField('OptionGroups', '<h2>Option Groups</h2><p>Option Groups represent groups of options like size, color, etc</p>'));
 		
+		$config = GridFieldConfig_RecordEditor::create();
+		$fields->addFieldToTab('Root.Details', GridField::create('OptionGroup', 'Option Group', OptionGroup::get(), $config));
+		
+		/* removed by Dynamic
 		$optgrpfield=new $ctf(
 			$this,
 			"OptionGroup", 
@@ -75,9 +88,13 @@ class ProductPage extends Page {
 		);
 		$optgrpfield->setAddTitle('an Option Group');
 		
-		$fields->addFieldToTab('Root.Content.Details',$optgrpfield);
+		$fields->addFieldToTab('Root.Details',$optgrpfield);
+		*/
 		
+		$config = GridFieldConfig_RelationEditor::create();
+		$fields->addFieldToTab('Root.Details', GridField::create('ProductOptions', 'Options', $this->ProductOptions(), $config));
 		
+		/* removed by Dynamic
 		//functions do not work in FieldList with DataObjectManager
 		$optionSet = new $hmctf(
 			$this,
@@ -99,15 +116,18 @@ class ProductPage extends Page {
 		$optionSet->relationAutoSetting = true;
 		$optionSet->setAddTitle('a Product Option');
 		$optionSet->setPopupSize(560,490);
+		*/
 		
-		$fields->addFieldToTab('Root.Content.Details', new LiteralField('OptionItems', 
+		$fields->addFieldToTab('Root.Details', new LiteralField('OptionItems', 
 		'<h2>Product Options</h2>
 		<p>Modifiers with a + or - in front of them mean the value will be added or subtracted to the base weight, price, or code entered above.</p>
 		<p>Modifiers with a : in front of them mean the value will be used instead of the base value.</p>
 		<p>If you have multiple option groups you should use add or subtract, otherwise setting the value will override options in other groups.</p>'));
-		$fields->addFieldToTab('Root.Content.Details', $optionSet);
+		//$fields->addFieldToTab('Root.Details', $optionSet);
 				
-		$fields->addFieldToTab('Root.Content.Images', new ImageField('PreviewImage', 'Preview Image'));
+		$fields->addFieldToTab('Root.Images', new UploadField('PreviewImage', 'Preview Image'));
+		
+		/* 
 		$ProductImageField = new $hmctf(
 			$this,
 			'ProductImages',
@@ -118,7 +138,9 @@ class ProductPage extends Page {
 		$ProductImageField->setParentClass('ProductPage');
 		$ProductImageField->relationAutoSetting = true;
 		$ProductImageField->setAddTitle('a Product Image');
-		$fields->addFieldToTab('Root.Content.Images', $ProductImageField);
+		$fields->addFieldToTab('Root.Images', $ProductImageField);
+		*/
+		
 		return $fields;
 	}
 	
@@ -205,7 +227,11 @@ class ProductPage extends Page {
 	
 	function ProductOptionsSet(){
 		$options = $this->ProductOptions();
-		$grp = $options->groupBy('ProductOptionGroupID');
+		
+		$groupedProductOptions = new GroupedList($options); 
+		$grp = $groupedProductOptions->groupBy("ProductOptionGroupID");
+		
+		//$grp = $options->groupBy('ProductOptionGroupID');
 		
 		
 		$form = "<div class='foxycartOptionsContainer'>";
@@ -320,7 +346,13 @@ JS;
 class ProductPage_Controller extends Page_Controller {
 	public function init(){
 		parent::init();
+		
 		Requirements::css('FoxyStripe/css/foxycart.css');
-		Requirements::customScript("window.jQuery || document.write('<script src=\'//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js\'><\/script>');");
+		Requirements::css('https://cdn.foxycart.com/static/scripts/colorbox/1.3.19/style1_fc/colorbox.css?ver=1');
+		
+		Requirements::block('framework/thirdparty/jquery/jquery.js');
+		
+		Requirements::javascript('https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js');
+		Requirements::javascript('https://cdn.foxycart.com/dynamic/foxycart.colorbox.js?ver=2');
 	}
 }

@@ -10,7 +10,7 @@ class OptionGroup extends DataObject{
 	static $db = array('Title' => 'Text');
 	
 	function getCMSFields(){
-		$fields = new FieldSet();
+		$fields = new FieldList();
 		$fields->push(new TextField('Title', 'Option Group Name'));
 		$this->extend('getCMSFields', $fields);
 		

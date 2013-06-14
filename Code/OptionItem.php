@@ -22,7 +22,7 @@ class OptionItem extends DataObject{
 		'Category' => 'ProductCategory'
 	);
 	function getCMSFields(){
-		$fields = new FieldSet();
+		$fields = new FieldList();
 		
 		$parentPrice = $this->Product()->Price;
 		$parentWeight = $this->Product()->Weight;
@@ -54,8 +54,8 @@ class OptionItem extends DataObject{
 			)
 		));
 
-		$fields->push(new DropDownField('CategoryID', 'Product Category', DataObject::get('ProductCategory')->toDropDownMap('ID')));
-		$fields->push(new DropDownField('ProductOptionGroupID', 'OptionGroup',DataObject::get('OptionGroup')->toDropDownMap('ID')));
+		$fields->push(new DropDownField('CategoryID', 'Product Category', DataObject::get('ProductCategory')->map('ID')));
+		$fields->push(new DropDownField('ProductOptionGroupID', 'OptionGroup',DataObject::get('OptionGroup')->map('ID')));
 		$this->extend('getCMSFields', $fields);
 		return $fields;
 	}

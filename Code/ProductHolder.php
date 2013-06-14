@@ -20,7 +20,7 @@ class ProductHolder extends Page {
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
 		
-		$fields->addFieldToTab('Root.Content.Image', new ImageField('PreviewImage', 'Preview Image'));
+		$fields->addFieldToTab('Root.Image', new UploadField('PreviewImage', 'Preview Image'));
 		return $fields;
 	}
 }

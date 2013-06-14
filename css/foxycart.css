@@ -17,6 +17,22 @@ table thead #fc_cart_head{
 	border: 1px solid rgb(102, 102, 102);
 }
 
+/* Product Holder */
+.productSummary {
+	margin: 0 0 30px;
+	padding: 0 0 30px;
+	border-bottom: 1px solid #EEE;
+}
+
+.productSummaryImage {
+	float: left;
+	width: 150px;
+}
+
+.productSummaryText {
+	margin-left: 170px;
+}
+
 /* Product Page */
 
 form span.submitPrice,
@@ -59,6 +75,15 @@ form div.foxycart_qty{
 
 form.foxycartForm label{
 	color:#333;
+}
+
+.productTextContainer {
+	float: left;
+	width: 65%;
+}
+.productImageContainer {
+	float: right;
+	width: 30%;
 }
 
 /* checkout */

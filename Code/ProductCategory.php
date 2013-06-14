@@ -18,7 +18,7 @@ class ProductCategory extends DataObject {
 		$fields[] = new TextField('Title', "FoxyCart 'Category Description'");
 		$fields[] = new TextField('Code', "Foxycart 'Category Code'");
 
-		$set = new FieldSet($fields);
+		$set = new FieldList($fields);
 		$this->extend('updateCMSFields', $set);
 		return $set;
 	}
