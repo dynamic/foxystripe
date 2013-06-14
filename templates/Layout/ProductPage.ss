@@ -6,19 +6,19 @@
 	    <% cached 'ProductPage', LastEdited %>
 		    <div class="floatRight productImageContainer">
 	            <% if ProductImages %>
-	                <% control ProductImages %>
-	                	<% control Image %>
-	                        <% control SetWidth(220) %>
+	                <% loop ProductImages %>
+	                	<% with Image %>
+	                        <% with SetWidth(220) %>
 	                            <img src="{$URL}" width="$getWidth" height="$getHeight" />
-	                        <% end_control %>
-	                    <% end_control %>
-	                <% end_control %>
+	                        <% end_with %>
+	                    <% end_with %>
+	                <% end_loop %>
 	            <% else_if PreviewImage %>
-	            	<% control PreviewImage %>
-	                    <% control SetWidth(220) %>
+	            	<% with PreviewImage %>
+	                    <% with SetWidth(220) %>
 	                        <img src="{$URL}" width="$getWidth" height="$getHeight" />
-	                    <% end_control %>
-	                <% end_control %>
+	                    <% end_with %>
+	                <% end_with %>
 	            <% end_if %>
 	        </div>
 	        <div class="productTextContainer floatLeft">

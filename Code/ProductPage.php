@@ -91,9 +91,6 @@ class ProductPage extends Page {
 		$fields->addFieldToTab('Root.Details',$optgrpfield);
 		*/
 		
-		$config = GridFieldConfig_RelationEditor::create();
-		$fields->addFieldToTab('Root.Details', GridField::create('ProductOptions', 'Options', $this->ProductOptions(), $config));
-		
 		/* removed by Dynamic
 		//functions do not work in FieldList with DataObjectManager
 		$optionSet = new $hmctf(
@@ -124,8 +121,15 @@ class ProductPage extends Page {
 		<p>Modifiers with a : in front of them mean the value will be used instead of the base value.</p>
 		<p>If you have multiple option groups you should use add or subtract, otherwise setting the value will override options in other groups.</p>'));
 		//$fields->addFieldToTab('Root.Details', $optionSet);
+		
+		$config = GridFieldConfig_RelationEditor::create();
+		$fields->addFieldToTab('Root.Details', GridField::create('ProductOptions', 'Options', $this->ProductOptions(), $config));
 				
 		$fields->addFieldToTab('Root.Images', new UploadField('PreviewImage', 'Preview Image'));
+		
+		$config = GridFieldConfig_RelationEditor::create();
+		$config->addComponent(new GridFieldSortableRows('SortOrder'));
+		$fields->addFieldToTab('Root.Images', GridField::create('ProductImages', 'Images', $this->ProductImages(), $config));
 		
 		/* 
 		$ProductImageField = new $hmctf(
@@ -347,7 +351,8 @@ class ProductPage_Controller extends Page_Controller {
 	public function init(){
 		parent::init();
 		
-		Requirements::css('FoxyStripe/css/foxycart.css');
+		Requirements::css('themes/ss-bootstrap_foxystripe/css/foxystripe.css');
+		//Requirements::css('FoxyStripe/css/foxycart.css');
 		Requirements::css('https://cdn.foxycart.com/static/scripts/colorbox/1.3.19/style1_fc/colorbox.css?ver=1');
 		
 		Requirements::block('framework/thirdparty/jquery/jquery.js');
