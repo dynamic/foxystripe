@@ -6,8 +6,10 @@
  */
 
 class ProductCategory extends DataObject {
+	
 	public static $singular_name='Foxycart Category';
 	public static $plural_name='Foxycart Categories';
+	
 	static $db = array(
 		'Title' => 'Text',
 		'Code' => 'Text'

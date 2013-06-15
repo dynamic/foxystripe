@@ -52,7 +52,7 @@ class ProductPage extends Page {
 		// Details Tab
 		$fields->addFieldsToTab('Root.Details', array(
 			TextField::create('ReceiptTitle', '(Optional) Product Title for Receipt'),
-			NumericField::create('Price', 'Base Price (in US dollars)'),
+			CurrencyField::create('Price', 'Base Price (in US dollars)'),
 			TextField::create('Code', 'SKU / Code'),
 			NumericField::create('Weight', 'Base Weight'),
 			LiteralField::create('ProductCategory', '<h2>Product Category</h2>'),
@@ -76,7 +76,7 @@ class ProductPage extends Page {
 		
 		// Images tab
 		$fields->addFieldsToTab('Root.Images', array(
-			UploadField('PreviewImage', 'Preview Image'),
+			UploadField::create('PreviewImage', 'Preview Image'),
 			$prodImagesField
 		));
 		

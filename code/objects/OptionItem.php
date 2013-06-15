@@ -37,7 +37,7 @@ class OptionItem extends DataObject{
 				'Set'=>'Set as a new Weight'
 			)
 		));
-		$fields->push(new NumericField('PriceModifier', 'Price'));
+		$fields->push(new CurrencyField('PriceModifier', 'Price'));
 		$fields->push(new DropDownField('PriceModifierAction', 'Price Modifiction',
 			array(
 				'Add'=>sprintf('Add to Base Price ($%2.2f)',$parentPrice),
