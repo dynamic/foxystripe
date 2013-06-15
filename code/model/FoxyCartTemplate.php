@@ -5,7 +5,7 @@
  *
  */
 
-class FoxyCartTemplate extends Page{
+class FoxyCartTemplate extends SiteTree {
 	public static $allowed_children = 'none';
 	public static $db = array(
 		
@@ -18,7 +18,7 @@ class FoxyCartTemplate extends Page{
 	}
 }
 
-class FoxyCartTemplate_Controller extends Page_Controller {
+class FoxyCartTemplate_Controller extends ContentController {
 	public function init(){
 	
 		Requirements::css('https://' . FoxyCart::$foxyCartStoreName . '.foxycart.com/themes/standard/styles.css" type="text/css');
