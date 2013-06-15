@@ -286,13 +286,6 @@ class ProductPage_Controller extends Page_Controller {
 	public function init(){
 		parent::init();
 		
-		Requirements::css('themes/ss-bootstrap_foxystripe/css/foxystripe.css');
-		//Requirements::css('FoxyStripe/css/foxycart.css');
-		Requirements::css('https://cdn.foxycart.com/static/scripts/colorbox/1.3.19/style1_fc/colorbox.css?ver=1');
 		
-		Requirements::block('framework/thirdparty/jquery/jquery.js');
-		
-		Requirements::javascript('https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js');
-		Requirements::javascript('https://cdn.foxycart.com/dynamic/foxycart.colorbox.js?ver=2');
 	}
 }
