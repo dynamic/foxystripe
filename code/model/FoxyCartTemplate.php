@@ -6,10 +6,13 @@
  */
 
 class FoxyCartTemplate extends SiteTree {
+	
 	public static $allowed_children = 'none';
+	
 	public static $db = array(
 		
 	);
+	
 	function onBeforeWrite(){
 		$this->ShowInMenus = 0;
 		$this->ShowInSearch = 0;
@@ -19,6 +22,7 @@ class FoxyCartTemplate extends SiteTree {
 }
 
 class FoxyCartTemplate_Controller extends ContentController {
+	
 	public function init(){
 	
 		// variables for file paths
@@ -27,7 +31,8 @@ class FoxyCartTemplate_Controller extends ContentController {
 		
 		Requirements::css('https://static.foxycart.com/scripts/colorbox/1.3.16/style1_fc/colorbox.css');
 		Requirements::css('https://' . FoxyCart::$foxyCartStoreName . '.foxycart.com/themes/standard/styles.css" type="text/css');
-		//Requirements::css('https://' . FoxyCart::$foxyCartStoreName . '.foxycart.com/themes/text/styles.css" type="text/css');
+
+		// css to override any foxycart styles (optional)
 		Requirements::css($BaseHref . $ThemeDir . 'css/foxycart.css');
 		
 		parent::init();
@@ -45,13 +50,5 @@ class FoxyCartTemplate_Controller extends ContentController {
 		Requirements::block('sapphire/javascript/Validator.js');
 		Validator::set_javascript_validation_handler('none');
 		
-		
-		
-		$tags = '<!-- BEGIN FOXYCART FILES -->
-		<link rel="stylesheet" href="https://static.foxycart.com/scripts/colorbox/1.3.16/style1_fc/colorbox.css" type="text/css" media="screen" charset="utf-8" />
-		<link rel="stylesheet" href="https://'.FoxyCart::$foxyCartStoreName.'.foxycart.com/themes/standard/styles.css" type="text/css" media="screen" charset="utf-8" />
-		<link rel="stylesheet" href="'.Director::absoluteBaseURL().'foxystripe/css/foxycart.css" type="text/css" media="screen" charset="utf-8" />
-		<!-- END FOXYCART FILES -->';
-		//Requirements::insertHeadTags($tags);
 	}
 }
