@@ -21,7 +21,12 @@ class FoxyCartTemplate extends SiteTree {
 class FoxyCartTemplate_Controller extends ContentController {
 	public function init(){
 	
+		// variables for file paths
+		$BaseHref = Director::absoluteBaseURL();
+		$ThemeDir = 'themes/' . SSViewer::current_theme() . '/';
+	
 		Requirements::css('https://' . FoxyCart::$foxyCartStoreName . '.foxycart.com/themes/standard/styles.css" type="text/css');
+		Requirements::css($BaseHref . 'foxystripe/css/foxycart.css');
 		
 		parent::init();
 		
