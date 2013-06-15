@@ -20,6 +20,9 @@ class FoxyCartTemplate extends Page{
 
 class FoxyCartTemplate_Controller extends Page_Controller {
 	public function init(){
+	
+		Requirements::css('https://' . FoxyCart::$foxyCartStoreName . '.foxycart.com/themes/standard/styles.css" type="text/css');
+		
 		parent::init();
 		
 		// block any jquery script you are using..
@@ -35,8 +38,10 @@ class FoxyCartTemplate_Controller extends Page_Controller {
 		Requirements::block('sapphire/javascript/Validator.js');
 		Validator::set_javascript_validation_handler('none');
 		
+		
+		
 		$tags = '<!-- BEGIN FOXYCART FILES -->
-		<link rel="stylesheet" href="http://static.foxycart.com/scripts/colorbox/1.3.16/style1_fc/colorbox.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="https://static.foxycart.com/scripts/colorbox/1.3.16/style1_fc/colorbox.css" type="text/css" media="screen" charset="utf-8" />
 		<link rel="stylesheet" href="https://'.FoxyCart::$foxyCartStoreName.'.foxycart.com/themes/standard/styles.css" type="text/css" media="screen" charset="utf-8" />
 		<link rel="stylesheet" href="'.Director::absoluteBaseURL().'foxystripe/css/foxycart.css" type="text/css" media="screen" charset="utf-8" />
 		<!-- END FOXYCART FILES -->';
