@@ -25,8 +25,9 @@ class FoxyCartTemplate_Controller extends ContentController {
 		$BaseHref = Director::absoluteBaseURL();
 		$ThemeDir = 'themes/' . SSViewer::current_theme() . '/';
 	
-		Requirements::css('https://' . FoxyCart::$foxyCartStoreName . '.foxycart.com/themes/standard/styles.css" type="text/css');
-		Requirements::css($BaseHref . 'foxystripe/css/foxycart.css');
+		Requirements::css('https://' . FoxyCart::$foxyCartStoreName . '.foxycart.com/themes/text/styles.css" type="text/css');
+		//Requirements::css('https://' . FoxyCart::$foxyCartStoreName . '.foxycart.com/themes/standard/styles.css" type="text/css');
+		Requirements::css($BaseHref . $ThemeDir . 'css/foxycart.css');
 		
 		parent::init();
 		
