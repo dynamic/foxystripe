@@ -11,7 +11,7 @@ class FoxyCartTemplate extends SiteTree {
 		
 	);
 	function onBeforeWrite(){
-		$tkis->ShowInMenus = 0;
+		$this->ShowInMenus = 0;
 		$this->ShowInSearch = 0;
 		$this->ProvideComments = 0;
 		parent::onBeforeWrite();
