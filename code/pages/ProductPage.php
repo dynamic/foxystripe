@@ -32,6 +32,12 @@ class ProductPage extends Page {
                $this->CategoryID = $cat->ID;
           }
      }
+     
+    static $defaults = array(
+		//"ProvideComments" => true,
+		'ShowInMenus' => false
+	);
+     
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
 		

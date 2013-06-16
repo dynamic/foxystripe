@@ -23,6 +23,71 @@ class ProductHolder extends Page {
 		$fields->addFieldToTab('Root.Image', new UploadField('PreviewImage', 'Preview Image'));
 		return $fields;
 	}
+	
+	/**
+	 * loadDescendantProductGroupIDListInto function.
+	 * 
+	 * @access public
+	 * @param mixed &$idList
+	 * @return void
+	 */
+	public function loadDescendantProductGroupIDListInto(&$idList) {
+		if ($children = $this->AllChildren()) {
+			foreach($children as $child) {
+				if(in_array($child->ID, $idList)) continue;
+				
+				if($child instanceof ProductHolder) {
+					$idList[] = $child->ID; 
+					$child->loadDescendantProductGroupIDListInto($idList);
+				}                             
+			}
+		}
+	}
+	
+	
+	/**
+	 * ProductGroupIDs function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function ProductGroupIDs() {
+		$holderIDs = array();
+		$this->loadDescendantProductGroupIDListInto($holderIDs);
+		return $holderIDs;
+	}
+	
+	
+	/**
+	 * Products function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function Products() {
+	
+		$filter = '"ParentID" = ' . $this->ID;
+		$limit = 3;
+		
+		// Build a list of all IDs for ProductGroups that are children
+		$holderIDs = $this->ProductGroupIDs();
+		
+		// If no ProductHolders, no ProductPages. So return false
+		if($holderIDs) {
+			// Otherwise, do the actual query
+			if($filter) $filter .= ' OR ';
+			$filter .= '"ParentID" IN (' . implode(',', $holderIDs) . ")";
+		}
+		
+		$order = '"SiteTree"."Title" ASC';
+
+		$entries = ProductPage::get()->where($filter)->sort($order);
+
+    	$list = new PaginatedList($entries, Controller::curr()->request);
+    	$list->setPageLength($limit);
+    	return $list;
+		
+	}
 }
 
 class ProductHolder_Controller extends Page_Controller {
