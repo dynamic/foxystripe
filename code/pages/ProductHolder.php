@@ -67,7 +67,7 @@ class ProductHolder extends Page {
 	public function Products() {
 	
 		$filter = '"ParentID" = ' . $this->ID;
-		$limit = 3;
+		$limit = 10;
 		
 		// Build a list of all IDs for ProductGroups that are children
 		$holderIDs = $this->ProductGroupIDs();
