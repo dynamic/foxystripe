@@ -10,7 +10,7 @@ class ProductPage extends Page {
 	public static $allowed_children = 'none';
 	
 	public static $db = array(
-		'Price' => 'Float',
+		'Price' => 'Currency',
 		'Weight' => 'Float',
 		'Code' => 'Text',
 		'ReceiptTitle' => 'Text'
