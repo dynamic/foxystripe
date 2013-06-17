@@ -13,10 +13,14 @@ class FoxyCartTemplate extends SiteTree {
 		
 	);
 	
+	public static $defaults = array(
+		'ShowInMenus' => 0,
+		'ShowInSearch' => 0
+	);
+	
 	function onBeforeWrite(){
 		$this->ShowInMenus = 0;
 		$this->ShowInSearch = 0;
-		$this->ProvideComments = 0;
 		parent::onBeforeWrite();
 	}
 }
