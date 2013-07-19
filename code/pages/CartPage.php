@@ -1,11 +1,11 @@
 <?php
 /**
  *
- * @pac{age FoxyStripe
+ * @package FoxyStripe
  *
  */
 
-class CartPage extends FoxyCartTemplate{
+class CartPage extends FoxyCartTemplate {
 	static $hide_ancestor = 'FoxyCartTemplate';
 }
 

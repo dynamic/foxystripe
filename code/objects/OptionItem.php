@@ -7,7 +7,7 @@
 
 class OptionItem extends DataObject{
 
-	static $db = array(
+	public static $db = array(
 		'Title' => 'Text',
 		'WeightModifier' => 'Int',
 		'CodeModifier' => 'Text',
@@ -16,12 +16,14 @@ class OptionItem extends DataObject{
 		'CodeModifierAction' => "Enum('Add,Subtract,Set','Add')",
 		'PriceModifierAction' => "Enum('Add,Subtract,Set','Add')"
 	);
-	static $has_one = array(
+	
+	public static $has_one = array(
 		'Product' => 'ProductPage',
 		'ProductOptionGroup' => 'OptionGroup',
 		'Category' => 'ProductCategory'
 	);
-	function getCMSFields(){
+	
+	public function getCMSFields(){
 		$fields = new FieldList();
 		
 		$parentPrice = $this->Product()->Price;
@@ -72,16 +74,19 @@ class OptionItem extends DataObject{
 		return '';
 	}
 	
-	function getWeightModifierWithSymbol(){
+	public function getWeightModifierWithSymbol(){
 		return self::getOptionModifierActionSymbol($this->WeightModifierAction).$this->WeightModifier;
 	}
-	function getPriceModifierWithSymbol(){
+	
+	public function getPriceModifierWithSymbol(){
 		return self::getOptionModifierActionSymbol($this->PriceModifierAction).$this->PriceModifier;
 	}
-	function getCodeModifierWithSymbol(){
+	
+	public function getCodeModifierWithSymbol(){
 		return self::getOptionModifierActionSymbol($this->CodeModifierAction).$this->CodeModifier;
 	}
-	function getProductOptionGroupTitle(){
+	
+	public function getProductOptionGroupTitle(){
 		return $this->ProductOptionGroup()->Title;
 	}
 }

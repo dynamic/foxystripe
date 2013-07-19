@@ -7,18 +7,18 @@
 
 class ProductCategory extends DataObject {
 	
-	public static $singular_name='Foxycart Category';
-	public static $plural_name='Foxycart Categories';
+	public static $singular_name = 'FoxyCart Category';
+	public static $plural_name = 'FoxyCart Categories';
 	
 	static $db = array(
 		'Title' => 'Text',
 		'Code' => 'Text'
 	);
 
-	function getCMSFields() {
+	public function getCMSFields() {
 		$fields = array();
 		$fields[] = new TextField('Title', "FoxyCart 'Category Description'");
-		$fields[] = new TextField('Code', "Foxycart 'Category Code'");
+		$fields[] = new TextField('Code', "FoxyCart 'Category Code'");
 
 		$set = new FieldList($fields);
 		$this->extend('updateCMSFields', $set);
@@ -35,7 +35,8 @@ class ProductCategory extends DataObject {
 			$do->write();
 		}
 	}
-	function canDelete($member = NULL){
+	
+	public function canDelete($member = NULL) {
 		switch($this->Code){
 			case 'DEFAULT':
 				return false;
@@ -46,7 +47,8 @@ class ProductCategory extends DataObject {
 		}
 		return true;
 	}
-	function canEdit($member = NULL){
+	
+	public function canEdit($member = NULL) {
 		switch($this->Code){
 			case 'DEFAULT':
 				return false;

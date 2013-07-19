@@ -25,6 +25,7 @@ class OptionGroup extends DataObject{
 			$do->write();
 		}
 	}
+	
 	public function onBeforeDelete(){
 		parent::onBeforeDelete();
 		
@@ -40,7 +41,7 @@ class OptionGroup extends DataObject{
 		}
 	}
 	
-	function canDelete($member = NULL){
+	public function canDelete($member = NULL){
 		switch($this->Title){
 			case 'None':
 				return false;
@@ -51,7 +52,8 @@ class OptionGroup extends DataObject{
 		}
 		return true;
 	}
-	function canEdit($member = NULL){
+	
+	public function canEdit($member = NULL){
 		switch($this->Title){
 			case 'None':
 				return false;

@@ -5,7 +5,7 @@
  *
  */
 
-class CheckoutPage extends FoxyCartTemplate{
+class CheckoutPage extends FoxyCartTemplate {
 	// static $hide_ancestor = 'FoxyCartTemplate';  // hidden by CartPage.php
 }
 

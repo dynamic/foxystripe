@@ -9,9 +9,8 @@ class ProductAdmin extends ModelAdmin {
 		'ProductCategory'
 	);
 	
-	static $url_segment = 'products'; // Linked as /admin/products/
+	static $url_segment = 'products';
 	
 	static $menu_title = 'Products';
 	
 }
-

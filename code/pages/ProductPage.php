@@ -25,20 +25,20 @@ class ProductPage extends Page {
 		'ProductImages' => 'ProductImage',
 		'ProductOptions' => 'OptionItem'
 	);
-	public function populateDefaults(){
-          parent::populateDefaults();
-          if(!$this->Category){
-               $cat = DataObject::get_one('ProductCategory', "`Code`='DEFAULT'");
-               $this->CategoryID = $cat->ID;
-          }
-     }
-     
+	
+	public function populateDefaults() {
+		parent::populateDefaults();
+		if (!$this->Category) {
+			$cat = DataObject::get_one('ProductCategory', "`Code`='DEFAULT'");
+			$this->CategoryID = $cat->ID;
+		}
+	}
+	
     static $defaults = array(
-		//"ProvideComments" => true,
 		'ShowInMenus' => false
 	);
      
-	public function getCMSFields(){
+	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 		
 		// has_one category
@@ -89,38 +89,38 @@ class ProductPage extends Page {
 		return $fields;
 	}
 	
-	public function onBeforeDelete(){
-          if($this->Status != "Published"){
-               if($this->ProductOptions()){
-                    $options = $this->getComponents('ProductOptions');
-                    foreach($options as $option){
-                         $option->delete();
-                    }
-               }
-               if($this->ProductImages()){
-                    //delete product image dataobjects, not the images themselves.
-                    $images = $this->getComponents('ProductImages');
-                    foreach($images as $image){
-                         $image->delete();
-                    }
-               }
-          }
-          parent::onBeforeDelete();
-     }
+	public function onBeforeDelete() {
+		if($this->Status != "Published") {
+			if($this->ProductOptions()) {
+				$options = $this->getComponents('ProductOptions');
+				foreach($options as $option) {
+					$option->delete();
+				}
+			}
+			if($this->ProductImages()) {
+				//delete product image dataobjects, not the images themselves.
+				$images = $this->getComponents('ProductImages');
+				foreach($images as $image) {
+					$image->delete();
+				}
+			}
+		}
+		parent::onBeforeDelete();
+	}
 	
-     public function getCMSValidator() {
-          return new RequiredFields('Price', 'Weight', 'Code');
-     }
+	public function getCMSValidator() {
+		return new RequiredFields('Price', 'Weight', 'Code');
+	}
 	
-     public function getFormTag(){
-          return FoxyCart::FormActionURL();
-     }
+	public function getFormTag() {
+		return FoxyCart::FormActionURL();
+	}
 	
-     function PurchaseForm(){
-          return self::ProductOptionsForm();
-     }
+	public function PurchaseForm() {
+		return self::ProductOptionsForm();
+	}
 	
-	function SingleProductForm(){
+	public function SingleProductForm() {
 		//make sure to urlencode url params
 		return sprintf('<div class="addToCartContainer"><a href="%s?name=%s&price=%2.2f&code=%s&category=%s&weight=%s&image=%s"><span class="addToCart">Add To Cart</span><span class="submitPrice">%s $%2.2f</span></a></div>',
 			self::getFormTag(),
@@ -135,7 +135,7 @@ class ProductPage extends Page {
 		);
 	}
 	
-	function ProductOptionsForm(){
+	public function ProductOptionsForm() {
 		$form = $this->StartForm();
 		$form .= $this->AddBaseProductDetails();
 		$form .= $this->ProductOptionsSet();
@@ -144,9 +144,7 @@ class ProductPage extends Page {
 		return $form;
 	}
 	
-	
-	
-	function StartForm(){
+	public function StartForm() {
 		//start form
 		$formclass = 'foxycartForm';
 		$form = sprintf('<form action="%s" method="post" accept-charset="utf-8" class="foxycart %s" id="product%s">',
@@ -156,11 +154,12 @@ class ProductPage extends Page {
 		);
 		return $form;
 	}
-	function EndForm(){
+	
+	public function EndForm() {
 		return "</form>";
 	}
 	
-	function AddBaseProductDetails(){
+	public function AddBaseProductDetails(){
 		$form = $this->hiddenTag('name', ($this->ReceiptTitle) ? htmlspecialchars($this->ReceiptTitle) : htmlspecialchars($this->Title));
 		$form .= $this->hiddenTag('category',$this->Category()->Code);
 		$form .= $this->hiddenTag('code', $this->Code);
@@ -170,14 +169,13 @@ class ProductPage extends Page {
 		return $form;
 	}
 	
-	function ProductOptionsSet(){
+	public function ProductOptionsSet() {
 		$options = $this->ProductOptions();
 		
 		$groupedProductOptions = new GroupedList($options); 
 		$grp = $groupedProductOptions->groupBy("ProductOptionGroupID");
 		
 		//$grp = $options->groupBy('ProductOptionGroupID');
-		
 		
 		$form = "<div class='foxycartOptionsContainer'>";
 		foreach($grp as $id=>$optionSet){
@@ -235,7 +233,7 @@ JS;
 		return $form;
 	}
 	
-	function AddToCartForm(){
+	public function AddToCartForm() {
 		$form = "<div class='addToCartContainer'>";
 		$form .= "<label for='quantity'>Quantity</label><div class='foxycart_qty'><input type='text' name='quantity' value='1' /></div>";
 		$form .= sprintf("<div class='checkoutbtn'><input type='submit' value='%s' class='submit' /><span class='submitPrice' id='SubmitPrice%s'>%s $%2.2f</span></div>",
@@ -248,7 +246,7 @@ JS;
 		return $form;
 	}
 	
-	function selectField($name = null, $id = null, $optionSet = null){
+	public function selectField($name = null, $id = null, $optionSet = null) {
 		if($optionSet && $id && $name){
 			if($name != 'None'){
 				$selectField = "<label for='{$name}'>$name</label><select name='{$name}' id='{$id}'>";
@@ -279,7 +277,7 @@ JS;
 		}
 	}
 		
-	function hiddenTag($name=null, $val=null){
+	public function hiddenTag($name=null, $val=null) {
 		return sprintf('<input type="hidden" name="%s" value="%s" />',
 			$name,
 			$val
@@ -291,7 +289,5 @@ JS;
 class ProductPage_Controller extends Page_Controller {
 	public function init(){
 		parent::init();
-		
-		
 	}
 }

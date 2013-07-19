@@ -1,6 +1,7 @@
 <?php
 
 class FoxyCartDataFeedCollector extends Page_Controller {
+	
 	const URLSegment = 'order-collection';
 
 	public function getURLSegment() {
@@ -8,11 +9,11 @@ class FoxyCartDataFeedCollector extends Page_Controller {
 	}
 	
 	static $allowed_actions = array(
-        'index',
-        'handleFetchAppTest'
-    );
-    
-    public function feedXML(){
+		'index',
+		'handleFetchAppTest'
+	);
+	
+	public function feedXML() {
 	    // The filename that you'd like to write to.
 		// For security reasons, this file should either be outside of your public web root,
 		// or it should be written to a directory that doesn't have public access (like with an .htaccess directive).
@@ -24,9 +25,9 @@ class FoxyCartDataFeedCollector extends Page_Controller {
 		} else {
 			user_error("No FoxyData or FoxySubscriptionData received.");
 		}
-    }
-    
-    public function index(){
+	}
+	
+	public function index() {
 	    // The filename that you'd like to write to.
 		// For security reasons, this file should either be outside of your public web root,
 		// or it should be written to a directory that doesn't have public access (like with an .htaccess directive).
@@ -39,11 +40,11 @@ class FoxyCartDataFeedCollector extends Page_Controller {
 		} else {
 			return "No FoxyData or FoxySubscriptionData received.";
 		}
-    }
-    
-    public function handleDataFeed($encrypted, $decrypted){
-    	//do what you want to with encrypted & decrypted data
+	}
+	
+	public function handleDataFeed($encrypted, $decrypted){
+		//do what you want to with encrypted & decrypted data
 		$this->extend('handleDecryptedFeed',$encrypted, $decrypted);
-    }
-    
+	}
+	
 }

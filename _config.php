@@ -4,7 +4,7 @@
  * example:
  * to register a store with a subdomain of foxycart-store-name.foxycart.com, enter
  * 
- * FoxyCart::setFoxycartStoreName('foxycart-store-name');
+ * FoxyCart::setFoxyCartStoreName('foxycart-store-name');
  * 
  *
  */

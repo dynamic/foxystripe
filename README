@@ -1,23 +1,9 @@
-FoxyStripe is a Silverstripe module designed to integrate with Foxycart (www.foxycart.com), a very nice and flexible shopping cart that integrates very seamlessly with other CMS's and is PCI Compliant.
+## FoxyStripe
 
-This module provides templates and classes that create the forms which submit to foxycart's shopping cart.
+FoxyStripe is a SilverStripe module designed to integrate with [FoxyCart](http://www.foxycart.com/).
 
-this module's documentation could be better right now, but i just want to start sharing this.
+FoxyCart provides you with a flexible, powerful, customizable, secure ecommerce platform. This module provides templates and classes that create the forms which submit to FoxyCart's shopping cart.
 
+## FoxyCart Documentation
 
-
-things ive noticed:
-for me, it helped to put all requirements in php and not in the templates, since i needed to block jquery and other scripts in page_controller::init().
-
-if you are using conditional CSS statements for ie6, etc, make sure you tie them to the base url..
-
-example in Page_Controller::init() function
-
-BAD:
-$tags = '<!--[if IE 6]><link rel="stylesheet" type="text/css" href="themes/mysite/css/ie6.css" ><![endif]-->';
-Requirements::insertHeadTags($tags);
-
-Good:
-$tags = '<!--[if IE 6]><link rel="stylesheet" type="text/css" href="'.Director::absoluteBaseURL().'themes/mysite/css/ie6.css" ><![endif]-->';
-Requirements::insertHeadTags($tags);
-
+[FoxyCart 0.7.0 API Docs](http://docs.foxycart.com/v/0.7.0/start)

@@ -28,7 +28,7 @@ class FoxyCartTemplate extends SiteTree {
 class FoxyCartTemplate_Controller extends ContentController {
 	
 	public function init(){
-	
+		parent::init();
 		// variables for file paths
 		$BaseHref = Director::absoluteBaseURL();
 		$ThemeDir = 'themes/' . SSViewer::current_theme() . '/';
@@ -38,21 +38,5 @@ class FoxyCartTemplate_Controller extends ContentController {
 
 		// css to override any foxycart styles (optional)
 		Requirements::css($BaseHref . $ThemeDir . 'css/foxycart.css');
-		
-		parent::init();
-		
-		// block any jquery script you are using..
-		// Foxycart adds this Automatically
-		
-		// is there a better way to detect if any kind of jquery is loaded??
-		// apparently we can tell foxycart we are including jquery as well, but its not available on a fresh install of silverstripe..
-		 
-		//Requirements::block('themes/'.SSViewer::current_theme().'/javascript/jquery-1.6.1.min.js');
-		Requirements::block('sapphire/thirdparty/prototype/prototype.js');
-		Requirements::block('sapphire/thirdparty/behaviour/behaviour.js');
-		Requirements::block('sapphire/javascript/prototype_improvements.js');
-		Requirements::block('sapphire/javascript/Validator.js');
-		Validator::set_javascript_validation_handler('none');
-		
 	}
 }

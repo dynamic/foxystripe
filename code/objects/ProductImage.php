@@ -11,6 +11,7 @@ class ProductImage extends DataObject{
 		'Title' => 'Text',
 		'SortOrder' => 'Int'
 	);
+	
 	public static $has_one = array(
 		'Image' => 'Image',
 		'Parent' => 'SiteTree'
@@ -25,5 +26,4 @@ class ProductImage extends DataObject{
 		$this->extend('getCMSFields', $fields);
 		return $fields;
 	}
-	
 }
