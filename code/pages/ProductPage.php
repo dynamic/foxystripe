@@ -42,14 +42,15 @@ class ProductPage extends Page {
 		$fields = parent::getCMSFields();
 		
 		// has_one category
-		$config = GridFieldConfig_RecordEditor::create();
+		//$config = GridFieldConfig_RecordEditor::create();
 		//$config->addComponent(new GridFieldHasOneRelationHandler($this, 'Category'));
 		//$catField = GridField::create('Category', 'Category', ProductCategory::get(), $config);
 		$catField = DropdownField::create('CategoryID', 'Category', ProductCategory::get()->map('ID', 'Title'));
 		
 		// option groups
-		$config = GridFieldConfig_RecordEditor::create();
-		$optGroupField = GridField::create('OptionGroup', 'Option Group', OptionGroup::get(), $config);
+		//$config = GridFieldConfig_RecordEditor::create();
+		//$optGroupField = GridField::create('OptionGroup', 'Option Group', OptionGroup::get(), $config);
+		//$optGroupField = DropdownField::create('OptionGroupID', 'Option Group', OptionGroup::get()->map('ID', 'Title'));
 		
 		// product options
 		$config = GridFieldConfig_RelationEditor::create();
@@ -66,7 +67,7 @@ class ProductPage extends Page {
 			$catField,
 			LiteralField::create('OptionGroups', '<h2>Option Groups</h2>
 				<p>Option Groups represent groups of options like size, color, etc</p>'),
-			$optGroupField,
+			//$optGroupField,
 			LiteralField::create('OptionItems', 
 				'<h2>Product Options</h2>
 				<p>Modifiers with a + or - in front of them mean the value will be added or subtracted to the base weight, price, or code entered above.</p>
