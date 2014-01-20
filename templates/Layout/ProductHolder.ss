@@ -5,31 +5,28 @@
         
         <% if Content %><div class="typography">$Content</div><% end_if %>
         
-    	<% loop Children %>
-    		<div class="productSummary">
-            	<div class="productSummaryImage">
-            		<% if PreviewImage %>
-		               	
+    	<% loop Products %>
+    		<div class="productSummary unit size3of4">
+        		<% if PreviewImage %>
+					<div class="unit size1of4">
 	                	<a href="{$Link}" title="{$Title}">
-                        <% with PreviewImage %>
-                        	<% control PaddedImage(150, 150) %>
-                            	<img src="{$URL}" width="$getWidth" height="$getHeight" />
-                            <% end_control %>
-                        <% end_with %>
-                        </a>
-					
-					<% end_if %>
+	                    <% with PreviewImage %>
+	                    	<% loop PaddedImage(150, 150) %>
+	                        	<img src="{$URL}" width="$getWidth" height="$getHeight" />
+	                        <% end_loop %>
+	                    <% end_with %>
+	                    </a>
+	                </div>
+				<% end_if %>
+				<div class="unit size3of4">
+	            	<h3><a href="{$Link}" title="{$Title}">{$Title.LimitCharacters(40)}</a></h3>
+	            	<b>$Price.Nice</b>
+	                <div class="content"><p>{$Content.Summary}</p></div>
+	                <p><a class="productLearnMore" href="$Link" alt="Learn More">Learn more about {$Title} &raquo;</a></p>
 				</div>
-					
-        		<div class="productSummaryText">
-                	<h3><a href="{$Link}" title="{$Title}">{$Title}</a></h3>
-                    <div class="content"><p>{$Content.firstParagraph}</p></div>
-                    <p><a class="productLearnMore" href="$Link" alt="Learn More">Learn more about {$Title} &raquo;</a></p>
-                </div>
-			</div>
-        
+            </div>
 		<% end_loop %>
-
+		</article>
     <% if Menu(2) %>
         </div>
     <% end_if %>

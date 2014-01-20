@@ -43,8 +43,9 @@ class ProductPage extends Page {
 		
 		// has_one category
 		$config = GridFieldConfig_RecordEditor::create();
-		$config->addComponent(new GridFieldHasOneRelationHandler($this, 'Category'));
-		$catField = GridField::create('Category', 'Category', ProductCategory::get(), $config);
+		//$config->addComponent(new GridFieldHasOneRelationHandler($this, 'Category'));
+		//$catField = GridField::create('Category', 'Category', ProductCategory::get(), $config);
+		$catField = DropdownField::create('CategoryID', 'Category', ProductCategory::get()->map('ID', 'Title'));
 		
 		// option groups
 		$config = GridFieldConfig_RecordEditor::create();
@@ -77,7 +78,7 @@ class ProductPage extends Page {
 		
 		// product image gallery
 		$config = GridFieldConfig_RelationEditor::create();
-		$config->addComponent(new GridFieldSortableRows('SortOrder'));
+		//$config->addComponent(new GridFieldSortableRows('SortOrder'));
 		$prodImagesField = GridField::create('ProductImages', 'Images', $this->ProductImages(), $config);
 		
 		// Images tab
