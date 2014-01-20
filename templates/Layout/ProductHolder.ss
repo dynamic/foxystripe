@@ -19,7 +19,7 @@
 	                </div>
 				<% end_if %>
 				<div class="unit size3of4">
-	            	<h3><a href="{$Link}" title="{$Title}">{$Title.LimitCharacters(40)}</a></h3>
+	            	<h3><a href="{$Link}" title="{$Title}">{$Title.LimitCharacters(48)}</a></h3>
 	            	<b>$Price.Nice</b>
 	                <div class="content"><p>{$Content.Summary}</p></div>
 	                <p><a class="productLearnMore" href="$Link" alt="Learn More">Learn more about {$Title} &raquo;</a></p>
