@@ -19,15 +19,17 @@ class FoxyCart_Helper {
 	 *
 	 * @var string
 	 **/
-	//private static $secret = FoxyCart::$storeKey;
+	private static $secret;
+	protected static $cart_url;
 
-	/**
-	 * Cart URL
-	 *
-	 * @var string
-	 **/
-	// protected static $cart_url = 'https://yourdomain.foxycart.tld/cart';
-	//protected static $cart_url = FoxyCart::FormActionURL();
+	public static function setSecret(){
+		self::$secret = FoxyCart::getStoreKey();
+	}
+
+	public function setCartURL(){
+		self::$cart_url = FoxyCart::FormActionURL();
+		debug::show(self::$cart_url);
+	}
 
 
 	/**
