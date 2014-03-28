@@ -7,17 +7,17 @@
 
 class ProductHolder extends Page {
 	
-	public static $allowed_children = array('ProductHolder', 'ProductPage', 'Page');
+	private static $allowed_children = array('ProductHolder', 'ProductPage', 'Page');
 	
-	public static $db = array(
+	private static $db = array(
 		
 	);
 	
-	public static $has_one = array(
+	private static $has_one = array(
 		'PreviewImage' => 'Image'
 	);
 	
-	static $defaults = array(
+	private static $defaults = array(
 		
 	);
 	

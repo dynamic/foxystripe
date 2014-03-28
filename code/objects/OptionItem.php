@@ -7,58 +7,105 @@
 
 class OptionItem extends DataObject{
 
-	public static $db = array(
+	private static $db = array(
 		'Title' => 'Text',
 		'WeightModifier' => 'Int',
 		'CodeModifier' => 'Text',
 		'PriceModifier' => 'Currency',
 		'WeightModifierAction' => "Enum('Add,Subtract,Set','Add')",
 		'CodeModifierAction' => "Enum('Add,Subtract,Set','Add')",
-		'PriceModifierAction' => "Enum('Add,Subtract,Set','Add')"
+		'PriceModifierAction' => "Enum('Add,Subtract,Set','Add')",
+		'SortOrder' => 'Int'
 	);
 	
-	public static $has_one = array(
+	private static $has_one = array(
 		'Product' => 'ProductPage',
 		'ProductOptionGroup' => 'OptionGroup',
 		'Category' => 'ProductCategory'
 	);
 	
+	private static $summary_fields = array(
+		'Title' => 'Title',
+		'ProductOptionGroup.Title' => 'Group'
+	);
+	
 	public function getCMSFields(){
-		$fields = new FieldList();
+		$fields = FieldList::create(
+			new Tabset('Root',
+				new Tab('Main'),
+				new Tab('Modifiers')
+			)
+		);
 		
+		// set variables
 		$parentPrice = $this->Product()->Price;
 		$parentWeight = $this->Product()->Weight;
 		$parentCode = $this->Product()->Code;
 		
-		$fields->push(new TextField('Title', 'Product Option Title'));
-		$fields->push(new NumericField('WeightModifier', 'Weight'));
-		$fields->push(new DropDownField('WeightModifierAction', 'Weight Modifiction',
-			array(
-				'Add'=>sprintf('Add to Base Weight (%2.2f)',$parentWeight),
-				'Subtract'=>sprintf('Subtract from Base Weight (%2.2f)',$parentWeight),
-				'Set'=>'Set as a new Weight'
-			)
+		// ProductOptionGroup Dropdown field w/ add new
+		$groups = function(){
+		    return OptionGroup::get()->map()->toArray();
+		};
+		$groupFields = singleton('OptionGroup')->getCMSFields();
+		$groupField = DropdownField::create('ProductOptionGroupID', 'Option Group', $groups())
+			->setEmptyString('');
+		if (class_exists('QuickAddNewExtension')) $groupField->useAddNew('OptionGroup', $groups, $groupFields);
+		
+		// Cateogry Dropdown field w/ add new
+		$categories = function(){
+		    return ProductCategory::get()->map()->toArray();
+		};
+		$categoryField = DropdownField::create('CategoryID', 'Category', $categories())
+			->setEmptyString('');
+		if (class_exists('QuickAddNewExtension')) $categoryField->useAddNew('ProductCategory', $categories);
+		
+		$fields->addFieldsToTab('Root.Main', array(
+			HeaderField::create('DetailsHD', 'Product Option Details', 2),
+			Textfield::create('Title', 'Product Option Title'),
+			$groupField,
+			$categoryField
 		));
-		$fields->push(new CurrencyField('PriceModifier', 'Price'));
-		$fields->push(new DropDownField('PriceModifierAction', 'Price Modifiction',
-			array(
-				'Add'=>sprintf('Add to Base Price ($%2.2f)',$parentPrice),
-				'Subtract'=>sprintf('Subtract from Base Price ($%2.2f)',$parentPrice),
-				'Set'=>'Set as a new Price'
-			)
+				
+		$fields->addFieldsToTab('Root.Modifiers', array(
+			HeaderField::create('ModifyHD', 'Product Option Modifiers', 2),
+			// Weight Modifier Fields
+			HeaderField::create('WeightHD', 'Modify Weight', 3),
+			NumericField::create('WeightModifier', 'Weight'),
+			DropdownField::create('WeightModifierAction', 'Weight Modification',
+				array(
+					'Add'=>sprintf('Add to Base Weight (%2.2f)',$parentWeight),
+					'Subtract'=>sprintf('Subtract from Base Weight (%2.2f)',$parentWeight),
+					'Set'=>'Set as a new Weight'
+				)
+			)->setEmptyString('')
+			->setDescription('Does weight modify or replace base weight?'),
+			// Price Modifier FIelds
+			HeaderField::create('PriceHD', 'Modify Price', 3),
+			CurrencyField::create('PriceModifier', 'Price'),
+			DropdownField::create('PriceModifierAction', 'Price Modification',
+				array(
+					'Add'=>sprintf('Add to Base Price ($%2.2f)',$parentPrice),
+					'Subtract'=>sprintf('Subtract from Base Price ($%2.2f)',$parentPrice),
+					'Set'=>'Set as a new Price'
+				)
+			)->setEmptyString('')
+			->setDescription('Does price modify or replace base price?'),
+			// Code Modifier Fields
+			HeaderField::create('CodeHD', 'Modify Code', 3),
+			TextField::create('CodeModifier', 'Code'),
+			DropdownField::create('CodeModifierAction', 'Code Modification',
+				array(
+					'Add'=>sprintf('Add to Base Code (%s)',$parentCode),
+					'Subtract'=>sprintf('Subtract from Base Code (%s)',$parentCode),
+					'Set'=>'Set as a new Code'
+				)
+			)->setEmptyString('')
+			->setDescription('Does code modify or replace base code?')
 		));
-		$fields->push(new TextField('CodeModifier', 'Code'));
-		$fields->push(new DropDownField('CodeModifierAction', 'Code Modifiction',
-			array(
-				'Add'=>sprintf('Add to Base Code (%s)',$parentCode),
-				'Subtract'=>sprintf('Subtract from Base Code (%s)',$parentCode),
-				'Set'=>'Set as a new Code'
-			)
-		));
-
-		$fields->push(new DropDownField('CategoryID', 'Product Category', DataObject::get('ProductCategory')->map('ID')));
-		$fields->push(new DropDownField('ProductOptionGroupID', 'OptionGroup',DataObject::get('OptionGroup')->map('ID')));
+		
+		// allow CMS fields to be extended
 		$this->extend('getCMSFields', $fields);
+		
 		return $fields;
 	}
 	
