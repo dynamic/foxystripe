@@ -7,11 +7,15 @@
 
 class FoxyCart extends Object {
 
-	static $foxyCartStoreName = '';
-	static $storeKey = '';	// your foxy cart datafeed key
+	private static $foxyCartStoreName = '';
+	private static $storeKey = '';	// your foxy cart datafeed key
 
 	public static function setStoreKey($key) {
 		self::$storeKey = $key;
+	}
+	
+	public static function getStoreKey() {
+		return self::$storeKey;
 	}
 	
 	public static function setFoxyCartStoreName($name=null) {

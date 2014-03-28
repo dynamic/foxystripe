@@ -7,21 +7,21 @@
 
 class ProductPage extends Page {
 
-	public static $allowed_children = 'none';
+	private static $allowed_children = 'none';
 	
-	public static $db = array(
+	private static $db = array(
 		'Price' => 'Currency',
 		'Weight' => 'Float',
 		'Code' => 'Text',
 		'ReceiptTitle' => 'Text'
 	);
 	
-	public static $has_one = array(
+	private static $has_one = array(
 		'PreviewImage' => 'Image',
 		'Category' => 'ProductCategory'
 	);
 	
-	public static $has_many = array(
+	private static $has_many = array(
 		'ProductImages' => 'ProductImage',
 		'ProductOptions' => 'OptionItem'
 	);
@@ -34,59 +34,72 @@ class ProductPage extends Page {
 		}
 	}
 	
-    static $defaults = array(
+    private static $defaults = array(
 		'ShowInMenus' => false
 	);
      
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 		
-		// has_one category
-		//$config = GridFieldConfig_RecordEditor::create();
-		//$config->addComponent(new GridFieldHasOneRelationHandler($this, 'Category'));
-		//$catField = GridField::create('Category', 'Category', ProductCategory::get(), $config);
-		$catField = DropdownField::create('CategoryID', 'Category', ProductCategory::get()->map('ID', 'Title'));
+		// Cateogry Dropdown field w/ add new
+		$source = function(){
+		    return ProductCategory::get()->map()->toArray();
+		};
+		$catField = DropdownField::create('CategoryID', 'Category', $source());
+		if (class_exists('QuickAddNewExtension')) $catField->useAddNew('ProductCategory', $source);
 		
-		// option groups
-		//$config = GridFieldConfig_RecordEditor::create();
-		//$optGroupField = GridField::create('OptionGroup', 'Option Group', OptionGroup::get(), $config);
-		//$optGroupField = DropdownField::create('OptionGroupID', 'Option Group', OptionGroup::get()->map('ID', 'Title'));
-		
-		// product options
+		// Product Images gridfield
 		$config = GridFieldConfig_RelationEditor::create();
-		$prodOptField = GridField::create('ProductOptions', 'Options', $this->ProductOptions(), $config);
-		
-		
-		// Details Tab
-		$fields->addFieldsToTab('Root.Details', array(
-			TextField::create('ReceiptTitle', '(Optional) Product Title for Receipt'),
-			CurrencyField::create('Price', 'Base Price (in US dollars)'),
-			TextField::create('Code', 'SKU / Code'),
-			NumericField::create('Weight', 'Base Weight'),
-			LiteralField::create('ProductCategory', '<h2>Product Category</h2>'),
-			$catField,
-			LiteralField::create('OptionGroups', '<h2>Option Groups</h2>
-				<p>Option Groups represent groups of options like size, color, etc</p>'),
-			//$optGroupField,
-			LiteralField::create('OptionItems', 
-				'<h2>Product Options</h2>
-				<p>Modifiers with a + or - in front of them mean the value will be added or subtracted to the base weight, price, or code entered above.</p>
-				<p>Modifiers with a : in front of them mean the value will be used instead of the base value.</p>
-				<p>If you have multiple option groups you should use add or subtract, otherwise setting the value will override options in other groups.</p>'),
-			$prodOptField
-		));
-				
-		
-		// product image gallery
-		$config = GridFieldConfig_RelationEditor::create();
-		//$config->addComponent(new GridFieldSortableRows('SortOrder'));
+		if (class_exists('GridFieldSortableRows')) $config->addComponent(new GridFieldSortableRows('SortOrder'));
+		if (class_exists('GridFieldBulkImageUpload')) {
+			$config->addComponent(new GridFieldBulkImageUpload());
+			$config->getComponentByType('GridFieldBulkImageUpload')->setConfig('folderName', 'Uploads/ProductImages');	
+		}
 		$prodImagesField = GridField::create('ProductImages', 'Images', $this->ProductImages(), $config);
+		
+		// Product Options field
+		$config = GridFieldConfig_RelationEditor::create();
+		if (class_exists('GridFieldSortableRows')) $config->addComponent(new GridFieldSortableRows('SortOrder'));
+		if (class_exists('GridFieldBulkManager')) $config->addComponent(new GridFieldBulkManager());
+		$prodOptField = GridField::create('Product Options', 'Options', $this->ProductOptions(), $config);
+		
+		// Option Groups field
+		$config = GridFieldConfig_RecordEditor::create();
+		$optGroupField = GridField::create('OptionGroup', 'Option Group', OptionGroup::get(), $config);
+		
+		
+		// Details tab
+		$fields->addFieldsToTab('Root.Details', array(
+			HeaderField::create('DetailHD', 'Product Details', 2),
+			TextField::create('ReceiptTitle', 'Product Title for Receipt')
+				->setDescription('Optional'),
+			CurrencyField::create('Price'),
+			NumericField::create('Weight'),
+			TextField::create('Code', 'Product Code'),
+			$catField
+		));
 		
 		// Images tab
 		$fields->addFieldsToTab('Root.Images', array(
-			UploadField::create('PreviewImage', 'Preview Image'),
+			HeaderField::create('MainImageHD', 'Product Image', 2),
+			UploadField::create('PreviewImage', '')
+				->setDescription('Image used throughout site to represent this product')
+				->setFolderName('Uploads/Products')
+				->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'))
+				->setAllowedMaxFileNumber(1),
+			HeaderField::create('ProductImagesHD', 'Product Image Gallery', 2),
 			$prodImagesField
+				->setDescription('Additional Product Images, shown in gallery on Product page')
 		));
+		
+		// Options Tab
+		$fields->addFieldsToTab('Root.Options', array(
+			HeaderField::create('OptionsHD', 'Product Options', 2),
+			$prodOptField
+		));
+		
+		// allows CMS fields to be extended
+		$this->extend('updateCMSFields', $fields);
 		
 		return $fields;
 	}

@@ -22,6 +22,7 @@ table thead #fc_cart_head{
 	margin: 0 0 30px;
 	padding: 0 0 30px;
 	border-bottom: 1px solid #EEE;
+	width: 100%;
 }
 
 .productSummaryImage {
