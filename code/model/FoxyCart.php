@@ -15,7 +15,6 @@ class FoxyCart extends Object {
 	}
 	
 	public static function getStoreKey() {
-		debug::show(self::$storeKey);
 		return self::$storeKey;
 	}
 	
