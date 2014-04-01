@@ -19,15 +19,20 @@ class FoxyCart extends Object {
 	}
 	
 	public static function setFoxyCartStoreName($name=null) {
-		self::$foxyCartStoreName = ($name===null) ? 'Foxy Cart Store' : $name;
+		self::$foxyCartStoreName = $name;
 	}
 
 	public static function getFoxyCartStoreName(){
-		return self::$foxyCartStoreName;
+		if(isset(self::$foxyCartStoreName)&&self::$foxyCartStoreName!=null){
+			return self::$foxyCartStoreName;
+		}else{
+			user_error('Must define Foxy Cart Store Name in _config.php using FoxyCart::setFoxyCartStoreName()', E_USER_ERROR);
+			return '';
+		}
 	}
 	
 	public static function FormActionURL() {
-		return sprintf('https://%s.foxycart.com/cart', self::$foxyCartStoreName );
+		return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName() );
 	}
 	
 }
