@@ -28,7 +28,6 @@ class FoxyCart_Helper {
 
 	public function setCartURL(){
 		self::$cart_url = FoxyCart::FormActionURL();
-		debug::show(self::$cart_url);
 	}
 
 
