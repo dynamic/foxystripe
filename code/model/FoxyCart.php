@@ -14,8 +14,12 @@ class FoxyCart extends Object {
 		self::$storeKey = $key;
 	}
 	
-	public static function getStoreKey() {
-		return self::$storeKey;
+	public static function getStoreKey(){
+		if(isset(self::$storeKey) && self::$storeKey != null){
+			return self::$storeKey;
+		}
+		user_error('Must define Foxy Cart Store Key in _config.php using FoxyCart::setStoreKey()', E_USER_ERROR);
+		die();
 	}
 	
 	public static function setFoxyCartStoreName($name=null) {
@@ -25,10 +29,9 @@ class FoxyCart extends Object {
 	public static function getFoxyCartStoreName(){
 		if(isset(self::$foxyCartStoreName)&&self::$foxyCartStoreName!=null){
 			return self::$foxyCartStoreName;
-		}else{
-			user_error('Must define Foxy Cart Store Name in _config.php using FoxyCart::setFoxyCartStoreName()', E_USER_ERROR);
-			return '';
 		}
+		user_error('Must define Foxy Cart Store Name in _config.php using FoxyCart::setFoxyCartStoreName()', E_USER_ERROR);
+		die();
 	}
 	
 	public static function FormActionURL() {
