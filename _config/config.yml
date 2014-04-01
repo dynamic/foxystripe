@@ -1,0 +1,6 @@
+---
+name: foxystripe
+---
+SiteConfig:
+  extensions:
+    - FoxyCartSiteConfig

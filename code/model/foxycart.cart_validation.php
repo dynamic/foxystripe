@@ -3,11 +3,11 @@
  * FoxyCart_Helper
  *
  * @author FoxyCart.com
- * @copyright FoxyCart.com LLC, 2010
- * @version 0.7.0.20110429
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
+ * @copyright FoxyCart.com LLC, 2011
+ * @version 0.7.2.20111013
+ * @license MIT http://opensource.org/licenses/MIT
  * @example http://wiki.foxycart.com/docs/cart/validation
- * 
+ *
  * Requirements:
  *   - Form "code" values should not have leading or trailing whitespace.
  *   - Cannot use double-pipes in an input's name
@@ -20,14 +20,31 @@ class FoxyCart_Helper {
 	 * @var string
 	 **/
 	private static $secret;
+
+	/**
+	 * Cart URL
+	 *
+	 * @var string
+	 * Notes: Could be 'https://yourdomain.foxycart.com/cart' or 'https://secure.yourdomain.com/cart'
+	 **/
+	// protected static $cart_url = 'https://yourdomain.foxycart.com/cart';
 	protected static $cart_url;
 
-	public static function setSecret(){
-		self::$secret = FoxyCart::getStoreKey();
+	public static function setCartURL($storeName = null){
+		self::$cart_url = 'https://'.$storeName.'.faxycart.com/cart';
 	}
 
-	public function setCartURL(){
-		self::$cart_url = FoxyCart::FormActionURL();
+	public static function setSecret($secret = null){
+		self::$secret = $secret;
+	}
+
+	public function __construct(){
+		self::setCartURL(FoxyCart::getFoxyCartStoreName());
+		self::setSecret(FoxyCart::getStoreKey());
+	}
+
+	public static function getSecret(){
+		return FoxyCart::getStoreKey();
 	}
 
 
@@ -130,10 +147,10 @@ class FoxyCart_Helper {
 			return FALSE;
 		}
 		if ($option_value == '--OPEN--') {
-			$hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::$secret);
+			$hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::getSecret());
 			$value = ($urlencode) ? urlencode($option_name).'||'.$hash.'||open' : $option_name.'||'.$hash.'||open';
 		} else {
-			$hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::$secret);
+			$hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::getSecret());
 			if ($method == 'name') {
 				$value = ($urlencode) ? urlencode($option_name).'||'.$hash : $option_name.'||'.$hash;
 			} else {
@@ -182,7 +199,7 @@ class FoxyCart_Helper {
 		unset($querystrings);
 
 		// Find and sign all form values
-		preg_match_all('%<form [^>]*?action=[\'"]'.preg_quote(self::$cart_url).'(?:\.php)?[\'"].*?>(.+?)</form>%is', $html, $forms);
+		preg_match_all('%<form [^>]*?action=[\'"]'.preg_quote(self::$cart_url).'?[\'"].*?>(.+?)</form>%is', $html, $forms);
 		foreach ($forms[1] as $form) {
 			$count['forms']++;
 			self::$log[] = '<strong>Signing form</strong> with data: '.htmlspecialchars(substr($form, 0, 150)).'...';
@@ -222,7 +239,7 @@ class FoxyCart_Helper {
 						preg_match('%type=([\'"])(.*?)\1%i', $input, $type);
 						$type = (count($type) > 0) ? $type : array('', '', '');
 						// Skip the cart excludes
-						if (in_array($prefix.$name[2], self::$cart_excludes) || in_array($prefix.$name[2], self::$cart_excludes_prefixes)) {
+						if (in_array($prefix.$name[2], self::$cart_excludes) || in_array(substr($prefix.$name[2], 0, 2), self::$cart_excludes_prefixes)) {
 							self::$log[] = '<strong style="color:purple;">Skipping</strong> the reserved parameter or prefix "'.$prefix.$name[2].'" = '.$value[2];
 							continue;
 						}
@@ -252,7 +269,7 @@ class FoxyCart_Helper {
 					self::$log[] = '<strong>Options:</strong> <pre>'.htmlspecialchars(print_r($options, true)).'</pre>';
 					unset( $form_part_signed );
 					foreach ($options as $option) {
-						if( !$form_part_signed ) $form_part_signed = $list[0];
+						if( !isset($form_part_signed) ) $form_part_signed = $list[0];
 						$option_signed = preg_replace(
 							'%'.preg_quote($option[1]).preg_quote($option[2]).preg_quote($option[1]).'%',
 							$option[1].self::fc_hash_value($code, $list[2], $option[2], 'value', FALSE).$option[1],
