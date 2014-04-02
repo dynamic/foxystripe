@@ -132,7 +132,7 @@ class ProductPage extends Page {
 	}
 	
 	public function PurchaseForm() {
-		return self::ProductOptionsForm();
+		return FoxyCart_Helper::fc_hash_html(self::ProductOptionsForm());
 	}
 	
 	public function SingleProductForm() {
