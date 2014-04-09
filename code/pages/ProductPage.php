@@ -302,7 +302,35 @@ JS;
 }
 
 class ProductPage_Controller extends Page_Controller {
+
+	private static $allowed_actions = array(
+		'quantityUpdate'
+	);
+
 	public function init(){
 		parent::init();
+
+		$absoluteURL = Director::AbsoluteURL(null);
+		$urlSeg = $this->Data()->URLSegment;
+		$code = $this->data()->Code;
+		// if page is restricted w/login, absolute url doesn't include current page, even if user is logged in
+		// check absolute url if the url segment of current page is present, if not add it and trailing slash
+		$currentURL = (strpos($absoluteURL,$urlSeg)) ? $absoluteURL : "{$absoluteURL}{$urlSeg}/";
+		Requirements::customScript(<<<JS
+var pageURL = "$currentURL";
+JS
+		);
+
+		Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.min.js');
+		Requirements::javascript('foxystripe/js/quantity-update.js');
+
+	}
+
+	public function quantityUpdate($request = null){
+		$params = $this->getURLParams();
+		$value = $params['ID'];
+		$code = $this->data()->Code;
+		$newName = FoxyCart_Helper::fc_hash_value($code, 'quantity', $value);
+		return $newName;
 	}
 }
