@@ -36,6 +36,7 @@ table thead #fc_cart_head{
 
 /* Product Page */
 
+.foxycartForm {width: 100%;}
 form span.submitPrice,
 div.addToCartContainer span.submitPrice{
 	font-size:12px;
@@ -45,6 +46,9 @@ div.addToCartContainer span.submitPrice{
 
 form div.addToCartContainer{
 	margin:14px 0 20px;
+	float:left;
+	clear:left;
+	width: 100%;
 }
 form div.addToCartContainer input.submit{
 	background:#cda15c none;
@@ -65,10 +69,7 @@ div.purchaseSection{
 }
 form div.foxycartOptionsContainer{
 	float:left;
-}
-form div.addToCartContainer{
-	float:left;
-	clear:left;
+	width: 100%;
 }
 form div.foxycart_qty{
 	padding-bottom:20px;
@@ -80,11 +81,7 @@ form.foxycartForm label{
 
 .productTextContainer {
 	float: left;
-	width: 65%;
-}
-.productImageContainer {
-	float: right;
-	width: 30%;
+	width: 100%;
 }
 
 /* checkout */
@@ -98,4 +95,13 @@ form.foxycartForm label{
 #fc_checkout_container span.fc_pre, 
 #fc_receipt_container span.fc_pre{
 	text-align: left;
+}
+
+img.product-image {max-width: 100%; height: auto;}
+
+a.anchor-fix {display: inline-block; line-height: 0px;}
+
+@media only screen and (max-width: 640px) { 
+	.productTextContainer {width: 100%;}
+	.product-image-stack, .product-info-stack {width: 100%;}
 }
