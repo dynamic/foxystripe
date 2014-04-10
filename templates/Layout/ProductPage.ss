@@ -7,13 +7,7 @@
 			$MainImage.SetWidth(245)
 		<% end_if %>
 		<% if ProductImages %>
-	        <% loop ProductImages %>
-	        	<% with Image %>
-	                <% with SetWidth(245) %>
-	                    <img src="{$URL}" width="$getWidth" height="$getHeight" class="product-image" />
-	                <% end_with %>
-	            <% end_with %>
-	        <% end_loop %>
+	        <% include FlexSlider %>
 	    <% else_if PreviewImage %>
 	    	<% with PreviewImage %>
 	            <% with SetWidth(220) %>
@@ -45,3 +39,31 @@
 <div class="sidebar unit size1of4 lastUnit ">
 	$PurchaseForm
 </div>
+
+<% require javascript('framework/thirdparty/jquery/jquery.js') %>
+<% require javascript('https://cdn.foxycart.com/dynamic/foxycart.colorbox.js?ver=2') %>
+<script type="text/javascript" charset="utf-8">
+	jQuery('#carousel').flexslider({
+		animation: "slide",
+		controlNav: false,
+		animationLoop: false,
+		slideshow: false,
+		itemWidth: 75,
+		itemMargin: 5,
+		asNavFor: '#slider'
+	});
+	jQuery('#slider').flexslider({
+		animation: "slide",
+		animationLoop: true,
+		controlNav: true,
+		directionNav: true, 
+		pauseOnAction: true,
+		pauseOnHover: true,
+		start: function(slider){
+		  jQuery('body').removeClass('loading');
+		}	
+	});	
+</script>
+<script type="text/javascript">
+	Shadowbox.init();
+</script>
