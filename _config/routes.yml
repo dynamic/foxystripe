@@ -1,0 +1,7 @@
+---
+Name: foxystriperoutes
+After: framework/routes#coreroutes
+---
+Director:
+  rules:
+    'generateCache//$Action/$ID/$Name': 'FoxyStripeCache_Controller'

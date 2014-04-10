@@ -1,5 +1,3 @@
-<% require css('https://cdn.foxycart.com/static/scripts/colorbox/1.3.19/style1_fc/colorbox.css?ver=1') %>
-<% require css('foxystripe/css/foxycart.css') %>
 <p>$Breadcrumbs</p>
 
 <div class="content-container unit size3of4">
@@ -46,6 +44,3 @@
 <div class="sidebar unit size1of4 lastUnit ">
 	$PurchaseForm
 </div>
-
-<% require javascript('framework/thirdparty/jquery/jquery.js') %>
-<% require javascript('https://cdn.foxycart.com/dynamic/foxycart.colorbox.js?ver=2') %>
