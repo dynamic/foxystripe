@@ -25,6 +25,10 @@ class ProductPage extends Page {
 		'ProductImages' => 'ProductImage',
 		'ProductOptions' => 'OptionItem'
 	);
+
+    private static $belongs_many_many = array(
+        'Orders' => 'Order'
+    );
 	
 	public function populateDefaults() {
 		parent::populateDefaults();
