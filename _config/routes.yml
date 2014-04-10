@@ -1,0 +1,7 @@
+---
+Name: foxystriperoutes
+After: framework/routes#coreroutes
+---
+Director:
+  rules:
+    'cart//$Action/$ID/$Name': 'Cart_Controller'
