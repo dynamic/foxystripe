@@ -40,8 +40,6 @@
 	$PurchaseForm
 </div>
 
-<% require javascript('framework/thirdparty/jquery/jquery.js') %>
-<% require javascript('https://cdn.foxycart.com/dynamic/foxycart.colorbox.js?ver=2') %>
 <script type="text/javascript" charset="utf-8">
 	jQuery('#carousel').flexslider({
 		animation: "slide",
