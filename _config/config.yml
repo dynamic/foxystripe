@@ -4,3 +4,6 @@ name: foxystripe
 SiteConfig:
   extensions:
     - FoxyCartSiteConfig
+Member:
+  extensions:
+    - CustomerExtension
