@@ -304,5 +304,13 @@ JS;
 class ProductPage_Controller extends Page_Controller {
 	public function init(){
 		parent::init();
+
+		Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
+
+		if(SiteConfig::current_site_config()->CartPage==false){
+			Requirements::css('//cdn.foxycart.com/static/scripts/colorbox/1.3.19/style1_fc/colorbox.css?ver=1');
+			Requirements::javascript('//cdn.foxycart.com/dynamic/foxycart.colorbox.js?ver=2');
+		}
+
 	}
 }
