@@ -5,7 +5,7 @@
  *
  */
 
-class ProductHolder extends Page {
+class ProductHolder extends Page implements PermissionProvider{
 	
 	private static $allowed_children = array('ProductHolder', 'ProductPage', 'Page');
 	
@@ -90,6 +90,36 @@ class ProductHolder extends Page {
     	return $list;
 		
 	}
+
+	/**
+	 * @param Member $member
+	 * @return boolean
+	 */
+	public function canView($member = false) {
+		return Permission::check('PRODUCTHOLDER_VIEW');
+	}
+
+	public function canEdit($member = false) {
+		return Permission::check('PRODUCTHOLDER_EDIT');
+	}
+
+	public function canDelete($member = false) {
+		return Permission::check('PRODUCTHOLDERT_DELETE');
+	}
+
+	public function canCreate($member = false) {
+		return Permission::check('PRODUCTHOLDER_CREATE');
+	}
+
+	public function providePermissions() {
+		return array(
+			'PRODUCTHOLDER_VIEW' => 'Read a Product Holder',
+			'PRODUCTHOLDER_EDIT' => 'Edit a Product Holder',
+			'PRODUCTHOLDER_DELETE' => 'Delete a Product Holder',
+			'PRODUCTHOLDER_CREATE' => 'Create a Product Holder'
+		);
+	}
+
 }
 
 class ProductHolder_Controller extends Page_Controller {

@@ -5,7 +5,7 @@
  *
  */
 
-class ProductPage extends Page {
+class ProductPage extends Page implements PermissionProvider{
 
 	private static $allowed_children = 'none';
 	
@@ -125,6 +125,36 @@ class ProductPage extends Page {
 	
 	public function getCMSValidator() {
 		return new RequiredFields('Price', 'Weight', 'Code');
+	}
+
+
+	/**
+	 * @param Member $member
+	 * @return boolean
+	 */
+	public function canView($member = false) {
+		return Permission::check('PRODUCT_VIEW');
+	}
+
+	public function canEdit($member = false) {
+		return Permission::check('PRODUCT_EDIT');
+	}
+
+	public function canDelete($member = false) {
+		return Permission::check('PRODUCT_DELETE');
+	}
+
+	public function canCreate($member = false) {
+		return Permission::check('PRODUCT_CREATE');
+	}
+
+	public function providePermissions() {
+		return array(
+			'PRODUCT_VIEW' => 'Read a Product',
+			'PRODUCT_EDIT' => 'Edit a Product',
+			'PRODUCT_DELETE' => 'Delete a Product',
+			'PRODUCT_CREATE' => 'Create a Product'
+		);
 	}
 	
 	public function getFormTag() {
