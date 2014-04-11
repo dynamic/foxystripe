@@ -254,7 +254,11 @@ JS;
 	
 	public function AddToCartForm() {
 		$form = "<div class='addToCartContainer'>";
-		$form .= "<label for='quantity'>Quantity</label><div class='foxycart_qty'><input type='text' name='quantity' value='1' /></div>";
+		$form .= "<label for='quantity'>Quantity</label><div class='foxycart_qty'>";
+		$form .= "<select name='quantity'>";
+		$form .= "<option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option>";
+		$form .= "</select>";
+		$form .= "</div>";
 		$form .= sprintf("<div class='checkoutbtn'><input type='submit' value='%s' class='submit' /><span class='submitPrice' id='SubmitPrice%s'>%s $%2.2f</span></div>",
 			'Add to Cart',
 			$this->ID,
@@ -306,15 +310,18 @@ JS;
 }
 
 class ProductPage_Controller extends Page_Controller {
+
+	private static $allowed_actions = array();
+
 	public function init(){
 		parent::init();
 
 		Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
 		Requirements::javascript('foxystripe/thirdparty/flexslider/jquery.flexslider-min.js');
-        Requirements::css('foxystripe/thirdparty/flexslider/flexslider.css');
-        Requirements::javascript('foxystripe/thirdparty/shadowbox/shadowbox.js');
-        Requirements::css('foxystripe/thirdparty/shadowbox/shadowbox.css');
-        
+		Requirements::css('foxystripe/thirdparty/flexslider/flexslider.css');
+		Requirements::javascript('foxystripe/thirdparty/shadowbox/shadowbox.js');
+		Requirements::css('foxystripe/thirdparty/shadowbox/shadowbox.css');
+
 		if(SiteConfig::current_site_config()->CartPage==false){
 			Requirements::css('//cdn.foxycart.com/static/scripts/colorbox/1.3.19/style1_fc/colorbox.css?ver=1');
 			Requirements::javascript('//cdn.foxycart.com/dynamic/foxycart.colorbox.js?ver=2');
