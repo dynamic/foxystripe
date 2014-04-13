@@ -26,6 +26,10 @@ class CustomerExtension extends DataExtension{
         'ShippingPhone' => 'Varchar(20)'
     );
 
+    private static $has_many = array(
+        'Orders' => 'Order'
+    );
+
     public function onBeforeWrite() {
         parent::onBeforeWrite();
 
