@@ -48,9 +48,26 @@ class Order extends DataObject {
 	//private static $default_sort = null;
 
 
-	private static $summary_fields = array();
+	private static $summary_fields = array(
+        'Order_ID',
+        'TransactionDate.NiceUS',
+        'Member.Name',
+        'OrderTotal.Nice'
+    );
+
 	private static $searchable_fields = array();
-	private static $field_labels = array();
+
+    function fieldLabels($includerelations = true) {
+        $labels = parent::fieldLabels();
+
+        $labels['Order_ID'] = 'ID';
+        $labels['TransactionDate.NiceUS'] = "Date";
+        $labels['Member.Name'] = 'Customer';
+        $labels['OrderTotal.Nice'] = 'Total';
+
+        return $labels;
+    }
+
 	private static $indexes = array();
 
 	public function getCMSFields(){
