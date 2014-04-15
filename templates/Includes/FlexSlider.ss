@@ -23,13 +23,13 @@
 		<% if Top.PreviewImage %>
 	    	<li>
 				<% with Top.PreviewImage %>
-					<img src="{$URL}" width="$getWidth" height="$getHeight" />
+					<img src="{$PaddedImage(75,75).URL}" width="$getWidth" height="$getHeight" />
 				<% end_with %>
 			</li>
 	    <% end_if %>
 		<% loop ProductImages %>
 			<li class="remove-bottom">
-				<img src="{$Image.URL}"  alt="$Name.XML">
+				<img src="{$Image.PaddedImage(75,75).URL}"  alt="$Name.XML">
 			</li>
 		<% end_loop %>
 	</ul>

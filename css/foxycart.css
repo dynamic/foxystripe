@@ -68,6 +68,9 @@ form div.foxycart_qty{
 img.product-image {max-width: 100%; height: auto;}
 
 a.anchor-fix {display: inline-block; line-height: 0px;}
+
+input.submit, .submitPrice {display: block; clear: both;}
+.foxycartOptionsContainer select {margin-bottom: 10px;}
 /* Work around for Simple Theme hiding no-sidebar sidebar classes */
 .no-sidebar .historySummary .sidebar, .full {display: block;}
 
