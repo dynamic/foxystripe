@@ -10,7 +10,8 @@ class FoxyCartDataFeedCollector extends Page_Controller {
 	
 	static $allowed_actions = array(
 		'index',
-		'handleFetchAppTest'
+		'handleFetchAppTest',
+        'sso'
 	);
 	
 	public function feedXML() {
@@ -76,44 +77,48 @@ class FoxyCartDataFeedCollector extends Page_Controller {
             $transaction->ReceiptURL = (string) $order->receipt_url;
             $transaction->OrderStatus = (string) $order->status;
 
-            // Customer info
-            Config::inst()->update('Security', 'password_encryption_algorithm', 'none');
-            // if Customer is existing member, associate with current order
+            // Customer Info
             if(isset($order->customer_email)) {
+
+                // turn off password encryption so password info from FoxyCart isn't encrypted twice
+                Config::inst()->update('Security', 'password_encryption_algorithm', 'none');
+
+                // if Customer is existing member, associate with current order, else create new
                 ($customer = Member::get()->filter('Email', $order->customer_email)->First()) ?
                     $customer :
                     $customer = Member::create();
-            }
-            $customer->MinifraudScore = (string) $order->minifraud_score;
-            $customer->FirstName = (string) $order->customer_first_name;
-            $customer->Surname = (string) $order->customer_last_name;
-            $customer->Email = (string) $order->customer_email;
-            $customer->Password = (string) $order->customer_password;
-            $customer->Salt = (string) $order->customer_password_salt;
-            $customer->PasswordEncryption = 'none';
-            $customer->CustomerCompany = (string) $order->customer_company;
-            $customer->CustomerAddress1 = (string) $order->customer_address1;
-            $customer->CustomerAddress2 = (string) $order->customer_address2;
-            $customer->CustomerCity = (string) $order->customer_city;
-            $customer->CustomerState = (string) $order->customer_state;
-            $customer->CustomerPostalCode = (string) $order->customer_postal_code;
-            $customer->CustomerCountry = (string) $order->customer_country;
-            $customer->CustomerPhone = (string) $order->customer_phone;
-            $customer->CustomerIP = (int) $order->customer_ip;
-            $customer->ShippingFirstName = (string) $order->shipping_first_name;
-            $customer->ShippingLastName = (string) $order->shipping_last_name;
-            $customer->ShippingCompany = (string) $order->shipping_company;
-            $customer->ShippingAddress1 = (string) $order->shipping_address1;
-            $customer->ShippingAddress2 = (string) $order->shipping_address2;
-            $customer->ShippingCity = (string) $order->shipping_city;
-            $customer->ShippingState = (string) $order->shipping_state;
-            $customer->ShippingPostalCode = (string) $order->shipping_postal_code;
-            $customer->ShippingCountry = (string) $order->shipping_country;
-            $customer->ShippingPhone = (string) $order->shipping_phone;
-            $customer->write();
 
-            // Associate Member with Order
-            $transaction->MemberID = $customer->ID;
+                $customer->MinifraudScore = (string) $order->minifraud_score;
+                $customer->FirstName = (string) $order->customer_first_name;
+                $customer->Surname = (string) $order->customer_last_name;
+                $customer->Email = (string) $order->customer_email;
+                $customer->Password = (string) $order->customer_password;
+                $customer->Salt = (string) $order->customer_password_salt;
+                $customer->PasswordEncryption = 'none';
+                $customer->CustomerCompany = (string) $order->customer_company;
+                $customer->CustomerAddress1 = (string) $order->customer_address1;
+                $customer->CustomerAddress2 = (string) $order->customer_address2;
+                $customer->CustomerCity = (string) $order->customer_city;
+                $customer->CustomerState = (string) $order->customer_state;
+                $customer->CustomerPostalCode = (string) $order->customer_postal_code;
+                $customer->CustomerCountry = (string) $order->customer_country;
+                $customer->CustomerPhone = (string) $order->customer_phone;
+                $customer->CustomerIP = (int) $order->customer_ip;
+                $customer->ShippingFirstName = (string) $order->shipping_first_name;
+                $customer->ShippingLastName = (string) $order->shipping_last_name;
+                $customer->ShippingCompany = (string) $order->shipping_company;
+                $customer->ShippingAddress1 = (string) $order->shipping_address1;
+                $customer->ShippingAddress2 = (string) $order->shipping_address2;
+                $customer->ShippingCity = (string) $order->shipping_city;
+                $customer->ShippingState = (string) $order->shipping_state;
+                $customer->ShippingPostalCode = (string) $order->shipping_postal_code;
+                $customer->ShippingCountry = (string) $order->shipping_country;
+                $customer->ShippingPhone = (string) $order->shipping_phone;
+                $customer->write();
+
+                // Associate Member with Order
+                $transaction->MemberID = $customer->ID;
+            }
 
             // Associate ProductPages with Order
             foreach ($order->transaction_details->transaction_detail as $product) {
@@ -137,5 +142,23 @@ class FoxyCartDataFeedCollector extends Page_Controller {
         // allow this to be extended
 		$this->extend('handleDecryptedFeed',$encrypted, $decrypted);
 	}
-	
+
+    public function sso() {
+
+        // GET variables from FoxyCart
+        $fcsid = $this->request->getVar('fcsid');
+        $timestampFC = $this->request->getVar('timestamp');
+
+        $Member = Member::currentUser();
+        $timestampNew = strtotime('+30 days');
+        $auth_token = sha1($Member->Customer_ID . '|' . $timestampNew . '|' . FoxyCart::getStoreKey());
+
+        $redirect_complete = 'https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/checkout?fc_auth_token=' . $auth_token .
+            '&fcsid=' . $fcsid . '&fc_customer_id=' . $Member->Customer_ID . '&timestamp=' . $timestampNew;
+
+        $this->redirect($redirect_complete);
+
+    }
+
 }
+
