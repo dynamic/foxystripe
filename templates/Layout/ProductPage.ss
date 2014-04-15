@@ -10,9 +10,9 @@
 	        <% include FlexSlider %>
 	    <% else_if PreviewImage %>
 	    	<% with PreviewImage %>
-	            <% with SetWidth(220) %>
-	                <img src="{$URL}" width="$getWidth" height="$getHeight" class="product-image" />
-	            <% end_with %>
+					<a href="{$URL}" rel="shadowbox">
+						<img src="{$URL}" class="product-image" />
+					</a>
 	        <% end_with %>
 	    <% end_if %>
 	</aside>
@@ -57,6 +57,7 @@
 		directionNav: true, 
 		pauseOnAction: true,
 		pauseOnHover: true,
+		slideshow: false,
 		start: function(slider){
 		  jQuery('body').removeClass('loading');
 		}	
