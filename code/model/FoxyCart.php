@@ -28,5 +28,63 @@ class FoxyCart extends Object {
 	public static function FormActionURL() {
 		return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName() );
 	}
+
+    /**
+     * FoxyCart API v1.1 functions
+     */
+
+    // FoxyCart API Request
+    private static function getAPIRequest($foxy_domain, $foxyData = array()) {
+
+        $foxy_domain = FoxyCart::getFoxyCartStoreName().'.foxycart.com';
+        $foxyData["api_token"] = FoxyCart::getStoreKey();
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://" . $foxy_domain . "/api");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $foxyData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+        // If you get SSL errors, you can uncomment the following, or ask your host to add the appropriate CA bundle
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = trim(curl_exec($ch));
+
+        // The following if block will print any CURL errors you might have
+        if ($response == false) {
+            trigger_error("Could not connect to FoxyCart API", E_USER_ERROR);
+        }
+        curl_close($ch);
+
+        return $response;
+    }
+
+    public static function getCustomer($Member = null) {
+
+        // throw error if no $Member Object
+        if (!isset($Member)) trigger_error('No Member set', E_USER_ERROR);
+
+        // grab customer record from API
+
+        $foxyData = array();
+        $foxyData["api_action"] = "customer_get";
+        $foxyData["customer_email"] = $Member->Email;
+
+        return self::getAPIRequest($foxy_domain, $foxyData);
+
+    }
+
+    public static function putCustomer($Member = null) {
+        // throw error if no $Member Object
+        if (!isset($Member)) trigger_error('No Member set', E_USER_ERROR);
+
+        // send updated customer record from API
+        $foxyData = array();
+        $foxyData["api_action"] = "customer_save";
+        $foxyData["customer_email"] = $Member->Email;
+        $foxyData["customer_password_hash"] = $Member->Password;
+        $foxyData["customer_password_salt"] = $Member->Salt;
+
+        return self::getAPIRequest($foxy_domain, $foxyData);
+    }
 	
 }
