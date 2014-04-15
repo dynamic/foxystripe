@@ -34,7 +34,7 @@ class FoxyCart extends Object {
      */
 
     // FoxyCart API Request
-    private static function getAPIRequest($foxy_domain, $foxyData = array()) {
+    private static function getAPIRequest($foxyData = array()) {
 
         $foxy_domain = FoxyCart::getFoxyCartStoreName().'.foxycart.com';
         $foxyData["api_token"] = FoxyCart::getStoreKey();
@@ -67,9 +67,10 @@ class FoxyCart extends Object {
 
         $foxyData = array();
         $foxyData["api_action"] = "customer_get";
+        if ($Member->Customer_ID) $foxyData["customer_id"] = $Member->Customer_ID;
         $foxyData["customer_email"] = $Member->Email;
 
-        return self::getAPIRequest($foxy_domain, $foxyData);
+        return self::getAPIRequest($foxyData);
 
     }
 
@@ -80,11 +81,15 @@ class FoxyCart extends Object {
         // send updated customer record from API
         $foxyData = array();
         $foxyData["api_action"] = "customer_save";
+        // customer_id will be 0 if created in SilverStripe.
+        if ($Member->Customer_ID) $foxyData["customer_id"] = $Member->Customer_ID;
         $foxyData["customer_email"] = $Member->Email;
         $foxyData["customer_password_hash"] = $Member->Password;
         $foxyData["customer_password_salt"] = $Member->Salt;
+        $foxyData["customer_first_name"] = $Member->FirstName;
+        $foxyData["customer_last_name"] = $Member->Surname;
 
-        return self::getAPIRequest($foxy_domain, $foxyData);
+        return self::getAPIRequest($foxyData);
     }
 	
 }

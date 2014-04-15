@@ -36,13 +36,19 @@ class CustomerExtension extends DataExtension{
         // if Member data was imported from FoxyCart, PasswordEncryption will be set to 'none'.
         // Change to sh1_v2.4 to ensure SilverStripe is using the same hash as FoxyCart API 1.1
         $this->owner->PasswordEncryption = 'sha1_v2.4';
+
+        // Send updated customer data to Foxy Cart via API
+        $response = FoxyCart::putCustomer($this->owner);
+
+        // Grab customer_id record from FoxyCart response, store in Member
+        $foxyResponse = new SimpleXMLElement($response);
+        $this->owner->Customer_ID = (int) $foxyResponse->customer_id;
     }
 
     public function onAfterWrite() {
         parent::onAfterWrite();
 
-        // Send updated customer data to Foxy Cart via API
-        if ($this->owner->isChanged('Password')) FoxyCart::putCustomer($this->owner);
+
 
     }
 
