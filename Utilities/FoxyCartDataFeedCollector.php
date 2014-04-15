@@ -10,7 +10,9 @@ class FoxyCartDataFeedCollector extends Page_Controller {
 	
 	static $allowed_actions = array(
 		'index',
-		'handleFetchAppTest'
+		'handleFetchAppTest',
+        'FCAPIMemberGet',
+        'FCAPIMemberPut'
 	);
 	
 	public function feedXML() {
@@ -84,6 +86,7 @@ class FoxyCartDataFeedCollector extends Page_Controller {
                     $customer :
                     $customer = Member::create();
             }
+            $customer->Customer_ID = (int) $order->customer_id;
             $customer->MinifraudScore = (string) $order->minifraud_score;
             $customer->FirstName = (string) $order->customer_first_name;
             $customer->Surname = (string) $order->customer_last_name;
@@ -137,5 +140,28 @@ class FoxyCartDataFeedCollector extends Page_Controller {
         // allow this to be extended
 		$this->extend('handleDecryptedFeed',$encrypted, $decrypted);
 	}
+
+    // experiments pushing to FoxyCart via API
+
+    public function FCAPIMemberGet() {
+
+        $Member = Member::get()->byID(10);
+        $response = FoxyCart::getCustomer($Member);
+
+        $foxyResponse = simplexml_load_string($response, NULL, LIBXML_NOCDATA);
+        print "<pre>";
+        var_dump($foxyResponse);
+        print "</pre>";
+    }
+
+    public function FCAPIMemberPut($request) {
+        $Member = Member::get()->byID(10);
+        $response = FoxyCart::putCustomer($Member);
+
+        $foxyResponse = simplexml_load_string($response, NULL, LIBXML_NOCDATA);
+        print "<pre>";
+        var_dump($foxyResponse);
+        print "</pre>";
+    }
 	
 }
