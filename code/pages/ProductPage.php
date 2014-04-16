@@ -23,11 +23,12 @@ class ProductPage extends Page {
 	
 	private static $has_many = array(
 		'ProductImages' => 'ProductImage',
-		'ProductOptions' => 'OptionItem'
+		'ProductOptions' => 'OptionItem',
+        'OrderDetails' => 'OrderDetail'
 	);
 
     private static $belongs_many_many = array(
-        'Orders' => 'Order'
+
     );
 	
 	public function populateDefaults() {

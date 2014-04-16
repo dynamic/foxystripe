@@ -14,15 +14,28 @@
                         <p>Order #{$Order_ID}</p>
                         <p>Total $OrderTotal.Nice</p>
                     </div>
-                    <% loop $Products %>
+                    <% loop $Details %>
                         <div class="unit size3of4 full">
                             <div class="unit size1of5">
-                                <img src="$PreviewImage.PaddedImage(150,150).URL" class="product-image">
+                                <% with Product %>
+                                    <img src="$PreviewImage.PaddedImage(150,150).URL" class="product-image">
+                                <% end_with %>
                             </div>
                             <div class="unit size4of5">
-                                <h3><a href="{$Link}" title="{$Title.XML}">$Title</a></h3>
-                                <div class="content"><p>{$Content.Summary}</p></div>
-                                <p><a class="productLearnMore" href="$Link" alt="Learn More">Click here for more information</a></p>
+                                <% with Product %>
+                                    <h3><a href="{$Link}" title="{$Title.XML}">$Title</a></h3>
+                                <% end_with %>
+                                <p>
+                                    <b>Quantity</b>: $Quantity
+                                    <% if $Options %>
+                                        <br>
+                                        <% loop $Options %>
+                                            <b>{$ProductOptionGroup.Title}</b>: $Title<% if Last %><% else %><br><% end_if %>
+                                        <% end_loop %>
+                                    <% end_if %>
+                                    <br>
+                                    <b>Price:</b> $Price.Nice
+                                </p>
                             </div>
                         </div>
                     <% end_loop %>
