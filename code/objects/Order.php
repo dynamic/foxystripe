@@ -50,7 +50,12 @@ class Order extends DataObject {
         'OrderTotal.Nice'
     );
 
-	private static $searchable_fields = array();
+	private static $searchable_fields = array(
+        'Order_ID',
+        'TransactionDate',
+        'Member.Surname',
+        'OrderTotal'
+    );
 
     function fieldLabels($includerelations = true) {
         $labels = parent::fieldLabels();

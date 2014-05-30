@@ -4,7 +4,6 @@ class ProductAdmin extends ModelAdmin {
 
 	public static $managed_models = array(
 		'ProductPage',
-        'Order',
 		'OptionGroup',
 		'OptionItem',
 		'ProductCategory'
