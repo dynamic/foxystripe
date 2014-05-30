@@ -23,6 +23,10 @@ class OptionItem extends DataObject{
 		'ProductOptionGroup' => 'OptionGroup',
 		'Category' => 'ProductCategory'
 	);
+
+    private static $belongs_many_many = array(
+        'OrderDetails' => 'OrderDetail'
+    );
 	
 	private static $summary_fields = array(
 		'Title' => 'Title',

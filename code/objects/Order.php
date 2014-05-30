@@ -29,24 +29,19 @@ class Order extends DataObject {
         'Member' => 'Member'
     );
 
-	private static $has_many = array();
+	private static $has_many = array(
+        'Details' => 'OrderDetail'
+    );
 
 	private static $many_many = array(
-        'Products' => 'ProductPage'
+
     );
 
 	private static $many_many_extraFields = array(
-        'Products' => array(
-            'Quantity' => 'Int'
-        )
+
     );
 
 	private static $belongs_many_many = array();
-
-	private static $casting = array();
-	//private static $defaults = null;
-	//private static $default_sort = null;
-
 
 	private static $summary_fields = array(
         'Order_ID',
@@ -76,16 +71,6 @@ class Order extends DataObject {
 
 		$this->extend('updateCMSFields', $fields);
 		return $fields;
-	}
-
-	public function validate(){
-		$result = parent::validate();
-
-		/*if($this->Country == 'DE' && $this->Postcode && strlen($this->Postcode) != 5) {
-			$result->error('Need five digits for German postcodes');
-		}*/
-
-		return $result;
 	}
 
 }
