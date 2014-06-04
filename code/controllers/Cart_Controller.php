@@ -35,24 +35,25 @@ class FoxyStripeCache_Controller extends Controller {
 	}
 
 	public function index(){
-
-		return $this->renderWith(array('404','Page'));
-
+		return self::buildCachableTemplate($this, 'ErrorPage', 'Page', true);
 	}
 
 	public function cart(){
-		$model = self::getModel('Cart');
-		return $this->customise($model)->renderWith(array('CartPage', 'Page'));
+		return self::buildCachableTemplate($this, 'Cart', 'CartPage');
 	}
 
 	public function checkout(){
-		$model = self::getModel('Checkout');
-		return $this->customise($model)->renderWith(array('CheckoutPage', 'Page'));
+		return self::buildCachableTemplate($this, 'Checkout', 'CheckoutPage');
 	}
 
 	public function receipt(){
-		$model = self::getModel('Receipt');
-		return $this->customise($model)->renderWith(array('ReceiptPage', 'Page'));
+		return self::buildCachableTemplate($this, 'Receipt', 'ReceiptPage');
+	}
+
+	private static function buildCachableTemplate($current = null, $model = null, $layout = 'Page', $isError = false){
+		$model = self::getModel($model, $isError);
+		$rendered = $current->customise($model)->renderWith(array($layout, 'Page'));
+		return HTTP::absoluteURLs($rendered);
 	}
 
 	/**
@@ -99,18 +100,26 @@ class FoxyStripeCache_Controller extends Controller {
 		return $this->getMenu($level);
 	}
 
-	private static function getModel($type = null){
-		$model = Page::get()->filter(array('URLSegment'=>'home'))->first();
-		$model->Title = 'Cart';
+	private static function getModel($type = null, $isError = false){
+		if(!$isError){
+			$model = Page::get()->filter(array('URLSegment'=>'home'))->first();
+		}else{
+			$model = ErrorPage::get()->filter(array('ErrorCode'=>404))->first();
+		}
 		switch($type){
 			case 'Cart':
 				$model->Content = SiteConfig::current_site_config()->CartContent;
+				$model->Title = 'Cart';
 				break;
 			case 'Checkout':
 				$model->Content = SiteConfig::current_site_config()->CheckoutContent;
+				$model->Title = 'Checkout';
+				break;
+			case 'Receipt':
+				$model->Content = SiteConfig::current_site_config()->ReceiptContent;
+				$model->Title = 'Receipt';
 				break;
 			case 'default':
-				$model->Content = SiteConfig::current_site_config()->ReceiptContent;
 		}
 		return $model;
 	}
