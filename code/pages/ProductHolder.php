@@ -102,7 +102,13 @@ class ProductHolder extends Page {
 	 */
 	public function ProductList($limit = 10) {
 
-		if(SiteConfig::current_site_config()->MultiGroup){
+		$config = SiteConfig::current_site_config();
+
+		if($config->ProductLimit>0){
+			$limit = $config->ProductLimit;
+		}
+
+		if($config->MultiGroup){
 			$entries = $this->Products()->sort('SortOrder');
 		}else{
 			$filter = '"ParentID" = ' . $this->ID;
