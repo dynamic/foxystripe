@@ -26,4 +26,21 @@ class ProductImage extends DataObject{
 		$this->extend('getCMSFields', $fields);
 		return $fields;
 	}
+
+	public function canView($member = false) {
+		return true;
+	}
+
+	public function canEdit($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
+	public function canDelete($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
+	public function canCreate($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
 }

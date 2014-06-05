@@ -1,6 +1,6 @@
 <?php
 
-class Order extends DataObject {
+class Order extends DataObject implements PermissionProvider{
 
 	private static $singular_name = 'Order';
 	private static $plural_name = 'Orders';
@@ -76,6 +76,28 @@ class Order extends DataObject {
 
 		$this->extend('updateCMSFields', $fields);
 		return $fields;
+	}
+
+	public function canView($member = false) {
+		return Permission::check('Product_ORDERS');
+	}
+
+	public function canEdit($member = null) {
+		return false;
+	}
+
+	public function canDelete($member = null) {
+		return Permission::check('Product_ORDERS');
+	}
+
+	public function canCreate($member = null) {
+		return false;
+	}
+
+	public function providePermissions() {
+		return array(
+			'Product_ORDERS' => 'Allow user to manage Orders and related objects'
+		);
 	}
 
 }

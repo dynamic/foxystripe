@@ -140,4 +140,21 @@ class OptionItem extends DataObject{
 	public function getProductOptionGroupTitle(){
 		return $this->ProductOptionGroup()->Title;
 	}
+
+	public function canView($member = false) {
+		return true;
+	}
+
+	public function canEdit($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
+	public function canDelete($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
+	public function canCreate($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
 }

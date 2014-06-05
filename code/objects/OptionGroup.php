@@ -40,28 +40,21 @@ class OptionGroup extends DataObject{
 			}
 		}
 	}
-	
-	public function canDelete($member = NULL){
-		switch($this->Title){
-			case 'None':
-				return false;
-				break;
-			default:
-				return true;
-				break;
-		}
+
+	public function canView($member = false) {
 		return true;
 	}
-	
-	public function canEdit($member = NULL){
-		switch($this->Title){
-			case 'None':
-				return false;
-				break;
-			default:
-				return true;
-				break;
-		}
-		return true;
+
+	public function canEdit($member = null) {
+		return Permission::check('Product_CANCRUD');
 	}
+
+	public function canDelete($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
+	public function canCreate($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
 }
