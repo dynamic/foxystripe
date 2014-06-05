@@ -5,7 +5,7 @@
  *
  */
 
-class ProductPage extends Page {
+class ProductPage extends Page implements PermissionProvider {
 
 	private static $allowed_children = 'none';
 	
@@ -308,6 +308,36 @@ JS;
 		return sprintf('<input type="hidden" name="%s" value="%s" />',
 			$name,
 			$val
+		);
+	}
+
+	/**
+	 * @param Member $member
+	 * @return boolean
+	 */
+	public function canView($member = false) {
+		return true;
+	}
+
+	public function canEdit($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
+	public function canDelete($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
+	public function canCreate($member = null) {
+		return Permission::check('Product_CANCRUD');
+	}
+
+	public function canPublish($member = null){
+		return Permission::check('Product_CANCRUD');
+	}
+
+	public function providePermissions() {
+		return array(
+			'Product_CANCRUD' => 'Allow user to manage Products and related objects'
 		);
 	}
 	
