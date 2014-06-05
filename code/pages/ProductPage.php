@@ -14,7 +14,8 @@ class ProductPage extends Page implements PermissionProvider {
 		'Weight' => 'Float',
 		'Code' => 'Text',
 		'ReceiptTitle' => 'Text',
-		'Featured' => 'Boolean'
+		'Featured' => 'Boolean',
+		'Available' => 'Boolean'
 	);
 	
 	private static $has_one = array(
@@ -41,7 +42,8 @@ class ProductPage extends Page implements PermissionProvider {
 	}
 	
     private static $defaults = array(
-		'ShowInMenus' => false
+		'ShowInMenus' => false,
+		'Available' => true
 	);
      
 	public function getCMSFields() {
@@ -77,6 +79,8 @@ class ProductPage extends Page implements PermissionProvider {
 		// Details tab
 		$fields->addFieldsToTab('Root.Details', array(
 			HeaderField::create('DetailHD', 'Product Details', 2),
+			CheckboxField::create('Available')
+				->setTitle('Available for purchase'),
 			TextField::create('ReceiptTitle', 'Product Title for Receipt')
 				->setDescription('Optional'),
 			CheckboxField::create('Featured')
@@ -139,8 +143,11 @@ class ProductPage extends Page implements PermissionProvider {
 		return FoxyCart::FormActionURL();
 	}
 	
-	public function PurchaseForm() {
-		return FoxyCart_Helper::fc_hash_html(self::ProductOptionsForm());
+	public function PurchaseForm(){
+		if($this->Available){
+			return FoxyCart_Helper::fc_hash_html(self::ProductOptionsForm());
+		}
+		return "<h3 class=\"unavailable-product\">Product currently unavailable</h3>";
 	}
 	
 	public function SingleProductForm() {
@@ -263,11 +270,10 @@ JS;
 		$form .= "<option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option>";
 		$form .= "</select>";
 		$form .= "</div>";
-		$form .= sprintf("<div class='checkoutbtn'><input type='submit' value='%s' class='submit' /><span class='submitPrice' id='SubmitPrice%s'>%s $%2.2f</span></div>",
-			'Add to Cart',
+		$form .= sprintf("<div class='checkoutbtn'><h4 class='submitPrice' id='SubmitPrice%s'>$%2.2f</h4><input type='submit' value='%s' class='submit' /></div>",
 			$this->ID,
-			$this->Title,
-			$this->Price
+			$this->Price,
+			'Add to Cart'
 		);
 		$form .= "</div>";
 		return $form;
