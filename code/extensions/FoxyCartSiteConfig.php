@@ -11,7 +11,8 @@ class FoxyCartSiteConfig extends DataExtension{
 		'CheckoutContent' => 'HTMLText',
 		'ReceiptPage' => 'Boolean',
 		'ReceiptContent' => 'HTMLText',
-		'MultiGroup' => 'Boolean'
+		'MultiGroup' => 'Boolean',
+		'ProductLimit' => 'Int'
 	);
 
 	public function updateCMSFields(FieldList $fields){
@@ -27,6 +28,8 @@ class FoxyCartSiteConfig extends DataExtension{
 				CheckboxField::create('MultiGroup')
 					->setTitle('Multi-Group Support')
 					->setRightTitle('Allows products to be shown in multiple product holders'),
+				NumericField::create('ProductLimit')
+					->setTitle('Products per page on Product Holder'),
 				ToggleCompositeField::create('Cart', 'Cached Cart Page Settings',
 					array(
 						CheckboxField::create('CartPage')
