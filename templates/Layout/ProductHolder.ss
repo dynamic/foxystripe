@@ -4,15 +4,15 @@
 	<article>
 	    <h1>$Title</h1>
         
-        <% if Content %><div class="typography">$Content</div><% end_if %>
+        <% if $Content %><div class="typography">$Content</div><% end_if %>
         
-    	<% loop Products %>
+    	<% loop $ProductList %>
     		<div class="productSummary unit">
 				<div class="unit size1of4">
-					<% if PreviewImage %>
+					<% if $PreviewImage %>
 						<a href="{$Link}" title="{$Title}" class="anchor-fix">
-		                    <% with PreviewImage %>
-		                    	<% loop PaddedImage(150, 150) %>
+		                    <% with $PreviewImage %>
+		                    	<% loop $PaddedImage(150, 150) %>
 		                        	<img src="{$URL}" width="$getWidth" height="$getHeight" class="product-image"/>
 		                        <% end_loop %>
 		                    <% end_with %>

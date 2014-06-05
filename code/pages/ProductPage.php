@@ -13,7 +13,8 @@ class ProductPage extends Page {
 		'Price' => 'Currency',
 		'Weight' => 'Float',
 		'Code' => 'Text',
-		'ReceiptTitle' => 'Text'
+		'ReceiptTitle' => 'Text',
+		'Featured' => 'Boolean'
 	);
 	
 	private static $has_one = array(
@@ -28,7 +29,7 @@ class ProductPage extends Page {
 	);
 
     private static $belongs_many_many = array(
-
+		'ProductHolders' => 'ProductHolder'
     );
 	
 	public function populateDefaults() {
@@ -78,6 +79,8 @@ class ProductPage extends Page {
 			HeaderField::create('DetailHD', 'Product Details', 2),
 			TextField::create('ReceiptTitle', 'Product Title for Receipt')
 				->setDescription('Optional'),
+			CheckboxField::create('Featured')
+				->setTitle('Featured Product'),
 			CurrencyField::create('Price'),
 			NumericField::create('Weight'),
 			TextField::create('Code', 'Product Code'),
