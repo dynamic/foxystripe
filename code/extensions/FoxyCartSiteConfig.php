@@ -10,7 +10,8 @@ class FoxyCartSiteConfig extends DataExtension{
 		'CheckoutPage' => 'Boolean',
 		'CheckoutContent' => 'HTMLText',
 		'ReceiptPage' => 'Boolean',
-		'ReceiptContent' => 'HTMLText'
+		'ReceiptContent' => 'HTMLText',
+		'MultiGroup' => 'Boolean'
 	);
 
 	public function updateCMSFields(FieldList $fields){
@@ -23,6 +24,9 @@ class FoxyCartSiteConfig extends DataExtension{
 				TextField::create('StoreKey')
 					->setTitle('Store Key')
 				->setRightTitle('This is your store\'s API key found in the advanced store settings in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures" target="_blank">FoxyCart account</a>'),
+				CheckboxField::create('MultiGroup')
+					->setTitle('Multi-Group Support')
+					->setRightTitle('Allows products to be shown in multiple product holders'),
 				ToggleCompositeField::create('Cart', 'Cached Cart Page Settings',
 					array(
 						CheckboxField::create('CartPage')

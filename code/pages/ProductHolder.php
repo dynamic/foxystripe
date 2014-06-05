@@ -16,6 +16,16 @@ class ProductHolder extends Page {
 	private static $has_one = array(
 		'PreviewImage' => 'Image'
 	);
+
+	private static $many_many = array(
+		'Products' => 'ProductPage'
+	);
+
+	private static $many_many_extraFields = array(
+		'Products' => array(
+			'SortOrder' => 'Int'
+		)
+	);
 	
 	private static $defaults = array(
 		
@@ -24,10 +34,34 @@ class ProductHolder extends Page {
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
 		$fields->addFieldToTab('Root.Image', new UploadField('PreviewImage', 'Preview Image'));
+
+		if(SiteConfig::current_site_config()->MultiGroup){
+			$config = GridFieldConfig_RelationEditor::create();
+			if(class_exists('GridFieldSortableRows')){
+				$config->addComponent(new GridFieldSortableRows('SortOrder'));
+			}
+			if(class_exists('GridFieldManyRelationHandler')){
+				$config->removeComponentsByType('GridFieldAddExistingAutocompleter');
+				$config->addComponent(new GridFieldManyRelationHandler());
+			}
+			$fields->addFieldToTab(
+				'Root.Products',
+				new GridField(
+					'Products',
+					'Products',
+					$this->Products(),
+					$config
+				)
+			);
+		}
 		
 		return $fields;
 	}
-	
+
+	public function Products() {
+		return $this->getManyManyComponents('Products')->sort('SortOrder');
+	}
+
 	/**
 	 * loadDescendantProductGroupIDListInto function.
 	 * 
@@ -66,24 +100,28 @@ class ProductHolder extends Page {
 	 * @access public
 	 * @return void
 	 */
-	public function Products() {
-	
-		$filter = '"ParentID" = ' . $this->ID;
-		$limit = 10;
-		
-		// Build a list of all IDs for ProductGroups that are children
-		$holderIDs = $this->ProductGroupIDs();
-		
-		// If no ProductHolders, no ProductPages. So return false
-		if($holderIDs) {
-			// Otherwise, do the actual query
-			if($filter) $filter .= ' OR ';
-			$filter .= '"ParentID" IN (' . implode(',', $holderIDs) . ")";
-		}
-		
-		$order = '"SiteTree"."Title" ASC';
+	public function ProductList($limit = 10) {
 
-		$entries = ProductPage::get()->where($filter)->sort($order);
+		if(SiteConfig::current_site_config()->MultiGroup){
+			$entries = $this->Products()->sort('SortOrder');
+		}else{
+			$filter = '"ParentID" = ' . $this->ID;
+
+			// Build a list of all IDs for ProductGroups that are children
+			$holderIDs = $this->ProductGroupIDs();
+
+			// If no ProductHolders, no ProductPages. So return false
+			if($holderIDs) {
+				// Otherwise, do the actual query
+				if($filter) $filter .= ' OR ';
+				$filter .= '"ParentID" IN (' . implode(',', $holderIDs) . ")";
+			}
+
+			$order = '"SiteTree"."Title" ASC';
+
+			$entries = ProductPage::get()->where($filter)->sort($order);
+		}
+
 
     	$list = new PaginatedList($entries, Controller::curr()->request);
     	$list->setPageLength($limit);
