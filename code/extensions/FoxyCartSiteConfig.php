@@ -34,6 +34,7 @@ class FoxyCartSiteConfig extends DataExtension{
 					array(
 						CheckboxField::create('CartPage')
 							->setTitle('Enable link to cache cart page template'),
+						ReadonlyField::create('CartLink', 'Cart Cache Link', self::getCacheLink('cart')),
 						HtmlEditorField::create('CartContent')
 							->setTitle('Cart page content')
 					)
@@ -42,6 +43,7 @@ class FoxyCartSiteConfig extends DataExtension{
 					array(
 						CheckboxField::create('CheckoutPage')
 							->setTitle('Enable link to cache checkout page template'),
+						ReadonlyField::create('CheckoutLink', 'Checkout Cache Link', self::getCacheLink('checkout')),
 						HtmlEditorField::create('CheckoutContent')
 							->setTitle('Checkout page content')
 					)
@@ -50,12 +52,17 @@ class FoxyCartSiteConfig extends DataExtension{
 					array(
 						CheckboxField::create('ReceiptPage')
 							->setTitle('Enable link to cache receipt template'),
+						ReadonlyField::create('ReceiptLink', 'Receipt Cache Link', self::getCacheLink('receipt')),
 						HtmlEditorField::create('ReceiptContent')
 							->setTitle('Receipt page content')
 					)
 				)->setHeadingLevel(4)
 			)
 		);
+	}
+
+	private static function getCacheLink($type = null){
+		return Director::absoluteBaseURL()."generateCache/$type";
 	}
 
 }
