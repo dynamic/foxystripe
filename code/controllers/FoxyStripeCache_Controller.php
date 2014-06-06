@@ -6,7 +6,8 @@ class FoxyStripeCache_Controller extends Controller {
 		'index' => true,
 		'cart' => '->generateCartTemplate',
 		'checkout' => '->generateCheckoutTemplate',
-		'receipt' => '->generateReceiptTemplate'
+		'receipt' => '->generateReceiptTemplate',
+		'email' => '->generateEmailTemplate'
 	);
 
 	public function init(){
@@ -31,6 +32,10 @@ class FoxyStripeCache_Controller extends Controller {
 		return (SiteConfig::current_site_config()->ReceiptPage) ? true : false;
 	}
 
+	public function generateEmailTemplate(){
+		return (SiteConfig::current_site_config()->EmailPage) ? true : false;
+	}
+
 	public function index(){
 		return self::buildCachableTemplate($this, 'ErrorPage', 'Page', true);
 	}
@@ -45,6 +50,10 @@ class FoxyStripeCache_Controller extends Controller {
 
 	public function receipt(){
 		return self::buildCachableTemplate($this, 'Receipt', 'ReceiptPage');
+	}
+
+	public function email(){
+		return self::buildCachableTemplate($this, 'Email', 'FoxyCartEmail');
 	}
 
 	private static function buildCachableTemplate($current = null, $model = null, $layout = 'Page', $isError = false){
@@ -116,7 +125,9 @@ class FoxyStripeCache_Controller extends Controller {
 				$model->Content = SiteConfig::current_site_config()->ReceiptContent;
 				$model->Title = 'Receipt';
 				break;
-			case 'default':
+			case 'Email':
+				$model->Content = SiteConfig::current_site_config()->EmailContent;
+				break;
 		}
 		return $model;
 	}
