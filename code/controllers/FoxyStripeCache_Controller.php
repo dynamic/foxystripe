@@ -11,15 +11,12 @@ class FoxyStripeCache_Controller extends Controller {
 
 	public function init(){
 		parent::init();
-		// variables for file paths
-		$themeDir = SSViewer::get_theme_folder();
-		if(!SiteConfig::current_site_config()->CartPage){
-			Requirements::css('http://static.foxycart.com/scripts/colorbox/1.3.16/style1_fc/colorbox.css');
-			Requirements::css('http://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/themes/standard/styles.css" type="text/css');
 
-			// css to override any foxycart styles (optional)
-			Requirements::css($themeDir . 'css/foxycart.css');
-		}
+		$themeDir = SSViewer::get_theme_folder();
+
+		Requirements::css('https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/themes/standard/styles.css" type="text/css');
+		Requirements::block($themeDir.'/css/form.css');
+
 	}
 
 	public function generateCartTemplate(){
