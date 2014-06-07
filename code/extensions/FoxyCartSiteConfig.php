@@ -12,7 +12,9 @@ class FoxyCartSiteConfig extends DataExtension{
 		'ReceiptPage' => 'Boolean',
 		'ReceiptContent' => 'HTMLText',
 		'MultiGroup' => 'Boolean',
-		'ProductLimit' => 'Int'
+		'ProductLimit' => 'Int',
+		'EmailPage' => 'Boolean',
+		'EmailContent' => 'HTMLText'
 	);
 
 	public function updateCMSFields(FieldList $fields){
@@ -55,6 +57,15 @@ class FoxyCartSiteConfig extends DataExtension{
 						ReadonlyField::create('ReceiptLink', 'Receipt Cache Link', self::getCacheLink('receipt')),
 						HtmlEditorField::create('ReceiptContent')
 							->setTitle('Receipt page content')
+					)
+				)->setHeadingLevel(4),
+				ToggleCompositeField::create('Email', 'Cached Email Settings',
+					array(
+						CheckboxField::create('EmailPage')
+							->setTitle('Enable link to cache email template'),
+						ReadonlyField::create('EmailLink', 'Email Cache Link', self::getCacheLink('email')),
+						HtmlEditorField::create('EmailContent')
+							->setTitle('Email content')
 					)
 				)->setHeadingLevel(4)
 			)
