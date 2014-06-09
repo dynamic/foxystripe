@@ -29,6 +29,11 @@
 	                <p><a class="productLearnMore" href="$Link" alt="Learn More">Click here for more information</a></p>
 				</div>
             </div>
+            
+		
 		<% end_loop %>
+			<% with $ProductList %>
+				<% include Pagination %>
+			<% end_with %>
 	</article>
 </div>
