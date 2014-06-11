@@ -1,1 +1,0 @@
-BSD License, (don't blame me)
