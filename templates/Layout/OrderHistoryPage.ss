@@ -41,6 +41,11 @@
                     <% end_loop %>
                 </div>
             <% end_loop %>
+
+            <% with $Orders %>
+                <% include Pagination %>
+            <% end_with %>
+
         <% else %>
             <p>No past orders.</p>
         <% end_if %>
