@@ -12,7 +12,7 @@ class ProductPage extends Page implements PermissionProvider {
 	private static $db = array(
 		'Price' => 'Currency',
 		'Weight' => 'Float',
-		'Code' => 'Text',
+		'Code' => 'Varchar(100)',
 		'ReceiptTitle' => 'Text',
 		'Featured' => 'Boolean',
 		'Available' => 'Boolean'
@@ -32,13 +32,25 @@ class ProductPage extends Page implements PermissionProvider {
     private static $belongs_many_many = array(
 		'ProductHolders' => 'ProductHolder'
     );
+
+    private static $indexes = array(
+        'Code' => true // make unique
+    );
 	
-    private static $defaults = array(
+	private static $defaults = array(
 		'ShowInMenus' => false,
 		'Available' => true
 	);
-     
-	public function getCMSFields() {
+
+    public function populateDefaults() {
+        parent::populateDefaults();
+        if (!$this->Category) {
+            $cat = DataObject::get_one('ProductCategory', "`Code`='DEFAULT'");
+            $this->CategoryID = $cat->ID;
+        }
+    }
+
+    public function getCMSFields() {
 		$fields = parent::getCMSFields();
 		
 		// Cateogry Dropdown field w/ add new
@@ -52,8 +64,8 @@ class ProductPage extends Page implements PermissionProvider {
 		$config = GridFieldConfig_RelationEditor::create();
 		if (class_exists('GridFieldSortableRows')) $config->addComponent(new GridFieldSortableRows('SortOrder'));
 		if (class_exists('GridFieldBulkImageUpload')) {
-			$config->addComponent(new GridFieldBulkImageUpload());
-			$config->getComponentByType('GridFieldBulkImageUpload')->setConfig('folderName', 'Uploads/ProductImages');	
+			$config->addComponent(new GridFieldBulkUpload());
+			$config->getComponentByType('GridFieldBulkUpload')->setConfig('folderName', 'Uploads/ProductImages');
 		}
 		$prodImagesField = GridField::create('ProductImages', 'Images', $this->ProductImages(), $config);
 		
@@ -79,7 +91,7 @@ class ProductPage extends Page implements PermissionProvider {
 				->setTitle('Featured Product'),
 			CurrencyField::create('Price'),
 			NumericField::create('Weight'),
-			TextField::create('Code', 'Product Code'),
+            AjaxUniqueTextField::create('Code', 'Product Code', 'Code', 'ProductPage'),
 			$catField
 		));
 		
