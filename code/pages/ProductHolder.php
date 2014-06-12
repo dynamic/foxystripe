@@ -7,7 +7,7 @@
 
 class ProductHolder extends Page {
 	
-	private static $allowed_children = array('ProductHolder', 'ProductPage', 'Page');
+	private static $allowed_children = array('ProductHolder', 'ProductPage');
 	
 	private static $db = array(
 		
@@ -26,6 +26,10 @@ class ProductHolder extends Page {
 			'SortOrder' => 'Int'
 		)
 	);
+
+    private static $singular_name = 'Product Group';
+    private static $plural_name = 'Product Groups';
+    private static $description = 'Display a list of related products';
 	
 	private static $defaults = array(
 		

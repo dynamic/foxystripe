@@ -8,10 +8,15 @@
 class OptionGroup extends DataObject{
 
 	static $db = array('Title' => 'Text');
+
+    static $singular_name = 'Option Group';
+    static $plural_name = 'Option Groups';
+    static $description = 'Groups of product options, e.g. size, color, etc';
 	
 	function getCMSFields(){
-		$fields = new FieldList();
-		$fields->push(new TextField('Title', 'Option Group Name'));
+		$fields = FieldList::create(
+            TextField::create('Title', 'Option Group Name')
+        );
 		$this->extend('getCMSFields', $fields);
 		
 		return $fields;
@@ -19,11 +24,21 @@ class OptionGroup extends DataObject{
 	
 	public function requireDefaultRecords() {
 		parent::requireDefaultRecords();
-		if(!DataObject::get_one('OptionGroup', "`Title` = 'None'")) {
-			$do = new OptionGroup();
-			$do->Title = "None";
-			$do->write();
-		}
+		if(!DataObject::get_one('OptionGroup', "`Title` = 'Size'")) {
+            $do = new OptionGroup();
+            $do->Title = "Size";
+            $do->write();
+        }
+        if(!DataObject::get_one('OptionGroup', "`Title` = 'Color'")) {
+            $do = new OptionGroup();
+            $do->Title = "Color";
+            $do->write();
+        }
+        if(!DataObject::get_one('OptionGroup', "`Title` = 'Type'")) {
+            $do = new OptionGroup();
+            $do->Title = "Type";
+            $do->write();
+        }
 	}
 	
 	public function onBeforeDelete(){

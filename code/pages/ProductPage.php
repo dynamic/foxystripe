@@ -33,31 +33,30 @@ class ProductPage extends Page implements PermissionProvider {
 		'ProductHolders' => 'ProductHolder'
     );
 
+    private static $singular_name = 'Product';
+    private static $plural_name = 'Products';
+    private static $description = 'A product that can be added to the shopping cart';
+
     private static $indexes = array(
         'Code' => true // make unique
     );
 	
 	private static $defaults = array(
 		'ShowInMenus' => false,
-		'Available' => true
+		'Available' => true,
+        'Weight' => '1.0'
 	);
-
-    public function populateDefaults() {
-        parent::populateDefaults();
-        if (!$this->Category) {
-            $cat = DataObject::get_one('ProductCategory', "`Code`='DEFAULT'");
-            $this->CategoryID = $cat->ID;
-        }
-    }
-
-    public function getCMSFields() {
+     
+	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 		
 		// Cateogry Dropdown field w/ add new
 		$source = function(){
 		    return ProductCategory::get()->map()->toArray();
 		};
-		$catField = DropdownField::create('CategoryID', 'Category', $source());
+		$catField = DropdownField::create('CategoryID', 'FoxyCart Category', $source())
+            ->setEmptyString('')
+            ->setDescription('Required, must also exist in <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">FoxyCart</a>. Used to set shipping and taxes. Categories can be managed in FoxyStripe in the <a href="admin/products/ProductCategory">Products Admin</a>');
 		if (class_exists('QuickAddNewExtension')) $catField->useAddNew('ProductCategory', $source);
 		
 		// Product Images gridfield
@@ -84,15 +83,19 @@ class ProductPage extends Page implements PermissionProvider {
 		$fields->addFieldsToTab('Root.Details', array(
 			HeaderField::create('DetailHD', 'Product Details', 2),
 			CheckboxField::create('Available')
-				->setTitle('Available for purchase'),
-			TextField::create('ReceiptTitle', 'Product Title for Receipt')
-				->setDescription('Optional'),
+				->setTitle('Available for purchase')
+                ->setDescription('If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'),
+            TextField::create('Code', 'Product Code')
+                ->setDescription('Required, must be unique. Product identifier used by FoxyCart in transactions'),
+            $catField,
+            CurrencyField::create('Price')
+                ->setDescription('Base price for this product. Can be modified using Product Options'),
+            NumericField::create('Weight')
+                ->setDescription('Base weight for this product. Can be modified using Product Options'),
 			CheckboxField::create('Featured')
 				->setTitle('Featured Product'),
-			CurrencyField::create('Price'),
-			NumericField::create('Weight'),
-            AjaxUniqueTextField::create('Code', 'Product Code', 'Code', 'ProductPage'),
-			$catField
+            TextField::create('ReceiptTitle', 'Product Title for Receipt')
+                ->setDescription('Optional')
 		));
 		
 		// Images tab
@@ -148,7 +151,7 @@ class ProductPage extends Page implements PermissionProvider {
 	}
 	
 	public function getCMSValidator() {
-		return new RequiredFields('Price', 'Weight', 'Code');
+		return new RequiredFields('Price', 'Weight', 'Code', 'CategoryID');
 	}
 	
 	public function getFormTag() {

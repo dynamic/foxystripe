@@ -6,23 +6,33 @@
  */
 
 class ProductCategory extends DataObject {
-	
-	public static $singular_name = 'FoxyCart Category';
-	public static $plural_name = 'FoxyCart Categories';
-	
-	static $db = array(
+
+    private static $db = array(
 		'Title' => 'Text',
 		'Code' => 'Text'
 	);
 
-	public function getCMSFields() {
-		$fields = array();
-		$fields[] = new TextField('Title', "FoxyCart 'Category Description'");
-		$fields[] = new TextField('Code', "FoxyCart 'Category Code'");
+    private static $singular_name = 'FoxyCart Category';
+    private static $plural_name = 'FoxyCart Categories';
+    private static $description = 'Set the FoxyCart Category on a Product';
 
-		$set = new FieldList($fields);
-		$this->extend('updateCMSFields', $set);
-		return $set;
+    public function getCMSFields() {
+		$fields = FieldList::create(
+            LiteralField::create(
+                'PCIntro',
+                '<p>Categories must be created in your
+                    <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
+                        FoxyCart Product Categories
+                    </a>, and also manually created in FoxyStripe.
+                </p>'
+            ),
+            TextField::create('Code', 'FoxyCart Category Code')
+                ->setDescription('copy/paste from FoxyCart'),
+            TextField::create('Title', 'FoxyCart Category Description')
+                ->setDescription('copy/paste from FoxyCart')
+        );
+        $this->extend('updateCMSFields', $fields);
+        return $fields;
 	}
 	
 	public function requireDefaultRecords() {

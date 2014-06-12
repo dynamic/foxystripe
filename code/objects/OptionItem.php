@@ -52,7 +52,8 @@ class OptionItem extends DataObject{
 		};
 		$groupFields = singleton('OptionGroup')->getCMSFields();
 		$groupField = DropdownField::create('ProductOptionGroupID', 'Option Group', $groups())
-			->setEmptyString('');
+			->setEmptyString('')
+            ->setDescription('Option Groups can be managed in the <a href="admin/products/OptionGroup">Products Admin</a>');
 		if (class_exists('QuickAddNewExtension')) $groupField->useAddNew('OptionGroup', $groups, $groupFields);
 		
 		// Cateogry Dropdown field w/ add new
@@ -60,7 +61,8 @@ class OptionItem extends DataObject{
 		    return ProductCategory::get()->map()->toArray();
 		};
 		$categoryField = DropdownField::create('CategoryID', 'Category', $categories())
-			->setEmptyString('');
+			->setEmptyString('')
+            ->setDescription('Categories can be managed in the <a href="admin/products/ProductCategory">Products Admin</a>');
 		if (class_exists('QuickAddNewExtension')) $categoryField->useAddNew('ProductCategory', $categories);
 		
 		$fields->addFieldsToTab('Root.Main', array(
