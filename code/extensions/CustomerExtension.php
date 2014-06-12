@@ -41,8 +41,10 @@ class CustomerExtension extends DataExtension{
         $response = FoxyCart::putCustomer($this->owner);
 
         // Grab customer_id record from FoxyCart response, store in Member
-        $foxyResponse = new SimpleXMLElement($response);
-        $this->owner->Customer_ID = (int) $foxyResponse->customer_id;
+		if($response){
+        	$foxyResponse = new SimpleXMLElement($response);
+        	$this->owner->Customer_ID = (int) $foxyResponse->customer_id;
+		}
     }
 
     public function onAfterWrite() {

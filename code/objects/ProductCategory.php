@@ -27,12 +27,12 @@ class ProductCategory extends DataObject {
 	
 	public function requireDefaultRecords() {
 		parent::requireDefaultRecords();
-		if(!DataObject::get_one('ProductCategory', "`Code` = 'DEFAULT'")) {
-			$do = new ProductCategory();
-			$do->Title = "Default Product";
-			$do->Code = "DEFAULT";
-			
-			$do->write();
+		$allCats = DataObject::get('ProductCategory');
+		if(!$allCats->count()){
+			$cat = new ProductCategory();
+			$cat->Title = 'Default';
+			$cat->Code = 'DEFAULT';
+			$cat->write();
 		}
 	}
 
