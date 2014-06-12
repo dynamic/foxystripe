@@ -33,14 +33,6 @@ class ProductPage extends Page implements PermissionProvider {
 		'ProductHolders' => 'ProductHolder'
     );
 	
-	public function populateDefaults() {
-		parent::populateDefaults();
-		if (!$this->Category) {
-			$cat = DataObject::get_one('ProductCategory', "`Code`='DEFAULT'");
-			$this->CategoryID = $cat->ID;
-		}
-	}
-	
     private static $defaults = array(
 		'ShowInMenus' => false,
 		'Available' => true
@@ -114,6 +106,14 @@ class ProductPage extends Page implements PermissionProvider {
 		$this->extend('updateCMSFields', $fields);
 		
 		return $fields;
+	}
+
+	public function onBeforeWrite(){
+		parent::onBeforeWrite();
+		if(!$this->CategoryID){
+			$default = ProductCategory::get()->filter(array('Code' => 'DEFAULT'))->first();
+			$this->CategoryID = $default->ID;
+		}
 	}
 	
 	public function onBeforeDelete() {

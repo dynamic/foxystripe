@@ -7,13 +7,28 @@
 
 class FoxyCart extends Object {
 
+	public static function store_key_warning(){
+		$warning = null;
+		if(self::getStoreKey()===null){
+			$warning = 'Must define FoxyCart Store Key in your site settings in the cms';
+		}
+		return $warning;
+	}
+
 	public static function getStoreKey(){
 		$config = SiteConfig::current_site_config();
 		if($config->StoreKey){
 			return $config->StoreKey;
 		}
-		user_error('Must define Foxy Cart Store Key in your site settings in the cms', E_USER_ERROR);
-		die();
+		return null;
+	}
+
+	public static function store_name_warning(){
+		$warning = null;
+		if(self::getFoxyCartStoreName()===null){
+			$warning = 'Must define FoxyCart Store Name in your site settings in the cms';
+		}
+		return $warning;
 	}
 	
 	public static function getFoxyCartStoreName(){
@@ -21,8 +36,7 @@ class FoxyCart extends Object {
 		if($config->StoreName){
 			return $config->StoreName;
 		}
-		user_error('Must define Foxy Cart Store Name in your site settings in the cms', E_USER_ERROR);
-		die();
+		return null;
 	}
 	
 	public static function FormActionURL() {
@@ -51,7 +65,7 @@ class FoxyCart extends Object {
 
         // The following if block will print any CURL errors you might have
         if ($response == false) {
-            trigger_error("Could not connect to FoxyCart API", E_USER_ERROR);
+            //trigger_error("Could not connect to FoxyCart API", E_USER_ERROR);
         }
         curl_close($ch);
 
@@ -76,7 +90,7 @@ class FoxyCart extends Object {
 
     public static function putCustomer($Member = null) {
         // throw error if no $Member Object
-        if (!isset($Member)) trigger_error('No Member set', E_USER_ERROR);
+        if (!isset($Member)) ;//trigger_error('No Member set', E_USER_ERROR);
 
         // send updated customer record from API
         $foxyData = array();
