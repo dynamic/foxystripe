@@ -2,10 +2,16 @@
 
 if (class_exists('MemberProfilePage')) {
 
-
+    /*
+     * Extends Member Profiles by ajshort. Adds a Simple theme template with subnavigation
+     */
     class FoxyCartMemberProfilePage extends MemberProfilePage {
 
+        private static $hide_ancestor = 'MemberProfilePage';
 
+        private static $singular_name = 'Member Page';
+        private static $plural_name = 'Member Pages';
+        private static $description = 'Members can register and edit their profile';
 
     }
 

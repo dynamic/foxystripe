@@ -7,6 +7,10 @@
 
 class OrderHistoryPage extends Page {
 
+    private static $singular_name = 'Order History Page';
+    private static $plural_name = 'Order History Pages';
+    private static $description = 'Show a customers past orders. Requires authentication';
+
     // return all current Member's Orders
     public function getOrders($limit = 10) {
         if ($Member = Member::currentUser()) {
