@@ -47,11 +47,4 @@ class CustomerExtension extends DataExtension{
 		}
     }
 
-    public function onAfterWrite() {
-        parent::onAfterWrite();
-
-
-
-    }
-
 }

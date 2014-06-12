@@ -33,11 +33,8 @@ class FoxyCart_Controller extends Page_Controller {
 	}
 	
 	public function index() {
-	    // The filename that you'd like to write to.
-		// For security reasons, this file should either be outside of your public web root,
-		// or it should be written to a directory that doesn't have public access (like with an .htaccess directive).
-		
-		if (isset($_POST["FoxyData"]) OR isset($_POST['FoxySubscriptionData'])) {
+	    // handle POST from FoxyCart API transaction
+		if ((isset($_POST["FoxyData"]) OR isset($_POST['FoxySubscriptionData']))) {
 			$FoxyData_encrypted = (isset($_POST["FoxyData"])) ?
                 urldecode($_POST["FoxyData"]) :
                 urldecode($_POST["FoxySubscriptionData"]);
@@ -50,7 +47,7 @@ class FoxyCart_Controller extends Page_Controller {
 	}
 	
 	public function handleDataFeed($encrypted, $decrypted){
-		//handle encrypted & decrypted data
+        //handle encrypted & decrypted data
         $orders = new SimpleXMLElement($decrypted);
 
         foreach ($orders->transactions->transaction as $order) {
@@ -80,7 +77,7 @@ class FoxyCart_Controller extends Page_Controller {
             $transaction->OrderStatus = (string) $order->status;
 
             // Customer info
-
+            // if not a guest transaction in FoxyCart
             if(isset($order->customer_email)) {
 
                 // set PasswordEncryption to 'none' so imported, encrypted password is not encrypted again
@@ -180,9 +177,8 @@ class FoxyCart_Controller extends Page_Controller {
 
     public function sso() {
 
-        // GET variables from FoxyCart
+        // GET variables from FoxyCart Request
         $fcsid = $this->request->getVar('fcsid');
-        $timestampFC = $this->request->getVar('timestamp');
 
         $Member = Member::currentUser();
         $timestampNew = strtotime('+30 days');
