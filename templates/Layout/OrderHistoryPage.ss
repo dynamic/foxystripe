@@ -14,8 +14,8 @@
                         <p>Order #{$Order_ID}</p>
                         <p>Total $OrderTotal.Nice</p>
                     </div>
-                    <% loop $Details %>
-                        <div class="unit size3of4 full">
+                    <div class="unit size3of4 full">
+	                    <% loop $Details %>
                             <div class="unit size1of5">
                                 <% with Product %>
                                     <img src="$PreviewImage.PaddedImage(150,150).URL" class="product-image">
@@ -37,8 +37,9 @@
                                     <b>Price:</b> $Price.Nice
                                 </p>
                             </div>
-                        </div>
-                    <% end_loop %>
+                            <br style="clear: both;">
+	                    <% end_loop %>
+                    </div>
                 </div>
             <% end_loop %>
 
