@@ -23,7 +23,7 @@
 	        <div class="productTextContainer floatLeft">
 	            <h1>{$Title}</h1>
 	            <p>
-		            <strong>Price:</strong> $Price.Nice<br>
+		            <strong>Base Price:</strong> $Price.Nice<br>
 		            <strong>Weight:</strong> $Weight lbs<br>
 		            <strong>Code:</strong> $Code
 	            </p>

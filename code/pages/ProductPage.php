@@ -208,7 +208,8 @@ class ProductPage extends Page implements PermissionProvider {
 		$form = $this->hiddenTag('name', ($this->ReceiptTitle) ? htmlspecialchars($this->ReceiptTitle) : htmlspecialchars($this->Title));
 		$form .= $this->hiddenTag('category',$this->Category()->Code);
 		$form .= $this->hiddenTag('code', $this->Code);
-		$form .= $this->hiddenTag('price', $this->Price);
+        $form .= '<input type="hidden" name="price" value="' . $this->Price . '" id="basePrice" />';
+		//$form .= $this->hiddenTag('price', $this->Price);
 		$form .= $this->hiddenTag('weight', $this->Weight);
 		if($this->PreviewImage()->Exists()) $form .= $this->hiddenTag('image', $this->PreviewImage()->PaddedImage(80,80)->absoluteURL);
 		return $form;
@@ -238,36 +239,39 @@ jQuery(function(){
 	});
 	
 	function refreshAddToCartPrice(){
-	
-		var addCartDiv = jQuery('form.foxycartForm#product{$this->ID}');
-		var baseName = jQuery(addCartDiv).find('input[name=\'name\']').val();
-		var basePrice = parseFloat(jQuery(addCartDiv).find('input[name=\'price\']').val());
-		
-		var newProductPrice = basePrice;
+
+		var newProductPrice = parseFloat(jQuery('#basePrice').val());;
 		
 		jQuery('form.foxycartForm#product{$this->ID} select').each(function(){
+
+		    if ( jQuery(this).attr('id') == 'qty' ) {
+		        // todo: modify newProductPrice by Quantity?
+
+            } else {
+                var currentOption = jQuery(this).val();
+                //get an array of the modifiers
+                currentOption = currentOption.substring(currentOption.lastIndexOf('{')+1, currentOption.lastIndexOf('}')).split('|');
+
+                //build a different array of key-value pairs, options[p,c,w] = value
+                //more reliable than hoping price is the first array index of currentOption..
+                var options = [];
+                for(i=0; i< currentOption.length; i++){
+                    var k = currentOption[i].substr(0,1);
+                    var val = currentOption[i].substr(1);
+                    options[k] = val;
+                }
+                var pricemodifier = options['p'].substr(0,1); // return +,-,:
+
+                if(pricemodifier == ':'){
+                    newProductPrice = parseFloat(options['p'].substr(1));
+                } else {
+                    newProductPrice = newProductPrice+parseFloat(options['p']);
+                }
+            }
 		
-			var currentOption = jQuery(this).val();
-			//get an array of the modifiers
-			currentOption = currentOption.substring(currentOption.lastIndexOf('{')+1, currentOption.lastIndexOf('}')).split('|');
-			
-			//build a different array of key-value pairs, options[p,c,w] = value
-			//more reliable than hoping price is the first array index of currentOption..
-			var options = [];
-			for(i=0; i< currentOption.length; i++){
-				var k = currentOption[i].substr(0,1);
-				var val = currentOption[i].substr(1);
-				options[k] = val;
-			}
-			var pricemodifier = options['p'].substr(0,1); // return +,-,:
-			
-			if(pricemodifier == ':'){
-				newProductPrice = parseFloat(options['p'].substr(1));
-			} else {
-				newProductPrice = newProductPrice+parseFloat(options['p']);
-			}
+
 		});
-		jQuery('form.foxycartForm#product{$this->ID} .submitPrice').html(baseName+' $'+newProductPrice.toFixed(2));
+		jQuery('form.foxycartForm#product{$this->ID} .submitPrice').html('$'+newProductPrice.toFixed(2));
 	}
 	if(jQuery('.foxycartOptionsContainer select').length > 0) refreshAddToCartPrice();
 });
@@ -281,7 +285,7 @@ JS;
 	public function AddToCartForm() {
 		$form = "<div class='addToCartContainer'>";
 		$form .= "<label for='quantity'>Quantity</label><div class='foxycart_qty'>";
-		$form .= "<select name='quantity'>";
+		$form .= "<select name='quantity' id='qty'>";
 		$form .= "<option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option>";
 		$form .= "</select>";
 		$form .= "</div>";
