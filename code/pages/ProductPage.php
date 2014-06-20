@@ -149,9 +149,25 @@ class ProductPage extends Page implements PermissionProvider {
 		}
 		parent::onBeforeDelete();
 	}
+
+	public function validate(){
+		$result = parent::validate();
+
+		if($this->Price <= 0) {
+			$result->error('Must set a positive price value');
+		}
+		if($this->Weight <= 0){
+			$result->error('Must set a positive weight value');
+		}
+		if($this->Code == ''){
+			$result->error('Must set a product code');
+		}
+
+		return $result;
+	}
 	
 	public function getCMSValidator() {
-		return new RequiredFields('Price', 'Weight', 'Code', 'CategoryID');
+		return new RequiredFields('CategoryID');
 	}
 	
 	public function getFormTag() {
