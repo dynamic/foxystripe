@@ -70,9 +70,15 @@ class ProductPage extends Page implements PermissionProvider {
 		
 		// Product Options field
 		$config = GridFieldConfig_RelationEditor::create();
-		if (class_exists('GridFieldSortableRows')) $config->addComponent(new GridFieldSortableRows('SortOrder'));
 		if (class_exists('GridFieldBulkManager')) $config->addComponent(new GridFieldBulkManager());
-		$prodOptField = GridField::create('Product Options', 'Options', $this->ProductOptions(), $config);
+		if (class_exists('GridFieldSortableRows')){
+			$config->addComponent(new GridFieldSortableRows('SortOrder'));
+			$products = $this->ProductOptions()->sort('SortOrder');
+		}else{
+			$products = $this->ProductOptions();
+		}
+		$config->removeComponentsByType('GridFieldAddExistingAutocompleter');
+		$prodOptField = GridField::create('ProductOptions', 'Options', $products, $config);
 		
 		// Option Groups field
 		$config = GridFieldConfig_RecordEditor::create();
