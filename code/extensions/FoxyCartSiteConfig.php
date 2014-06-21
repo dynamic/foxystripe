@@ -28,30 +28,39 @@ class FoxyCartSiteConfig extends DataExtension{
         // set TabSet names to avoid spaces from camel case
         $fields->addFieldToTab('Root', new TabSet('FoxyStripe', 'FoxyStripe'));
 
-        $fields->addFieldsToTab('Root.FoxyStripe.Settings', array(
-            // Store Details
-            HeaderField::create('StoreDetails', 'Store Settings', 3),
-            LiteralField::create('DetailsIntro',
-                '<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditStore" target="_blank">FoxyCart store settings</a>.'
-            ),
-            TextField::create('StoreName')
-                ->setTitle('Store Sub Domain')
-                ->setDescription('the sub domain for your FoxyCart store'),
+		$fieldSet1 = array(
+			// Store Details
+			HeaderField::create('StoreDetails', 'Store Settings', 3),
+			LiteralField::create('DetailsIntro',
+				'<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditStore" target="_blank">FoxyCart store settings</a>.'
+			),
+			TextField::create('StoreName')
+				->setTitle('Store Sub Domain')
+				->setDescription('the sub domain for your FoxyCart store'),
 
-            // Advanced Settings
-            HeaderField::create('AdvanceHeader', 'Advanced Settings', 3),
-            LiteralField::create('AdvancedIntro',
-                '<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures" target="_blank">FoxyCart advanced store settings</a>.</p>'
-            ),
-            ReadonlyField::create('DataFeedLink', 'FoxyCart DataFeed URL', self::getDataFeedLink())
-                ->setDescription('copy/paste to FoxyCart'),
-            TextField::create('StoreKey')
-                ->setTitle('FpxyCart API Key')
-                ->setDescription('copy/paste from FoxyCart'),
-            ReadonlyField::create('SSOLink', 'Single Sign On URL', self::getSSOLink())
-                ->setDescription('copy/paste to FoxyCart')
+			// Advanced Settings
+			HeaderField::create('AdvanceHeader', 'Advanced Settings', 3),
+			LiteralField::create('AdvancedIntro',
+				'<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures" target="_blank">FoxyCart advanced store settings</a>.</p>'
+			),
+			ReadonlyField::create('DataFeedLink', 'FoxyCart DataFeed URL', self::getDataFeedLink())
+				->setDescription('copy/paste to FoxyCart'),
+			TextField::create('StoreKey')
+				->setTitle('FpxyCart API Key')
+				->setDescription('copy/paste from FoxyCart'),
+			ReadonlyField::create('SSOLink', 'Single Sign On URL', self::getSSOLink())
+				->setDescription('copy/paste to FoxyCart')
 
-        ));
+		);
+
+		if(FoxyCart::store_key_warning()!==null){
+			array_unshift($fieldSet1, new LiteralField("StoreKeyHeaderWarning", "<p class=\"message error\">Store key must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"));
+		}
+		if(FoxyCart::store_name_warning()!==null){
+			array_unshift($fieldSet1, new LiteralField("StoreSubDomainHeaderWarning", "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"));
+		}
+
+        $fields->addFieldsToTab('Root.FoxyStripe.Settings', $fieldSet1);
 
         $fields->addFieldsToTab('Root.FoxyStripe.Products', array(
             HeaderField::create('ProductGroupHeader', 'Product Groups', 3),
@@ -101,6 +110,7 @@ class FoxyCartSiteConfig extends DataExtension{
                 )
             )->setHeadingLevel(4)
         ));
+
 	}
 
 	private static function getCacheLink($type = null){

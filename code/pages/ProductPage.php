@@ -116,6 +116,13 @@ class ProductPage extends Page implements PermissionProvider {
 			HeaderField::create('OptionsHD', 'Product Options', 2),
 			$prodOptField
 		));
+
+		if(FoxyCart::store_key_warning()!==null){
+			$fields->addFieldToTab('Root.Main', new LiteralField("StoreKeyHeaderWarning", "<p class=\"message error\">Store key must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"), 'Title');
+		}
+		if(FoxyCart::store_name_warning()!==null){
+			$fields->addFieldToTab('Root.Main', new LiteralField("StoreSubDomainHeaderWarning", "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"), 'Title');
+		}
 		
 		// allows CMS fields to be extended
 		$this->extend('updateCMSFields', $fields);
