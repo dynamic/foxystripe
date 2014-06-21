@@ -32,6 +32,8 @@ class OptionItem extends DataObject{
 		'Title' => 'Title',
 		'ProductOptionGroup.Title' => 'Group'
 	);
+
+	private static $default_sort = 'SortOrder';
 	
 	public function getCMSFields(){
 		$fields = FieldList::create(
