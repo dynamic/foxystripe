@@ -74,6 +74,8 @@ input.submit, .submitPrice {display: block; clear: both;}
 /* Work around for Simple Theme hiding no-sidebar sidebar classes */
 .no-sidebar .historySummary .sidebar, .full {display: block;}
 
+.continueShopping {cursor: pointer;}
+
 @media only screen and (max-width: 640px) { 
 	.productTextContainer {width: 100%;}
 	.product-image-stack, .product-info-stack {width: 100%;}
