@@ -166,14 +166,16 @@ class ProductPage extends Page implements PermissionProvider {
 	public function validate(){
 		$result = parent::validate();
 
-		if($this->Price <= 0) {
-			$result->error('Must set a positive price value');
-		}
-		if($this->Weight <= 0){
-			$result->error('Must set a positive weight value');
-		}
-		if($this->Code == ''){
-			$result->error('Must set a product code');
+		if($this->ID>0){
+			if($this->Price <= 0) {
+				$result->error('Must set a positive price value');
+			}
+			if($this->Weight <= 0){
+				$result->error('Must set a positive weight value');
+			}
+			if($this->Code == ''){
+				$result->error('Must set a product code');
+			}
 		}
 
 		return $result;
