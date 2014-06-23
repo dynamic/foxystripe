@@ -166,7 +166,7 @@ class ProductPage extends Page implements PermissionProvider {
 	public function validate(){
 		$result = parent::validate();
 
-		if($this->ID>0){
+		/*if($this->ID>0){
 			if($this->Price <= 0) {
 				$result->error('Must set a positive price value');
 			}
@@ -176,13 +176,13 @@ class ProductPage extends Page implements PermissionProvider {
 			if($this->Code == ''){
 				$result->error('Must set a product code');
 			}
-		}
+		}*/
 
 		return $result;
 	}
 	
 	public function getCMSValidator() {
-		return new RequiredFields('CategoryID');
+		return new RequiredFields(array('CategoryID', 'Price', 'Weight', 'Code'));
 	}
 	
 	public function getFormTag() {
