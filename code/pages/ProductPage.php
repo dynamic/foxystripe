@@ -191,7 +191,7 @@ class ProductPage extends Page implements PermissionProvider {
 	
 	public function PurchaseForm(){
 		if($this->Available){
-			return FoxyCart_Helper::fc_hash_html(self::ProductOptionsForm());
+			return (SiteConfig::current_site_config()->CartValidation) ? FoxyCart_Helper::fc_hash_html(self::ProductOptionsForm()) : self::ProductOptionsForm();
 		}
 		return "<h3 class=\"unavailable-product\">Product currently unavailable</h3>";
 	}

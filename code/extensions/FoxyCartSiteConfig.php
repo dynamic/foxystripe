@@ -14,7 +14,8 @@ class FoxyCartSiteConfig extends DataExtension{
 		'MultiGroup' => 'Boolean',
 		'ProductLimit' => 'Int',
 		'EmailPage' => 'Boolean',
-		'EmailContent' => 'HTMLText'
+		'EmailContent' => 'HTMLText',
+		'CartValidation' => 'Boolean'
 	);
 
     // Set Default values
@@ -45,6 +46,9 @@ class FoxyCartSiteConfig extends DataExtension{
 			),
 			ReadonlyField::create('DataFeedLink', 'FoxyCart DataFeed URL', self::getDataFeedLink())
 				->setDescription('copy/paste to FoxyCart'),
+			CheckboxField::create('CartValidation')
+				->setTitle('Enable Cart Validation')
+				->setDescription('You must <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures#use_cart_validation" target="_blank">enable cart validation</a> in the FoxyCart admin.'),
 			TextField::create('StoreKey')
 				->setTitle('FpxyCart API Key')
 				->setDescription('copy/paste from FoxyCart'),
