@@ -9,8 +9,8 @@ class OptionGroup extends DataObject{
 
 	static $db = array('Title' => 'Text');
 
-    static $singular_name = 'Option Group';
-    static $plural_name = 'Option Groups';
+    static $singular_name = 'Product Option Group';
+    static $plural_name = 'Product Option Groups';
     static $description = 'Groups of product options, e.g. size, color, etc';
 	
 	function getCMSFields(){

@@ -2,10 +2,6 @@
 
 class Order extends DataObject implements PermissionProvider{
 
-	private static $singular_name = 'Order';
-	private static $plural_name = 'Orders';
-	private static $description = 'Orders from FoxyCart Datafeed';
-
 	private static $db = array(
         'Order_ID' => 'Int',
         'Store_ID' => 'Int',
@@ -22,57 +18,89 @@ class Order extends DataObject implements PermissionProvider{
         'OrderTotal' => 'Currency',
         'PaymentGatewayType' => 'Varchar(100)',
         'ReceiptURL' => 'Varchar(255)',
-        'OrderStatus' => 'Varchar(255)'
+        'OrderStatus' => 'Varchar(255)',
+        'CustomerIP' => 'Varchar'
     );
 
 	private static $has_one = array(
-        'Member' => 'Member'
+        'Member' => 'Member',
+        'BillingAddress' => 'OrderAddress',
+        'ShippingAddress' => 'OrderAddress'
     );
 
 	private static $has_many = array(
         'Details' => 'OrderDetail'
     );
 
-	private static $many_many = array(
+    private static $singular_name = 'Order';
+    private static $plural_name = 'Orders';
+    private static $description = 'Orders from FoxyCart Datafeed';
+    private static $default_sort = 'TransactionDate DESC';
 
-    );
-
-	private static $many_many_extraFields = array(
-
-    );
-
-	private static $belongs_many_many = array();
-
-	private static $summary_fields = array(
+    private static $summary_fields = array(
         'Order_ID',
         'TransactionDate.NiceUS',
         'Member.Name',
-        'OrderTotal.Nice'
+        'ProductTotal.Nice',
+        'TaxTotal.Nice',
+        'ShippingTotal.Nice',
+        'OrderTotal.Nice',
+        'ReceiptLink'
     );
 
 	private static $searchable_fields = array(
         'Order_ID',
-        'TransactionDate',
-        'Member.Surname',
-        'OrderTotal'
+        'TransactionDate' => array(
+            "field" => "DateField",
+            "filter" => "PartialMatchFilter"
+        ),
+        'Member.ID',
+        'OrderTotal',
+        'Details.ProductID'
+    );
+
+    private static $casting = array(
+        'ReceiptLink' => 'HTMLVarchar'
     );
 
     function fieldLabels($includerelations = true) {
         $labels = parent::fieldLabels();
 
-        $labels['Order_ID'] = 'ID';
+        $labels['Order_ID'] = 'Order ID';
+        $labels['TransactionDate'] = "Date";
         $labels['TransactionDate.NiceUS'] = "Date";
         $labels['Member.Name'] = 'Customer';
+        $labels['Member.ID'] = 'Customer';
+        $labels['ProductTotal.Nice'] = 'Sub Total';
+        $labels['TaxTotal.Nice'] = 'Tax';
+        $labels['ShippingTotal.Nice'] = 'Shipping';
+        $labels['OrderTotal'] = 'Total';
         $labels['OrderTotal.Nice'] = 'Total';
+        $labels['ReceiptLink'] = 'Invoice';
+        $labels['Details.ProductID'] = 'Product';
 
         return $labels;
     }
 
-	private static $indexes = array();
+    function ReceiptLink() {
+        return $this->getReceiptLink();
+    }
+
+    function getReceiptLink(){
+        $obj= HTMLVarchar::create();
+        $obj->setValue('<a href="' . $this->ReceiptURL . '" target="_blank" class="cms-panel-link action external-link">view</a>');
+        return $obj;
+    }
 
 	public function getCMSFields(){
-		$fields = parent::getCMSFields();
+        $fields = parent::getCMSFields();
 
+        /*
+        $fields->removeByName('Details');
+        $fields->addFieldsToTab('Root.Main', array(
+            CheckboxSetField::create('Details', 'Order Details', $this->Details())
+        ));
+        */
 
 		$this->extend('updateCMSFields', $fields);
 		return $fields;
@@ -83,11 +111,13 @@ class Order extends DataObject implements PermissionProvider{
 	}
 
 	public function canEdit($member = null) {
-		return false;
+        //return true;
+        return false;
 	}
 
 	public function canDelete($member = null) {
-		return Permission::check('Product_ORDERS');
+        return false;
+        //return Permission::check('Product_ORDERS');
 	}
 
 	public function canCreate($member = null) {

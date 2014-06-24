@@ -2,8 +2,8 @@
 
 class OrderDetail extends DataObject {
 
-	private static $singular_name = 'Detail';
-	private static $plural_name = 'Details';
+	private static $singular_name = 'Order Detail';
+	private static $plural_name = 'Order Details';
 	private static $description = '';
 
 	private static $db = array(
@@ -16,21 +16,11 @@ class OrderDetail extends DataObject {
         'Order' => 'Order'
     );
 
-	private static $has_many = array(
-
-    );
-
 	private static $many_many = array(
         'Options' => 'OptionItem'
     );
 
-	private static $many_many_extraFields = array();
-
-	private static $belongs_many_many = array();
-
-	private static $casting = array();
-	private static $defaults = array();
-	private static $default_sort = null;
+	//private static $default_sort = null;
 
 
 	private static $summary_fields = array(
@@ -39,13 +29,16 @@ class OrderDetail extends DataObject {
         'Price.Nice'
     );
 
-	private static $searchable_fields = array();
-	private static $field_labels = array();
-	private static $indexes = array();
+	//private static $searchable_fields = array();
+	//private static $field_labels = array();
+	//private static $indexes = array();
 
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
 
+        $fields->addFieldsToTab('Root.Options', array(
+            GridField::create('Options', 'Product Options', $this->Options(), GridFieldConfig_RecordViewer::create())
+        ));
 
 		$this->extend('updateCMSFields', $fields);
 		return $fields;
@@ -66,7 +59,8 @@ class OrderDetail extends DataObject {
 	}
 
 	public function canEdit($member = null) {
-		return false;
+		return true;
+        //return false;
 	}
 
 	public function canDelete($member = null) {

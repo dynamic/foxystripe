@@ -16,6 +16,11 @@ class ProductCategory extends DataObject {
     private static $plural_name = 'FoxyCart Categories';
     private static $description = 'Set the FoxyCart Category on a Product';
 
+    private static $summary_fields = array(
+        'Title' => 'Name',
+        'Code' => 'Code'
+    );
+
     public function getCMSFields() {
 		$fields = FieldList::create(
             LiteralField::create(

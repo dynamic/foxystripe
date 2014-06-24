@@ -46,6 +46,35 @@ class ProductPage extends Page implements PermissionProvider {
 		'Available' => true,
         'Weight' => '1.0'
 	);
+
+    private static $summary_fields = array(
+        'Title',
+        'Code',
+        'Price.Nice',
+        'Category.Title'
+    );
+
+    private static $searchable_fields = array(
+        'Title',
+        'Code',
+        'Featured',
+        'Available',
+        'Category.ID'
+    );
+
+    function fieldLabels($includerelations = true) {
+        $labels = parent::fieldLabels();
+
+        $labels['Title'] = 'Name';
+        $labels['Code'] = "Code";
+        $labels['Price.Nice'] = 'Price';
+        $labels['Featured.Nice'] = 'Featured';
+        $labels['Available.Nice'] = 'Available';
+        $labels['Category.ID'] = 'Category';
+        $labels['Category.Title'] = 'Category';
+
+        return $labels;
+    }
      
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
@@ -239,6 +268,7 @@ class ProductPage extends Page implements PermissionProvider {
 		$form = $this->hiddenTag('name', ($this->ReceiptTitle) ? htmlspecialchars($this->ReceiptTitle) : htmlspecialchars($this->Title));
 		$form .= $this->hiddenTag('category',$this->Category()->Code);
 		$form .= $this->hiddenTag('code', $this->Code);
+        $form .= $this->hiddenTag('product_id', $this->ID);
         $form .= '<input type="hidden" name="price" value="' . $this->Price . '" id="basePrice" />';
 		//$form .= $this->hiddenTag('price', $this->Price);
 		$form .= $this->hiddenTag('weight', $this->Weight);

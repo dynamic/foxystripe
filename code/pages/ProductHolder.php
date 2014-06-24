@@ -129,7 +129,7 @@ class ProductHolder extends Page {
 
 			$order = '"SiteTree"."Title" ASC';
 
-			$entries = ProductPage::get()->where($filter)->sort($order);
+			$entries = ProductPage::get()->where($filter);
 		}
 
 
