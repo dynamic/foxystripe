@@ -7,3 +7,6 @@ SiteConfig:
 Member:
   extensions:
     - CustomerExtension
+DateField:
+  default_config:
+    showcalendar: true
