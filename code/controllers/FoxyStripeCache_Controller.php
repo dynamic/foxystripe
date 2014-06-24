@@ -1,6 +1,6 @@
 <?php
 
-class FoxyStripeCache_Controller extends Controller {
+class FoxyStripeCache_Controller extends Page_Controller {
 
 	private static $allowed_actions = array(
 		'index' => true,
@@ -15,7 +15,7 @@ class FoxyStripeCache_Controller extends Controller {
 
 		$themeDir = SSViewer::get_theme_folder();
 
-		Requirements::css('https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/themes/standard/styles.css" type="text/css');
+		Requirements::css('https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/themes/standard/styles.css');
 		Requirements::block($themeDir.'/css/form.css');
 
 	}
