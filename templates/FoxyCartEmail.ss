@@ -4,7 +4,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<title>Order from ^^store_name^^</title>
-
+    <% require themedCSS('reset') %>
+    <% require themedCSS('typography') %>
+    <% require themedCSS('form') %>
+    <% require themedCSS('layout') %>
 	</head>
 	<body>
 		<style>
