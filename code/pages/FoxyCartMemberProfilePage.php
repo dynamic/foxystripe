@@ -13,6 +13,15 @@ if (class_exists('MemberProfilePage')) {
         private static $plural_name = 'Member Pages';
         private static $description = 'Members can register and edit their profile';
 
+		public function getCMSFields(){
+			$fields = parent::getCMSFields();
+
+
+
+			$this->extend('updateCMSFields', $fields);
+			return $fields;
+		}
+
     }
 
     class FoxyCartMemberProfilePage_Controller extends MemberProfilePage_Controller {

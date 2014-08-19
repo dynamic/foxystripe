@@ -22,4 +22,13 @@ class OrderAddress extends DataObject {
     private static $plural_name = 'Order Addresses';
     private static $description = '';
 
+	public function getCMSFields(){
+		$fields = parent::getCMSFields();
+
+
+
+		$this->extend('updateCMSFields', $fields);
+		return $fields;
+	}
+
 } 
