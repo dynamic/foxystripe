@@ -1,5 +1,8 @@
 ## FoxyStripe
 
+[![Code Climate](https://codeclimate.com/github/dynamic/FoxyStripe/badges/gpa.svg)](https://codeclimate.com/github/dynamic/FoxyStripe)
+[![Test Coverage](https://codeclimate.com/github/dynamic/FoxyStripe/badges/coverage.svg)](https://codeclimate.com/github/dynamic/FoxyStripe)
+
 FoxyStripe is a SilverStripe ecommerce module designed to integrate with [FoxyCart](http://www.foxycart.com/).
 
 FoxyCart provides you with a flexible, powerful, customizable, and secure ecommerce platform. FoxyStripe provides a product catalog that integrates with the FoxyCart shopping cart and API.
