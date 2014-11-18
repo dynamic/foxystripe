@@ -17,9 +17,6 @@
         "sheadawson/quickaddnew": "*",
         "undefinedoffset/sortablegridfield": "*"
     },
-    "suggest": {
-    	"ajshort/silverstripe-memberprofiles": "Adds user login/registration functionality"
-    },
 	"extra": {
 		"installer-name": "foxystripe"
 	}
