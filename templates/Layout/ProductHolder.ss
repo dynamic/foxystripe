@@ -1,39 +1,45 @@
+<%-- redeclare Simple theme includes to keep correct inclusion order --%>
+<% require themedCSS('reset') %>
+<% require themedCSS('typography') %>
+<% require themedCSS('layout') %>
+<%-- FoxyStripe requirements --%>
 <% require css('foxystripe/css/foxycart.css') %>
+
 <% include SideBar %>
 <div class="content-container unit size3of4 lastUnit">
-	<article>
+	<section>
 	    <h1>$Title</h1>
         
-        <% if $Content %><div class="typography">$Content</div><% end_if %>
+        <% if $Content %><div class="content">$Content</div><% end_if %>
         
-    	<% loop $ProductList %>
-    		<div class="productSummary unit">
-				<div class="unit size1of4">
-					<% if $PreviewImage %>
-						<a href="{$Link}" title="{$Title}" class="anchor-fix">
-		                    <% with $PreviewImage %>
-		                    	<% loop $PaddedImage(150, 150) %>
-		                        	<img src="{$URL}" width="$getWidth" height="$getHeight" class="product-image"/>
-		                        <% end_loop %>
-		                    <% end_with %>
-	                    </a>
-	                <% else %>
-	                	<%-- placeholder image --%>
-						&nbsp;
-					<% end_if %>
-				</div>
-				<div class="unit size3of4">
-	            	<h3><a href="{$Link}" title="{$Title}">{$Title.LimitCharacters(48)}</a></h3>
-	            	<b>$Price.Nice</b>
-	                <div class="content"><p>{$Content.Summary}</p></div>
-	                <p><a class="productLearnMore" href="$Link" alt="Learn More">Click here for more information</a></p>
-				</div>
-            </div>
-            
-		
-		<% end_loop %>
+        <% if $ProductList %>
+            <% loop $ProductList %>
+                <div class="unit size1of1 productSummary">
+                    <div class="unit size1of4 productSummaryImage">
+                        <% if $PreviewImage %>
+                            <a href="{$Link}" title="{$Title}" class="anchor-fix product-image">
+                                $PreviewImage.PaddedImage(250, 250)
+                            </a>
+                        <% else %>
+                            <%-- placeholder image --%>
+                            &nbsp;
+                        <% end_if %>
+                    </div>
+                    <div class="unit size3of4 productSummaryText">
+                        <h3><a href="{$Link}" title="{$Title}">{$Title.LimitCharacters(48)}</a></h3>
+                        <b>$Price.Nice</b>
+                        <div class="content"><p>{$Content.Summary}</p></div>
+                        <p><a class="productLearnMore" href="$Link" alt="Learn More">Click here for more information</a></p>
+                    </div>
+                </div>
+
+
+            <% end_loop %>
 			<% with $ProductList %>
 				<% include Pagination %>
 			<% end_with %>
-	</article>
+        <% else %>
+            <p>No results</p>
+        <% end_if %>
+	</section>
 </div>

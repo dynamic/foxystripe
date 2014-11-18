@@ -1,26 +1,87 @@
-table thead #fc_cart_head{
-	border: 1px solid rgb(102, 102, 102);
+/* Simple Theme layout tweaks */
+
+/* remove image borders */
+.typography img {
+    border: none;
+    background: none;
 }
+
+
+/* ProductPage */
+/* sidebar fix */
+.no-sidebar .ProductPage .sidebar {
+    display: block;
+}
+.no-sidebar .ProductPage .content-container {
+    width: 75%;
+}
+
+form {
+    width: 100% !important;
+}
+label {
+    display: block;
+}
+
 
 /* Product Holder */
 .productSummary, .historySummary {
-	margin: 0 0 30px;
-	padding: 0 0 30px;
-	border-bottom: 1px solid #EEE;
-	width: 100%;
+    margin: 0 0 30px;
+    padding: 0 0 30px;
+    border-bottom: 1px solid #EEE;
+    width: 100%;
+    float: left;
 }
 
+
 .productSummaryImage {
-	float: left;
-	width: 150px;
+    float: left;
+    /*width: 150px;*/
 }
 
 .productSummaryText {
-	margin-left: 170px;
+    float: left;
 }
+
+
+.product-image img {max-width: 100%; height: auto;}
+
+/* Cart template */
+.continueShopping {cursor: pointer;}
+
+
+@media only screen and (max-width: 420px) {
+    .productTextContainer {width: 100%;}
+    .product-image-stack, .product-info-stack {width: 100%;}
+    .no-sidebar .historySummary .sidebar, .historySummary .full {display: block; width: 100%;}
+    .productSummaryImage,
+    .productSummaryText {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    .no-sidebar .ProductPage .content-container {
+        width: 100%;
+    }
+}
+
+/*
+@media only screen and (max-width: 960px) {
+    .productSummaryImage,
+    .productSummaryText {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+}
+
+*/
+
+
 
 /* Product Page */
 
+/*
 .foxycartForm {width: 100%;}
 form span.submitPrice,
 div.addToCartContainer span.submitPrice{
@@ -51,9 +112,13 @@ form div.foxycart_qty{
 	float: left;
 	width: 100%;
 }
+*/
 
-/* checkout */
 
+
+/* foxycart */
+
+/*
 #fc_checkout_container input.fc_text{
 	width:392px;
 	background:#e5e5e5;
@@ -65,19 +130,19 @@ form div.foxycart_qty{
 	text-align: left;
 }
 
-img.product-image {max-width: 100%; height: auto;}
-
 a.anchor-fix {display: inline-block; line-height: 0px;}
 
 input.submit, .submitPrice {display: block; clear: both;}
 .foxycartOptionsContainer select {margin-bottom: 10px;}
-/* Work around for Simple Theme hiding no-sidebar sidebar classes */
-.no-sidebar .historySummary .sidebar, .full {display: block;}
 
-.continueShopping {cursor: pointer;}
-
-@media only screen and (max-width: 640px) { 
-	.productTextContainer {width: 100%;}
-	.product-image-stack, .product-info-stack {width: 100%;}
-	.no-sidebar .historySummary .sidebar, .historySummary .full {display: block; width: 100%;}
+table thead #fc_cart_head{
+	border: 1px solid rgb(102, 102, 102);
 }
+
+*/
+
+
+
+
+
+

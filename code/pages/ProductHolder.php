@@ -143,8 +143,5 @@ class ProductHolder extends Page {
 
 class ProductHolder_Controller extends Page_Controller {
 	
-	public function init(){
-		parent::init();
-		Requirements::css('themes/ss-bootstrap_foxystripe/css/foxystripe.css');
-	}
+	
 }
