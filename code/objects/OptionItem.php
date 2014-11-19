@@ -15,6 +15,7 @@ class OptionItem extends DataObject{
 		'WeightModifierAction' => "Enum('Add,Subtract,Set','Add')",
 		'CodeModifierAction' => "Enum('Add,Subtract,Set','Add')",
 		'PriceModifierAction' => "Enum('Add,Subtract,Set','Add')",
+		'Available' => 'Boolean',
 		'SortOrder' => 'Int'
 	);
 	
@@ -27,6 +28,10 @@ class OptionItem extends DataObject{
     private static $belongs_many_many = array(
         'OrderDetails' => 'OrderDetail'
     );
+    
+    private static $defaults = array(
+		'Available' => true
+	);
 	
 	private static $summary_fields = array(
         'ProductOptionGroup.Title' => 'Group',
@@ -70,6 +75,9 @@ class OptionItem extends DataObject{
 		$fields->addFieldsToTab('Root.Main', array(
 			HeaderField::create('DetailsHD', 'Product Option Details', 2),
 			Textfield::create('Title', 'Product Option Title'),
+			CheckboxField::create('Available')
+				->setTitle('Available for purchase')
+                ->setDescription('If unchecked, will disable this option in the drop down menu'),
 			$groupField,
 			$categoryField
 		));
