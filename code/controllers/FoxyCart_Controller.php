@@ -189,18 +189,22 @@ class FoxyCart_Controller extends Page_Controller {
 
                     // associate with this order
                     $ProductOption->OrderID = $transaction->ID;
-
-                    // write
+                    
+                    // extend OrderDetail parsing, allowing for custom fields in FoxyCart
+					$this->extend('handleOrderItem', $decrypted, $product, $ProductOption);
+					
+					// write
                     $ProductOption->write();
 
                 }
 
             }
 
+			
+
         }
 
-        // allow this to be extended
-		$this->extend('handleDecryptedFeed',$encrypted, $decrypted);
+        
 	}
 
     public function sso() {
