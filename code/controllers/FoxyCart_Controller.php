@@ -180,6 +180,11 @@ class FoxyCart_Controller extends Page_Controller {
                             'ProductID' => (string) $OrderProduct->ID,
                             'Title' => (string) $option->product_option_value
                         ))->First();
+                        
+                        // modify product price 
+                        if($priceMod = $option->price_mod) {
+	                        $ProductOption->Price += $priceMod;
+                        }
 
                         if ($OptionItem) {
                             $ProductOption->Options()->add($OptionItem);
