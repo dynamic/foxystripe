@@ -340,12 +340,15 @@ jQuery(function(){
                     var val = currentOption[i].substr(1);
                     options[k] = val;
                 }
-                var pricemodifier = options['p'].substr(0,1); // return +,-,:
 
-                if(pricemodifier == ':'){
-                    newProductPrice = parseFloat(options['p'].substr(1));
-                } else {
-                    newProductPrice = newProductPrice+parseFloat(options['p']);
+                if(typeof options['p'] != 'undefined'){
+                    var pricemodifier = options['p'].substr(0,1); // return +,-,:
+
+                    if(pricemodifier == ':'){
+                        newProductPrice = parseFloat(options['p'].substr(1));
+                    } else {
+                        newProductPrice = newProductPrice+parseFloat(options['p']);
+                    }
                 }
             }
 		
