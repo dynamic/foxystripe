@@ -398,11 +398,16 @@ JS;
 				
 				$modCode = OptionItem::getOptionModifierActionSymbol($option->CodeModifierAction).$option->CodeModifier;
 				
-				$selectField .= sprintf('<option value="%s{p%s|w%s|c%s}">%s%s</option>',
+				// is product option avaiable for purchase?
+				$available = '';
+				if ($option->Available == 0) $available = ' class="outOfStock"';
+				
+				$selectField .= sprintf('<option value="%s{p%s|w%s|c%s}" %s>%s%s</option>',
 					$option->Title,
 					$modPriceWithSymbol,
 					$modWeight,
 					$modCode,
+					$available,
 					$option->Title,
 					($option->PriceModifier != 0) ? ': ('.OptionItem::getOptionModifierActionSymbol($option->PriceModifierAction, $returnWithOnlyPlusMinus=true).'$'.$modPrice.')' : ''
 				);
