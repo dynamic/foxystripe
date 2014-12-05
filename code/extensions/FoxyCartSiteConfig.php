@@ -50,7 +50,7 @@ class FoxyCartSiteConfig extends DataExtension{
 				->setTitle('Enable Cart Validation')
 				->setDescription('You must <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures#use_cart_validation" target="_blank">enable cart validation</a> in the FoxyCart admin.'),
 			TextField::create('StoreKey')
-				->setTitle('FpxyCart API Key')
+				->setTitle('FoxyCart API Key')
 				->setDescription('copy/paste from FoxyCart'),
 			ReadonlyField::create('SSOLink', 'Single Sign On URL', self::getSSOLink())
 				->setDescription('copy/paste to FoxyCart')
