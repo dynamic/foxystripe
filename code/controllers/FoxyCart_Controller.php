@@ -24,9 +24,16 @@ class FoxyCart_Controller extends Page_Controller {
                 urldecode($_POST["FoxySubscriptionData"]);
 			$FoxyData_decrypted = rc4crypt::decrypt(FoxyCart::getStoreKey(),$FoxyData_encrypted);
 			self::handleDataFeed($FoxyData_encrypted, $FoxyData_decrypted);
+			
+			// extend to allow for additional integrations with Datafeed
+			$this->extend('addIntegrations', $FoxyData_encrypted);
+			
 			return 'foxy';
+			
 		} else {
+			
 			return "No FoxyData or FoxySubscriptionData received.";
+			
 		}
 	}
 	
