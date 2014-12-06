@@ -67,12 +67,14 @@ class FoxyCartSiteConfig extends DataExtension{
         $fields->addFieldsToTab('Root.FoxyStripe.Settings', $fieldSet1);
 
         $fields->addFieldsToTab('Root.FoxyStripe.Products', array(
-            HeaderField::create('ProductGroupHeader', 'Product Groups', 3),
+            HeaderField::create('ProductHeader', 'Products', 3),
             CheckboxField::create('MultiGroup')
-                ->setTitle('Multiple Product Groups')
-                ->setDescription('Allows products to be shown in multiple product holders'),
+                ->setTitle('Multiple Groups')
+                ->setDescription('Allows products to be shown in multiple Product Groups'),
+            HeaderField::create('ProductGroupHeader', 'Product Groups', 3),
             NumericField::create('ProductLimit')
-                ->setTitle('Products per page on Product Holder')
+                ->setTitle('Products per Page')
+                ->setDescription('Number of Products to show per page on a Product Group')
         ));
 
         $fields->addFieldsToTab('Root.FoxyStripe.Templates', array(
@@ -114,6 +116,19 @@ class FoxyCartSiteConfig extends DataExtension{
                 )
             )->setHeadingLevel(4)
         ));
+        
+        $fields->addFieldsToTab('Root.FoxyStripe.Categories', array(
+	        HeaderField::create('CategoryHead', 'FoxyStripe Categories', 3),
+	        LiteralField::create('CategoryDescrip', '<p>FoxyCart Categories offer a way to give products additional behaviors that cannot be accomplished by product options alone, including category specific coupon codes, shipping and handling fees, and email receipts. <a href="https://wiki.foxycart.com/v/2.0/categories" target="_blank">Learn More</a></p><p>Categories you\'ve created in FoxyStripe must also be created in your <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">FoxyCart Categories</a> admin panel.</p>'),
+	      	GridField::create('ProductCategory', 'FoxyCart Categories', ProductCategory::get(), GridFieldConfig_RecordEditor::create()) 
+	    ));
+	    
+	    
+        $fields->addFieldsToTab('Root.FoxyStripe.Groups', array(
+	        HeaderField::create('OptionGroupsHead', 'Product Option Groups', 3),
+	        LiteralField::create('OptionGroupsDescrip', '<p>Product Option Groups allow you to name a set of product options.</p>'),
+	      	GridField::create('OptionGroup', 'Product Option Groups', OptionGroup::get(), GridFieldConfig_RecordEditor::create()) 
+	    ));
 
 	}
 

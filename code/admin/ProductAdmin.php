@@ -3,9 +3,7 @@
 class ProductAdmin extends ModelAdmin {
 
 	public static $managed_models = array(
-		'ProductPage',
-		'OptionGroup',
-		'ProductCategory'
+		'ProductPage'
 	);
 	
 	static $url_segment = 'products';

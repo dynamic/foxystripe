@@ -7,16 +7,16 @@
 
 class OptionGroup extends DataObject{
 
-	static $db = array('Title' => 'Text');
+	static $db = array('Title' => 'Varchar(100)');
 
     static $singular_name = 'Product Option Group';
     static $plural_name = 'Product Option Groups';
     static $description = 'Groups of product options, e.g. size, color, etc';
 	
 	function getCMSFields(){
-		$fields = FieldList::create(
-            TextField::create('Title', 'Option Group Name')
-        );
+		
+		$fields = parent::getCMSFields();
+		
 		$this->extend('getCMSFields', $fields);
 		
 		return $fields;
