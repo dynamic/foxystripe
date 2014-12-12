@@ -171,24 +171,32 @@ class ProductPage extends Page implements PermissionProvider {
 			$default = ProductCategory::get()->filter(array('Code' => 'DEFAULT'))->first();
 			$this->CategoryID = $default->ID;
 		}
-
+		
 		//update many_many lists when multi-group is on
 		if(SiteConfig::current_site_config()->MultiGroup){
 			$holders = $this->ProductHolders();
 			$product = ProductPage::get()->byID($this->ID);
-			$origParent = $product->ParentID;
+			if (isset($product->ParentID)) {
+				$origParent = $product->ParentID;
+			} else {
+				$origParent = null;
+			}
 			$currentParent = $this->ParentID;
 			if($origParent!=$currentParent){
 				if($holders->find('ID', $origParent)){
 					$holders->removeByID($origParent);
 				}
-				$holders->add($currentParent);
+				
 			}
+			$holders->add($currentParent);
 		}
+
 	}
 
 	public function onAfterWrite(){
 		parent::onAfterWrite();
+		
+		
 
 	}
 	
