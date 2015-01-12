@@ -85,7 +85,7 @@ class ProductPage extends Page implements PermissionProvider {
 		};
 		$catField = DropdownField::create('CategoryID', 'FoxyCart Category', $source())
             ->setEmptyString('')
-            ->setDescription('Required, must also exist in <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">FoxyCart</a>. Used to set shipping and taxes. Categories can be managed in FoxyStripe in the <a href="admin/products/ProductCategory">Products Admin</a>');
+            ->setDescription('Required, must also exist in <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">FoxyCart Categories</a>. Used to set category specific options like shipping and taxes. Managed in <a href="admin/settings">Settings > FoxyStripe > Categories</a>');
 		if (class_exists('QuickAddNewExtension')) $catField->useAddNew('ProductCategory', $source);
 		
 		// Product Images gridfield
@@ -149,6 +149,7 @@ class ProductPage extends Page implements PermissionProvider {
 		// Options Tab
 		$fields->addFieldsToTab('Root.Options', array(
 			HeaderField::create('OptionsHD', 'Product Options', 2),
+			LiteralField::create('OptionsDescrip', '<p>Product Options allow products to be customized by attributes such as size or color. Options can also modify the product\'s price, weight or code.</p>'),
 			$prodOptField
 		));
 

@@ -58,9 +58,9 @@ class OptionItem extends DataObject{
 		    return OptionGroup::get()->map()->toArray();
 		};
 		$groupFields = singleton('OptionGroup')->getCMSFields();
-		$groupField = DropdownField::create('ProductOptionGroupID', 'Option Group', $groups())
+		$groupField = DropdownField::create('ProductOptionGroupID', 'Group', $groups())
 			->setEmptyString('')
-            ->setDescription('Option Groups can be managed in the <a href="admin/products/OptionGroup">Products Admin</a>');
+            ->setDescription('Name of this group of options. Managed in <a href="admin/settings">Settings > FoxyStripe > Option Groups</a>');
 		if (class_exists('QuickAddNewExtension')) $groupField->useAddNew('OptionGroup', $groups, $groupFields);
 		
 		// Cateogry Dropdown field w/ add new
@@ -69,7 +69,7 @@ class OptionItem extends DataObject{
 		};
 		$categoryField = DropdownField::create('CategoryID', 'Category', $categories())
 			->setEmptyString('')
-            ->setDescription('Categories can be managed in the <a href="admin/products/ProductCategory">Products Admin</a>');
+            ->setDescription('Categories can be managed in <a href="admin/settings">Settings > FoxyStripe > Categories</a>');
 		if (class_exists('QuickAddNewExtension')) $categoryField->useAddNew('ProductCategory', $categories);
 		
 		$fields->addFieldsToTab('Root.Main', array(
