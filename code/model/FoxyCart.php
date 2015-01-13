@@ -66,6 +66,7 @@ class FoxyCart extends Object {
         // The following if block will print any CURL errors you might have
         if ($response == false) {
             //trigger_error("Could not connect to FoxyCart API", E_USER_ERROR);
+            SS_Log::log("Could not connect to FoxyCart API: " . $response, SS_Log::ERR);
         }
         curl_close($ch);
 
