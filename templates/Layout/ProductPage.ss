@@ -1,68 +1,43 @@
+<%-- redeclare Simple theme includes to keep correct inclusion order --%>
+<% require themedCSS('reset') %>
+<% require themedCSS('typography') %>
+<% require themedCSS('layout') %>
+<%-- FoxyStripe requirements --%>
+<% require css('foxystripe/thirdparty/flexslider/flexslider.css') %>
+<% require css('foxystripe/thirdparty/shadowbox/shadowbox.css') %>
 <% require css('foxystripe/css/foxycart.css') %>
-<p>$Breadcrumbs</p>
 
-<div class="content-container unit size3of4">
-	<aside class="unit size1of4 product-image-stack">
-		<% if MainImage %>
-			$MainImage.SetWidth(245)
-		<% end_if %>
-		<% if ProductImages %>
-	        <% include FlexSlider %>
-	    <% else_if PreviewImage %>
-	    	<% with PreviewImage %>
-					<a href="{$URL}" rel="shadowbox">
-						<img src="{$URL}" class="product-image" />
-					</a>
-	        <% end_with %>
-	    <% end_if %>
-	</aside>
-	
-	<div class="unit size3of4 product-info-stack">
-		<article>
-		    
-	        <div class="productTextContainer floatLeft">
-	            <h1>{$Title}</h1>
-	            <p>
-		            <strong>Base Price:</strong> $Price.Nice<br>
-		            <strong>Weight:</strong> $Weight lbs<br>
-		            <strong>Code:</strong> $Code
-	            </p>
-	            <div class="content"><p>{$Content}</p></div>
-	        </div>
-		    	
-		    
-	   </article>
-		$Form
-		$PageComments
-	</div>
-</div>
-<div class="sidebar unit size1of4 lastUnit ">
-	$PurchaseForm
+<div class="ProductPage">
+    <p>$Breadcrumbs</p>
+
+    <div class="content-container unit size3of4">
+        <aside class="unit size2of5 productSummaryImage">
+            <% include FlexSlider %>
+        </aside>
+
+        <div class="unit size3of5 productSummaryText">
+            <article>
+
+                    <h1>$Title</h1>
+                    <p>
+                        <strong>Base Price:</strong> $Price.Nice<br>
+                        <strong>Weight:</strong> $Weight lbs<br>
+                        <strong>Code:</strong> $Code
+                    </p>
+                    <div class="content">$Content</div>
+
+
+            </article>
+            $PageComments
+        </div>
+    </div>
+
+    <div class="sidebar unit size1of4">
+        $PurchaseForm
+    </div>
 </div>
 
-<script type="text/javascript" charset="utf-8">
-	jQuery('#carousel').flexslider({
-		animation: "slide",
-		controlNav: false,
-		animationLoop: false,
-		slideshow: false,
-		itemWidth: 75,
-		itemMargin: 5,
-		asNavFor: '#slider'
-	});
-	jQuery('#slider').flexslider({
-		animation: "slide",
-		animationLoop: true,
-		controlNav: true,
-		directionNav: true, 
-		pauseOnAction: true,
-		pauseOnHover: true,
-		slideshow: false,
-		start: function(slider){
-		  jQuery('body').removeClass('loading');
-		}	
-	});	
-</script>
-<script type="text/javascript">
-	Shadowbox.init();
-</script>
+<% require javascript('framework/thirdparty/jquery/jquery.js') %>
+<% require javascript('foxystripe/thirdparty/flexslider/jquery.flexslider.js') %>
+<% require javascript('foxystripe/thirdparty/shadowbox/shadowbox.js') %>
+<% require javascript('foxystripe/javascript/product_init.js') %>

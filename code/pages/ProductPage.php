@@ -375,13 +375,13 @@ JS;
 	}
 	
 	public function AddToCartForm() {
-		$form = "<div class='addToCartContainer'>";
+		$form = "<div class='field'>";
 		$form .= "<label for='quantity'>Quantity</label><div class='foxycart_qty'>";
 		$form .= "<select name='quantity' id='qty'>";
 		$form .= "<option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option>";
 		$form .= "</select>";
 		$form .= "</div>";
-		$form .= sprintf("<div class='checkoutbtn'><h4 class='submitPrice' id='SubmitPrice%s'>$%2.2f</h4><input type='submit' value='%s' class='submit' /></div>",
+		$form .= sprintf("<div class='field checkoutbtn'><h4 class='submitPrice' id='SubmitPrice%s'>$%2.2f</h4><input type='submit' value='%s' class='submit' /></div>",
 			$this->ID,
 			$this->Price,
 			'Add to Cart'
@@ -392,10 +392,11 @@ JS;
 	
 	public function selectField($name = null, $id = null, $optionSet = null) {
 		if($optionSet && $id && $name){
+			$selectField = '<div class="field selectfield">';
 			if($name != 'None'){
-				$selectField = "<label for='{$name}'>$name</label><select name='{$name}' id='{$id}'>";
+				$selectField .= "<label for='{$name}'>$name</label><select name='{$name}' id='{$id}'>";
 			} else {
-				$selectField = "<label for='{$name}'>&nbsp;</label><select name='{$name}' id='{$id}'>";
+				$selectField .= "<label for='{$name}'>&nbsp;</label><select name='{$name}' id='{$id}'>";
 			}
 			foreach($optionSet as $option){
 				
@@ -421,7 +422,7 @@ JS;
 					($option->PriceModifier != 0) ? ': ('.OptionItem::getOptionModifierActionSymbol($option->PriceModifierAction, $returnWithOnlyPlusMinus=true).'$'.$modPrice.')' : ''
 				);
 			}
-			$selectField .= '</select>';
+			$selectField .= '</select></div>';
 			return $selectField;
 		}
 	}
@@ -471,12 +472,6 @@ class ProductPage_Controller extends Page_Controller {
 
 	public function init(){
 		parent::init();
-
-		Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
-		Requirements::javascript('foxystripe/thirdparty/flexslider/jquery.flexslider-min.js');
-		Requirements::css('foxystripe/thirdparty/flexslider/flexslider.css');
-		Requirements::javascript('foxystripe/thirdparty/shadowbox/shadowbox.js');
-		Requirements::css('foxystripe/thirdparty/shadowbox/shadowbox.css');
 
 		if(SiteConfig::current_site_config()->CartPage==false){
 			Requirements::css('//cdn.foxycart.com/static/scripts/colorbox/1.3.19/style1_fc/colorbox.css?ver=1');
