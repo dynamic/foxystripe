@@ -27,3 +27,6 @@ before_script:
 
 script:
  - vendor/bin/phpunit foxystripe/tests/
+notifications:
+  slack:
+    secure: EsA1gihJJ+/q7LWH+C5ipRx4Izi49e9ekGf4/0HL0bD4np/BGSRsh8/bBwOhYOLSi2RJTZzl62ALO0J2gjkwMyvrT41jmpVFYYFBEer5D3f5KEa8otq+Z0yHNxUwIMVbqg48fQU8L0TAPBUHSiABjMyTJAbEfemy7Q2oRmCtFiU=
