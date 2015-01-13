@@ -19,7 +19,8 @@ class Order extends DataObject implements PermissionProvider{
         'PaymentGatewayType' => 'Varchar(100)',
         'ReceiptURL' => 'Varchar(255)',
         'OrderStatus' => 'Varchar(255)',
-        'CustomerIP' => 'Varchar'
+        'CustomerIP' => 'Varchar',
+        'Response' => 'Text'
     );
 
 	private static $has_one = array(
@@ -61,6 +62,10 @@ class Order extends DataObject implements PermissionProvider{
 
     private static $casting = array(
         'ReceiptLink' => 'HTMLVarchar'
+    );
+    
+    private static $indexes = array(
+        'Order_ID' => true // make unique
     );
 
     function fieldLabels($includerelations = true) {
@@ -111,7 +116,7 @@ class Order extends DataObject implements PermissionProvider{
 	}
 
 	public function canEdit($member = null) {
-        //return true;
+        //return Permission::check('Product_ORDERS');
         return false;
 	}
 

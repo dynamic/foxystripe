@@ -20,18 +20,11 @@ class OrderDetail extends DataObject {
         'Options' => 'OptionItem'
     );
 
-	//private static $default_sort = null;
-
-
 	private static $summary_fields = array(
         'Product.Title',
         'Quantity',
         'Price.Nice'
     );
-
-	//private static $searchable_fields = array();
-	//private static $field_labels = array();
-	//private static $indexes = array();
 
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
@@ -59,8 +52,7 @@ class OrderDetail extends DataObject {
 	}
 
 	public function canEdit($member = null) {
-		return true;
-        //return false;
+        return false;
 	}
 
 	public function canDelete($member = null) {

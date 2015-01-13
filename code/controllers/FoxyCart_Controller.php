@@ -10,9 +10,6 @@ class FoxyCart_Controller extends Page_Controller {
 	
 	static $allowed_actions = array(
 		'index',
-		'handleFetchAppTest',
-        'FCAPIMemberGet',
-        'FCAPIMemberPut',
         'sso'
 	);
 	
@@ -41,6 +38,7 @@ class FoxyCart_Controller extends Page_Controller {
         //handle encrypted & decrypted data
         $orders = new SimpleXMLElement($decrypted);
 
+		// loop over each transaction
         foreach ($orders->transactions->transaction as $order) {
 
             if(isset($order->id)) {
@@ -67,10 +65,11 @@ class FoxyCart_Controller extends Page_Controller {
             $transaction->ReceiptURL = (string) $order->receipt_url;
             $transaction->OrderStatus = (string) $order->status;
             $transaction->CustomerIP = (string) $order->customer_ip;
+            $transaction->Response = $decrypted;
 
             // Customer info
             // if not a guest transaction in FoxyCart
-            if(isset($order->customer_email)) {
+            if(isset($order->customer_email) && $order->is_anonymous == 0) {
 
                 // set PasswordEncryption to 'none' so imported, encrypted password is not encrypted again
                 Config::inst()->update('Security', 'password_encryption_algorithm', 'none');
@@ -91,60 +90,55 @@ class FoxyCart_Controller extends Page_Controller {
 
                 // record member record
                 $customer->write();
+                
+                // set Order MemberID
+                $transaction->MemberID = $customer->ID;
+                
+            }
 
-                // billing address
-                ($billingAddress = OrderAddress::get()->filter(array(
-                    'Address1' => $order->customer_address1,
-                    'PostalCode' => $order->customer_postal_code,
-                    'CustomerID' => $customer->ID
-                ))->First()) ?
+			// billing address
+			($billingAddress = OrderAddress::get()->filter('OrderID', $transaction->Order_ID)->First()) ?
                     $billingAddress :
                     $billingAddress = OrderAddress::create();
 
-                $billingAddress->Name = $customer->FirstName . ' ' . $customer->Surname;
-                $billingAddress->Company = (string) $order->customer_company;
-                $billingAddress->Address1 = (string) $order->customer_address1;
-                $billingAddress->Address2 = (string) $order->customer_address2;
-                $billingAddress->City = (string) $order->customer_city;
-                $billingAddress->State = (string) $order->customer_state;
-                $billingAddress->PostalCode = (string) $order->customer_postal_code;
-                $billingAddress->Country = (string) $order->customer_country;
-                $billingAddress->Phone = (string) $order->customer_phone;
-                $billingAddress->CustomerID = $customer->ID;
+            $billingAddress->Name = $customer->FirstName . ' ' . $customer->Surname;
+            $billingAddress->Company = (string) $order->customer_company;
+            $billingAddress->Address1 = (string) $order->customer_address1;
+            $billingAddress->Address2 = (string) $order->customer_address2;
+            $billingAddress->City = (string) $order->customer_city;
+            $billingAddress->State = (string) $order->customer_state;
+            $billingAddress->PostalCode = (string) $order->customer_postal_code;
+            $billingAddress->Country = (string) $order->customer_country;
+            $billingAddress->Phone = (string) $order->customer_phone;
+            if($customer) $billingAddress->CustomerID = $customer->ID;
 
-                // record shipping address
-                $billingAddress->write();
+            // record billing address
+            $billingAddress->write();
 
-                // shipping address
-                ($shippingAddress = OrderAddress::get()->filter(array(
-                    'Address1' => $order->shipping_address1,
-                    'PostalCode' => $order->shipping_postal_code,
-                    'CustomerID' => $customer->ID
-                ))->First()) ?
+            // shipping address
+            ($shippingAddress = OrderAddress::get()->filter('OrderID', $transaction->Order_ID)->First()) ?
                     $shippingAddress :
                     $shippingAddress = OrderAddress::create();
 
-                $shippingAddress->Name = $customer->FirstName . ' ' . $customer->Surname;
-                $shippingAddress->Company = (string) $order->shipping_company;
-                $shippingAddress->Address1 = (string) $order->shipping_address1;
-                $shippingAddress->Address2 = (string) $order->shipping_address2;
-                $shippingAddress->City = (string) $order->shipping_city;
-                $shippingAddress->State = (string) $order->shipping_state;
-                $shippingAddress->PostalCode = (string) $order->shipping_postal_code;
-                $shippingAddress->Country = (string) $order->shipping_country;
-                $shippingAddress->Phone = (string) $order->shipping_phone;
-                $shippingAddress->CustomerID = $customer->ID;
+            $shippingAddress->Name = $customer->FirstName . ' ' . $customer->Surname;
+            $shippingAddress->Company = (string) $order->shipping_company;
+            $shippingAddress->Address1 = (string) $order->shipping_address1;
+            $shippingAddress->Address2 = (string) $order->shipping_address2;
+            $shippingAddress->City = (string) $order->shipping_city;
+            $shippingAddress->State = (string) $order->shipping_state;
+            $shippingAddress->PostalCode = (string) $order->shipping_postal_code;
+            $shippingAddress->Country = (string) $order->shipping_country;
+            $shippingAddress->Phone = (string) $order->shipping_phone;
+            if($customer) $shippingAddress->CustomerID = $customer->ID;
 
-                // record shipping address
-                $shippingAddress->write();
+            // record shipping address
+            $shippingAddress->write();
 
 
-                // Associate with Order
-                $transaction->MemberID = $customer->ID;
-                $transaction->BillingAddressID = $billingAddress->ID;
-                $transaction->ShippingAddressID = $shippingAddress->ID;
+            // Associate with Order
+            $transaction->BillingAddressID = $billingAddress->ID;
+            $transaction->ShippingAddressID = $shippingAddress->ID;
 
-            }
 
             // record transaction as order
             $transaction->write();
@@ -154,74 +148,67 @@ class FoxyCart_Controller extends Page_Controller {
 
             // Associate ProductPages, Options, Quanity with Order
             foreach ($order->transaction_details->transaction_detail as $product) {
-                if(isset($product->product_code)) {
+	            
+                $ProductOption = OrderDetail::create();
 
-                    $ProductOption = OrderDetail::create();
+                // set Quantity
+                $ProductOption->Quantity = (int) $product->product_quantity;
 
-                    // set Quantity
-                    $ProductOption->Quantity = (int) $product->product_quantity;
+                // set calculated price (after option modifiers)
+                $ProductOption->Price = (float) $product->product_price;
 
-                    // set calculated price (after option modifiers)
-                    $ProductOption->Price = (float) $product->product_price;
+                // Find product via product_id custom variable
+                foreach ($product->transaction_detail_options->transaction_detail_option as $productID) {
+                    if ($productID->product_option_name == 'product_id') {
 
-                    // Find product via product_id custom variable
-                    foreach ($product->transaction_detail_options->transaction_detail_option as $option) {
-                        if ($option->product_option_name == 'product_id') {
+                        $OrderProduct = ProductPage::get()
+                        	->filter('ID', (int) $productID->product_option_value)
+                            ->First();
 
-                            $OrderProduct = ProductPage::get()->filter('ID', (int) $option->product_option_value)
-                                ->First();
+						// if product could be found, then set Option Items
+                        if ($OrderProduct) {
 
-                            if ($OrderProduct) {
-
-                                // set Product
-                                $ProductOption->ProductID = $OrderProduct->ID;
-
-                            }
+                            // set Product
+                            $ProductOption->ProductID = $OrderProduct->ID;
+                            
+                            // loop through all Product Options
+		                    foreach ($product->transaction_detail_options->transaction_detail_option as $option) {
+		
+		                        $OptionItem = OptionItem::get()->filter(array(
+		                            'ProductID' => (string) $OrderProduct->ID,
+		                            'Title' => (string) $option->product_option_value
+		                        ))->First();
+		                        
+		                        if ($OptionItem) {
+		                            $ProductOption->Options()->add($OptionItem);
+		                            
+		                            // modify product price 
+			                        if($priceMod = $option->price_mod) {
+				                        $ProductOption->Price += $priceMod;
+			                        }
+		                        }
+		                    }
                         }
-                    }
-
-                    // Product Options
-                    foreach ($product->transaction_detail_options->transaction_detail_option as $option) {
-
-                        $OptionItem = OptionItem::get()->filter(array(
-                            'ProductID' => (string) $OrderProduct->ID,
-                            'Title' => (string) $option->product_option_value
-                        ))->First();
-                        
-                        // modify product price 
-                        if($priceMod = $option->price_mod) {
-	                        $ProductOption->Price += $priceMod;
-                        }
-
-                        if ($OptionItem) {
-                            $ProductOption->Options()->add($OptionItem);
-                        }
-
                     }
 
                     // associate with this order
                     $ProductOption->OrderID = $transaction->ID;
                     
-                    // extend OrderDetail parsing, allowing for custom fields in FoxyCart
+                    // extend OrderDetail parsing, allowing for recording custom fields in FoxyCart
 					$this->extend('handleOrderItem', $decrypted, $product, $ProductOption);
 					
 					// write
                     $ProductOption->write();
 
                 }
-
             }
-
-			
-
         }
-
-        
 	}
 
+	// Single Sign on integration with FoxyCart
     public function sso() {
 
-        // GET variables from FoxyCart Request
+	    // GET variables from FoxyCart Request
         $fcsid = $this->request->getVar('fcsid');
 
         $Member = Member::currentUser();
@@ -230,32 +217,9 @@ class FoxyCart_Controller extends Page_Controller {
 
         $redirect_complete = 'https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/checkout?fc_auth_token=' . $auth_token .
             '&fcsid=' . $fcsid . '&fc_customer_id=' . $Member->Customer_ID . '&timestamp=' . $timestampNew;
+	
+	    $this->redirect($redirect_complete);
 
-        $this->redirect($redirect_complete);
-
-    }
-
-    // experiments pushing to FoxyCart via API
-
-    public function FCAPIMemberGet() {
-
-        $Member = Member::get()->byID(10);
-        $response = FoxyCart::getCustomer($Member);
-
-        $foxyResponse = simplexml_load_string($response, NULL, LIBXML_NOCDATA);
-        print "<pre>";
-        var_dump($foxyResponse);
-        print "</pre>";
-    }
-
-    public function FCAPIMemberPut($request) {
-        $Member = Member::get()->byID(10);
-        $response = FoxyCart::putCustomer($Member);
-
-        $foxyResponse = simplexml_load_string($response, NULL, LIBXML_NOCDATA);
-        print "<pre>";
-        var_dump($foxyResponse);
-        print "</pre>";
     }
 	
 }

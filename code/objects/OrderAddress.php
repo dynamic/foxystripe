@@ -15,12 +15,17 @@ class OrderAddress extends DataObject {
     );
 
     private static $has_one = array(
+        'Order' => 'Order',
         'Customer' => 'Member'
     );
 
     private static $singular_name = 'Order Address';
     private static $plural_name = 'Order Addresses';
     private static $description = '';
+    
+    public function getTitle() {
+	    return $this->Name . ', ' . $this->Address1 . ', ' . $this->City . ' ' . $this->State . ' ' . $this->PostalCode . ' ' . $this->Country;
+    }
 
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
