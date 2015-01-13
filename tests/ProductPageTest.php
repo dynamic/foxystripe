@@ -10,7 +10,7 @@ class ProductPageTest extends FS_Test{
 
 	function testProductCreation(){
 
-		$this->loginAs('admin');
+		$this->logInWithPermission('Product_CANCRUD');
 		$default = $this->objFromFixture('ProductCategory', 'default');
 		$default->write();
 		$product1 = $this->objFromFixture('ProductPage', 'product1');
@@ -22,7 +22,7 @@ class ProductPageTest extends FS_Test{
 
 	function testProductDeletion(){
 
-		$this->loginAs('admin');
+		$this->logInWithPermission('Product_CANCRUD');
 		$product2 = $this->objFromFixture('ProductPage', 'product2');
 		$productID = $product2->ID;
 
@@ -41,6 +41,38 @@ class ProductPageTest extends FS_Test{
 		foreach($versions as $versionRow) $versionsPostDelete[] = $versionRow;
 
 		$this->assertTrue($versionsPostPublish == $versionsPostDelete);
+
+	}
+
+	function testProductCategoryCreation(){
+
+		$this->logInWithPermission('Product_CANCRUD');
+		$category = $this->objFromFixture('ProductCategory', 'default');
+		$category->write();
+
+		$this->assertNotNull(ProductCategory::get()->first());
+
+	}
+
+	function testProductCategoryDeletion(){
+
+		$this->logInWithPermission('Product_CANCRUD');
+		$category = $this->objFromFixture('ProductCategory', 'default');
+		$category->write();
+
+		$this->assertFalse($category->canDelete());
+
+		$category2 = $this->objFromFixture('ProductCategory', 'apparel');
+		$category2->write();
+
+		$this->assertTrue($category2->canDelete());
+
+		$this->logOut();
+
+		$this->logInWithPermission('ADMIN');
+
+		$this->assertFalse($category->canDelete());
+		$this->assertTrue($category2->canDelete());
 
 	}
 

@@ -39,7 +39,7 @@ class ProductCategory extends DataObject {
         $this->extend('updateCMSFields', $fields);
         return $fields;
 	}
-	
+
 	public function requireDefaultRecords() {
 		parent::requireDefaultRecords();
 		$allCats = DataObject::get('ProductCategory');
@@ -60,7 +60,9 @@ class ProductCategory extends DataObject {
 	}
 
 	public function canDelete($member = null) {
-		return Permission::check('Product_CANCRUD');
+
+		//don't allow deletion of DEFAULT category
+		return ($this->Code == 'DEFAULT') ? false : Permission::check('Product_CANCRUD');
 	}
 
 	public function canCreate($member = null) {
