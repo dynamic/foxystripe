@@ -38,6 +38,9 @@ ProductCategory:
   default:
     Title: Default
     Code: DEFAULT
+  apparel:
+    Title: Apparel
+    Code: APPAREL
 # ------------------------------------------
 # Groups
 # ------------------------------------------
