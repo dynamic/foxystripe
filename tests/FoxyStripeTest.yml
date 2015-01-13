@@ -1,0 +1,70 @@
+ProductPage:
+  product1:
+    Title: Product 1
+    URLSegment: product-1
+    Price: 50
+    Weight: 1.5
+    Code: ABC123
+    ReceiptTitle: Product 1 - Receipt
+    Featured: 0
+    Available: 1
+    CategoryID: 1
+  product2:
+    Title: Product 2
+    URLSegment: product-2
+    Price: 225
+    Weight: 4.7
+    Code: DEF456
+    ReceiptTitle: Product 2 - Receipt
+    Featured: 1
+    Available: 1
+    CategoryID: 1
+  product2:
+    Title: Product 3
+    URLSegment: product-3
+    Price: 176
+    Weight: 2.4
+    Code: GHI789
+    ReceiptTitle: Product 3 - Receipt
+    Featured: 1
+    Available: 0
+    CategoryID: 1
+OptionGroup:
+  og1:
+    Title: Size
+  og2:
+    Title: Color
+ProductCategory:
+  default:
+    Title: Default
+    Code: DEFAULT
+# ------------------------------------------
+# Groups
+# ------------------------------------------
+Group:
+  admin:
+    Title: Administrators
+  customers:
+    Title: Customers
+    Code: customers
+
+# ------------------------------------------
+# Members
+# ------------------------------------------
+Member:
+  admin:
+    FirstName: Admin
+    Surname: Admin
+    Email: admin@test.com
+    Password: password
+    Groups: =>Group.admin
+# ------------------------------------------
+# Permissions
+# ------------------------------------------
+Permission:
+   admin:
+    Code: ADMIN
+    GroupID: =>Group.admin
+  viewOrder:
+    Code: VIEW_ORDER
+    GroupID: =>Group.customers
