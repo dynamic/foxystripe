@@ -5,16 +5,8 @@ class FoxyCartSiteConfig extends DataExtension{
 	private static $db = array(
 		'StoreName' => 'Varchar(255)',
 		'StoreKey' => 'Varchar(255)',
-		'CartPage' => 'Boolean',
-		'CartContent' => 'HTMLText',
-		'CheckoutPage' => 'Boolean',
-		'CheckoutContent' => 'HTMLText',
-		'ReceiptPage' => 'Boolean',
-		'ReceiptContent' => 'HTMLText',
 		'MultiGroup' => 'Boolean',
 		'ProductLimit' => 'Int',
-		'EmailPage' => 'Boolean',
-		'EmailContent' => 'HTMLText',
 		'CartValidation' => 'Boolean'
 	);
 
@@ -67,73 +59,16 @@ class FoxyCartSiteConfig extends DataExtension{
         $fields->addFieldsToTab('Root.FoxyStripe.Settings', $fieldSet1);
 
         $fields->addFieldsToTab('Root.FoxyStripe.Products', array(
-            HeaderField::create('ProductHeader', 'Products', 3),
-            CheckboxField::create('MultiGroup')
-                ->setTitle('Multiple Groups')
-                ->setDescription('Allows products to be shown in multiple Product Groups'),
             HeaderField::create('ProductGroupHeader', 'Product Groups', 3),
+            CheckboxField::create('MultiGroup')
+                ->setTitle('Multiple Product Groups')
+                ->setDescription('Allows products to be shown in multiple product holders'),
             NumericField::create('ProductLimit')
-                ->setTitle('Products per Page')
-                ->setDescription('Number of Products to show per page on a Product Group')
+                ->setTitle('Products per page on Product Holder')
         ));
 
-        $fields->addFieldsToTab('Root.FoxyStripe.Templates', array(
-            HeaderField::create('CacheableTemplates', 'Cacheable Templates', 3),
-            ToggleCompositeField::create('Cart', 'Cached Cart Page Settings',
-                array(
-                    CheckboxField::create('CartPage')
-                        ->setTitle('Enable link to cache cart page template'),
-                    ReadonlyField::create('CartLink', 'Cart Cache Link', self::getCacheLink('cart')),
-                    HtmlEditorField::create('CartContent')
-                        ->setTitle('Cart page content')
-                )
-            )->setHeadingLevel(4),
-            ToggleCompositeField::create('Checkout', 'Cached Checkout Page Settings',
-                array(
-                    CheckboxField::create('CheckoutPage')
-                        ->setTitle('Enable link to cache checkout page template'),
-                    ReadonlyField::create('CheckoutLink', 'Checkout Cache Link', self::getCacheLink('checkout')),
-                    HtmlEditorField::create('CheckoutContent')
-                        ->setTitle('Checkout page content')
-                )
-            )->setHeadingLevel(4),
-            ToggleCompositeField::create('Receipt', 'Cached Receipt Settings',
-                array(
-                    CheckboxField::create('ReceiptPage')
-                        ->setTitle('Enable link to cache receipt template'),
-                    ReadonlyField::create('ReceiptLink', 'Receipt Cache Link', self::getCacheLink('receipt')),
-                    HtmlEditorField::create('ReceiptContent')
-                        ->setTitle('Receipt page content')
-                )
-            )->setHeadingLevel(4),
-            ToggleCompositeField::create('Email', 'Cached Email Settings',
-                array(
-                    CheckboxField::create('EmailPage')
-                        ->setTitle('Enable link to cache email template'),
-                    ReadonlyField::create('EmailLink', 'Email Cache Link', self::getCacheLink('email')),
-                    HtmlEditorField::create('EmailContent')
-                        ->setTitle('Email content')
-                )
-            )->setHeadingLevel(4)
-        ));
         
-        $fields->addFieldsToTab('Root.FoxyStripe.Categories', array(
-	        HeaderField::create('CategoryHead', 'FoxyStripe Categories', 3),
-	        LiteralField::create('CategoryDescrip', '<p>FoxyCart Categories offer a way to give products additional behaviors that cannot be accomplished by product options alone, including category specific coupon codes, shipping and handling fees, and email receipts. <a href="https://wiki.foxycart.com/v/2.0/categories" target="_blank">Learn More</a></p><p>Categories you\'ve created in FoxyStripe must also be created in your <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">FoxyCart Categories</a> admin panel.</p>'),
-	      	GridField::create('ProductCategory', 'FoxyCart Categories', ProductCategory::get(), GridFieldConfig_RecordEditor::create()) 
-	    ));
-	    
-	    
-        $fields->addFieldsToTab('Root.FoxyStripe.Groups', array(
-	        HeaderField::create('OptionGroupsHead', 'Product Option Groups', 3),
-	        LiteralField::create('OptionGroupsDescrip', '<p>Product Option Groups allow you to name a set of product options.</p>'),
-	      	GridField::create('OptionGroup', 'Product Option Groups', OptionGroup::get(), GridFieldConfig_RecordEditor::create()) 
-	    ));
 
-	}
-
-	private static function getCacheLink($type = null){
-		return Director::absoluteBaseURL()."generateCache/$type";
 	}
 
     private static function getSSOLink() {

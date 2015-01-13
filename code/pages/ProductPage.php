@@ -433,6 +433,13 @@ JS;
 			$val
 		);
 	}
+	
+	// get FoxyCart Store Name for JS call
+	public function getColorBoxScript() {
+        return (class_exists('FoxyStripeCache_Controller') && SiteConfig::current_site_config()->CartPage == true)
+            ? false
+            : '<script src="//cdn.foxycart.com/' . FoxyCart::getFoxyCartStoreName() . '/loader.js" async defer></script>';
+    }
 
 	/**
 	 * @param Member $member
@@ -472,11 +479,6 @@ class ProductPage_Controller extends Page_Controller {
 
 	public function init(){
 		parent::init();
-
-		if(SiteConfig::current_site_config()->CartPage==false){
-			Requirements::css('//cdn.foxycart.com/static/scripts/colorbox/1.3.19/style1_fc/colorbox.css?ver=1');
-			Requirements::javascript('//cdn.foxycart.com/' . FoxyCart::getFoxyCartStoreName() . '/foxycart.colorbox.js?ver=2');
-		}
 
 	}
 }
