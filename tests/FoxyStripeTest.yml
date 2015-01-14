@@ -46,6 +46,25 @@ OptionGroup:
     Title: Size
   color:
     Title: Color
+OptionItem:
+  large:
+    Title: Large
+    WeightModifier: 3
+    CodeModifier: ABC456
+    PriceModifier: 3.5
+    WeightModifierAction: Add
+    CodeModifieraction: Add
+    PriceModifierAction: Subtract
+    Available: true
+  small:
+      Title: Small
+      WeightModifier: 2
+      CodeModifier: ABC457
+      PriceModifier: 2.5
+      WeightModifierAction: Set
+      CodeModifieraction: Subtract
+      PriceModifierAction: Add
+      Available: false
 # ------------------------------------------
 # Groups
 # ------------------------------------------

@@ -47,10 +47,13 @@ class ProductPageTest extends FS_Test{
 	function testProductCategoryCreation(){
 
 		$this->logInWithPermission('Product_CANCRUD');
-		$category = $this->objFromFixture('ProductCategory', 'default');
+		$category = $this->objFromFixture('ProductCategory', 'apparel');
 		$category->write();
+		$categoryID = $category->ID;
 
-		$this->assertNotNull(ProductCategory::get()->first());
+		$productCategory = ProductCategory::get()->filter(array('Code'=>'APPAREL'))->first();
+
+		$this->assertTrue($categoryID == $productCategory->ID);
 
 	}
 
@@ -110,6 +113,38 @@ class ProductPageTest extends FS_Test{
 		$group->delete();
 
 		$this->assertFalse(in_array($groupID, OptionGroup::get()->column('ID')));
+
+	}
+
+	function testOptionItemCreation(){
+
+		$this->logInWithPermission('Product_CANCRUD');
+		$option = $this->objFromFixture('OptionItem', 'large');
+		$option->write();
+		$optionID = $option->ID;
+
+		$optionItem = OptionItem::get()->first();
+
+		$this->assertTrue($optionID == $optionItem->ID);
+
+	}
+
+	function testOptionItemDeletion(){
+
+		$this->logInWithPermission('ADMIN');
+		$option = $this->objFromFixture('OptionItem', 'small');
+		$option->write();
+		$optionID = $option->ID;
+
+		$this->assertTrue($option->canDelete());
+
+		$this->logOut();
+		$this->logInWithPermission('Product_CANCRUD');
+
+		$this->assertTrue($option->canDelete());
+		$option->delete();
+
+		$this->assertFalse(in_array($optionID, OptionItem::get()->column('ID')));
 
 	}
 
