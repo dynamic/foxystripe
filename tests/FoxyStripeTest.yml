@@ -41,6 +41,11 @@ ProductCategory:
   apparel:
     Title: Apparel
     Code: APPAREL
+OptionGroup:
+  size:
+    Title: Size
+  color:
+    Title: Color
 # ------------------------------------------
 # Groups
 # ------------------------------------------
