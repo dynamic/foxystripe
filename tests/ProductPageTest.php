@@ -64,6 +64,7 @@ class ProductPageTest extends FS_Test{
 
 		$category2 = $this->objFromFixture('ProductCategory', 'apparel');
 		$category2->write();
+		$category2ID = $category2->ID;
 
 		$this->assertTrue($category2->canDelete());
 
@@ -73,6 +74,42 @@ class ProductPageTest extends FS_Test{
 
 		$this->assertFalse($category->canDelete());
 		$this->assertTrue($category2->canDelete());
+
+		$this->logOut();
+		$this->logInWithPermission('Product_CANCRUD');
+
+		$category2->delete();
+
+		$this->assertFalse(in_array($category2ID,ProductCategory::get()->column('ID')));
+
+	}
+
+	function testOptionGroupCreation(){
+
+		$this->logInWithPermission('Product_CANCRUD');
+		$group = $this->objFromFixture('OptionGroup', 'size');
+		$group->write();
+
+		$this->assertNotNull(OptionGroup::get()->first());
+
+	}
+
+	function testOptionGroupDeletion(){
+
+		$this->logInWithPermission('ADMIN');
+		$group = $this->objFromFixture('OptionGroup', 'color');
+		$group->write();
+		$groupID = $group->ID;
+
+		$this->assertTrue($group->canDelete());
+
+		$this->logOut();
+		$this->logInWithPermission('Product_CANCRUD');
+
+		$this->assertTrue($group->canDelete());
+		$group->delete();
+
+		$this->assertFalse(in_array($groupID, OptionGroup::get()->column('ID')));
 
 	}
 

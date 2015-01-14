@@ -7,48 +7,50 @@
 
 class OptionGroup extends DataObject{
 
-	static $db = array('Title' => 'Varchar(100)');
+	private static $db = array(
+		'Title' => 'Varchar(100)'
+	);
 
-    static $singular_name = 'Product Option Group';
-    static $plural_name = 'Product Option Groups';
-    static $description = 'Groups of product options, e.g. size, color, etc';
-	
+    private static $singular_name = 'Product Option Group';
+	private static $plural_name = 'Product Option Groups';
+	private static $description = 'Groups of product options, e.g. size, color, etc';
+
 	function getCMSFields(){
-		
+
 		$fields = parent::getCMSFields();
-		
+
 		$this->extend('getCMSFields', $fields);
-		
+
 		return $fields;
 	}
-	
+
 	public function requireDefaultRecords() {
 		parent::requireDefaultRecords();
-		if(!DataObject::get_one('OptionGroup', "`Title` = 'Size'")) {
+		if(!OptionGroup::get()->filter(array('Title' => 'Size'))->first()) {
             $do = new OptionGroup();
             $do->Title = "Size";
             $do->write();
         }
-        if(!DataObject::get_one('OptionGroup', "`Title` = 'Color'")) {
+        if(!OptionGroup::get()->filter(array('Title' => 'Color'))->first()) {
             $do = new OptionGroup();
             $do->Title = "Color";
             $do->write();
         }
-        if(!DataObject::get_one('OptionGroup', "`Title` = 'Type'")) {
+        if(!OptionGroup::get()->filter(array('Title' => 'Type'))->first()) {
             $do = new OptionGroup();
             $do->Title = "Type";
             $do->write();
         }
 	}
-	
+
 	public function onBeforeDelete(){
 		parent::onBeforeDelete();
-		
+
 		//make sure that if we delete this option group, we reassign the group's option items to the 'None' group.
-		$items = DataObject::get('OptionItem', "ProductOptionGroupID = {$this->ID}");
-		
+		$items = OptionItem::get()->filter(array('ProductOptionGroupID' => $this->ID));
+
 		if(isset($items)){
-			$noneGroup = DataObject::get_one("OptionGroup", "`Title` = 'None'");
+			$noneGroup = OptionGroup::get()->filter(array('Title' => 'None'))->first();
 			foreach($items as $item){
 				$item->ProductOptionGroupID = $noneGroup->ID;
 				$item->write();
