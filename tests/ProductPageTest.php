@@ -119,7 +119,15 @@ class ProductPageTest extends FS_Test{
 	function testOptionItemCreation(){
 
 		$this->logInWithPermission('Product_CANCRUD');
+		$optionGroup = (OptionGroup::get()->first())
+			? OptionGroup::get()->first()
+			: OptionGroup::create();
+		if($optionGroup->ID == 0){
+			$optionGroup->Title = 'Size';
+			$optionGroup->write();
+		}
 		$option = $this->objFromFixture('OptionItem', 'large');
+		$option->ProductOptionGroupID = $optionGroup->ID;
 		$option->write();
 		$optionID = $option->ID;
 
@@ -132,7 +140,15 @@ class ProductPageTest extends FS_Test{
 	function testOptionItemDeletion(){
 
 		$this->logInWithPermission('ADMIN');
+		$optionGroup = (OptionGroup::get()->first())
+			? OptionGroup::get()->first()
+			: OptionGroup::create();
+		if($optionGroup->ID == 0){
+			$optionGroup->Title = 'Size';
+			$optionGroup->write();
+		}
 		$option = $this->objFromFixture('OptionItem', 'small');
+		$option->ProductOptionGroupID = $optionGroup->ID;
 		$option->write();
 		$optionID = $option->ID;
 
