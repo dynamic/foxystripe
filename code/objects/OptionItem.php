@@ -18,7 +18,7 @@ class OptionItem extends DataObject{
 		'Available' => 'Boolean',
 		'SortOrder' => 'Int'
 	);
-	
+
 	private static $has_one = array(
 		'Product' => 'ProductPage',
 		'ProductOptionGroup' => 'OptionGroup',
@@ -28,18 +28,18 @@ class OptionItem extends DataObject{
     private static $belongs_many_many = array(
         'OrderDetails' => 'OrderDetail'
     );
-    
+
     private static $defaults = array(
 		'Available' => true
 	);
-	
+
 	private static $summary_fields = array(
         'ProductOptionGroup.Title' => 'Group',
         'Title' => 'Title'
 	);
 
 	private static $default_sort = 'SortOrder';
-	
+
 	public function getCMSFields(){
 		$fields = FieldList::create(
 			new Tabset('Root',
@@ -47,12 +47,12 @@ class OptionItem extends DataObject{
 				new Tab('Modifiers')
 			)
 		);
-		
+
 		// set variables
 		$parentPrice = $this->Product()->Price;
 		$parentWeight = $this->Product()->Weight;
 		$parentCode = $this->Product()->Code;
-		
+
 		// ProductOptionGroup Dropdown field w/ add new
 		$groups = function(){
 		    return OptionGroup::get()->map()->toArray();
@@ -62,7 +62,7 @@ class OptionItem extends DataObject{
 			->setEmptyString('')
             ->setDescription('Name of this group of options. Managed in <a href="admin/settings">Settings > FoxyStripe > Option Groups</a>');
 		if (class_exists('QuickAddNewExtension')) $groupField->useAddNew('OptionGroup', $groups, $groupFields);
-		
+
 		// Cateogry Dropdown field w/ add new
 		$categories = function(){
 		    return ProductCategory::get()->map()->toArray();
@@ -71,7 +71,7 @@ class OptionItem extends DataObject{
 			->setEmptyString('')
             ->setDescription('Categories can be managed in <a href="admin/settings">Settings > FoxyStripe > Categories</a>');
 		if (class_exists('QuickAddNewExtension')) $categoryField->useAddNew('ProductCategory', $categories);
-		
+
 		$fields->addFieldsToTab('Root.Main', array(
 			HeaderField::create('DetailsHD', 'Product Option Details', 2),
 			Textfield::create('Title', 'Product Option Title'),
@@ -81,7 +81,7 @@ class OptionItem extends DataObject{
 			$groupField,
 			$categoryField
 		));
-				
+
 		$fields->addFieldsToTab('Root.Modifiers', array(
 			HeaderField::create('ModifyHD', 'Product Option Modifiers', 2),
 			// Weight Modifier Fields
@@ -118,13 +118,23 @@ class OptionItem extends DataObject{
 			)->setEmptyString('')
 			->setDescription('Does code modify or replace base code?')
 		));
-		
+
 		// allow CMS fields to be extended
 		$this->extend('getCMSFields', $fields);
-		
+
 		return $fields;
 	}
-	
+
+	public function validate(){
+		$result = parent::validate();
+
+		if($this->ProductOptionGroupID == 0){
+			$result->error('Must set a Group prior to saving');
+		}
+
+		return $result;
+	}
+
 	public static function getOptionModifierActionSymbol($oma, $returnWithOnlyPlusMinus=false){
 		switch($oma){
 			case 'Add':
@@ -136,19 +146,19 @@ class OptionItem extends DataObject{
 		}
 		return '';
 	}
-	
+
 	public function getWeightModifierWithSymbol(){
 		return self::getOptionModifierActionSymbol($this->WeightModifierAction).$this->WeightModifier;
 	}
-	
+
 	public function getPriceModifierWithSymbol(){
 		return self::getOptionModifierActionSymbol($this->PriceModifierAction).$this->PriceModifier;
 	}
-	
+
 	public function getCodeModifierWithSymbol(){
 		return self::getOptionModifierActionSymbol($this->CodeModifierAction).$this->CodeModifier;
 	}
-	
+
 	public function getProductOptionGroupTitle(){
 		return $this->ProductOptionGroup()->Title;
 	}
