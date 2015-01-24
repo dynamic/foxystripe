@@ -7,17 +7,22 @@
 
 class ProductImage extends DataObject{
 	
-	public static $db = array(
+	private static $db = array(
 		'Title' => 'Text',
 		'SortOrder' => 'Int'
 	);
-	
-	public static $has_one = array(
+
+	private static $has_one = array(
 		'Image' => 'Image',
 		'Parent' => 'SiteTree'
 	);
-	
-	public static $default_sort = 'SortOrder';
+
+	private static $default_sort = 'SortOrder';
+
+	private static $summary_fields = array(
+		'Image.CMSThumbnail' => 'Image',
+		'Title' => 'Caption'
+	);
 	
 	public function getCMSFields(){
 		$fields = new FieldList();

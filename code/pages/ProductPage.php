@@ -93,7 +93,7 @@ class ProductPage extends Page implements PermissionProvider {
 		if (class_exists('GridFieldSortableRows')) $config->addComponent(new GridFieldSortableRows('SortOrder'));
 		if (class_exists('GridFieldBulkImageUpload')) {
 			$config->addComponent(new GridFieldBulkUpload());
-			$config->getComponentByType('GridFieldBulkUpload')->setConfig('folderName', 'Uploads/ProductImages');
+			$config->getComponentByType('GridFieldBulkUpload')->setUfConfig('folderName', 'Uploads/ProductImages');
 		}
 		$prodImagesField = GridField::create('ProductImages', 'Images', $this->ProductImages(), $config);
 		
