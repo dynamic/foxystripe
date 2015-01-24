@@ -8,6 +8,7 @@ env:
    - DB=MYSQL CORE_RELEASE=3.1
    #- DB=MYSQL CORE_RELEASE=master
    - DB=PGSQL CORE_RELEASE=3.1
+   - DB=SQLITE CORE_RELEASE=3.1
 
 matrix:
   include:
