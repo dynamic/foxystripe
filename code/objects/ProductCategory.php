@@ -8,8 +8,8 @@
 class ProductCategory extends DataObject {
 
     private static $db = array(
-		'Title' => 'Text',
-		'Code' => 'Text'
+		'Title' => 'Varchar(255)',
+		'Code' => 'Varchar(50)'
 	);
 
     private static $singular_name = 'FoxyCart Category';
@@ -20,6 +20,10 @@ class ProductCategory extends DataObject {
         'Title' => 'Name',
         'Code' => 'Code'
     );
+
+	private static $indexes = array(
+		'Code' => true
+	);
 
     public function getCMSFields() {
 		$fields = FieldList::create(
