@@ -34,8 +34,9 @@ class OptionItem extends DataObject{
 	);
 
 	private static $summary_fields = array(
-        'ProductOptionGroup.Title' => 'Group',
-        'Title' => 'Title'
+		'Title' => 'Title',
+		'ProductOptionGroup.Title' => 'Group',
+        'Available.Nice' => 'Available'
 	);
 
 	private static $default_sort = 'SortOrder';
