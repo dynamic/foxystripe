@@ -1,6 +1,6 @@
 <?php
 
-class FoxyCartSiteConfig extends DataExtension{
+class FoxyStripeSiteConfig extends DataExtension{
 
 	private static $db = array(
 		'StoreName' => 'Varchar(255)',
@@ -72,11 +72,11 @@ class FoxyCartSiteConfig extends DataExtension{
 	}
 
     private static function getSSOLink() {
-        return Director::absoluteBaseURL()."foxycart/sso";
+        return Director::absoluteBaseURL()."foxystripe/sso";
     }
 
     private static function getDataFeedLink() {
-        return Director::absoluteBaseURL()."foxycart";
+        return Director::absoluteBaseURL()."foxystripe";
     }
 
 }
