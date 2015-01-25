@@ -1,8 +1,8 @@
 <?php
 
-class FoxyCart_Controller extends Page_Controller {
+class FoxyStripe_Controller extends Page_Controller {
 	
-	const URLSegment = 'foxycart';
+	const URLSegment = 'foxystripe';
 
 	public function getURLSegment() {
 		return self::URLSegment;
