@@ -447,10 +447,6 @@ JS;
 	 * @param Member $member
 	 * @return boolean
 	 */
-	public function canView($member = false) {
-		return true;
-	}
-
 	public function canEdit($member = null) {
 		return Permission::check('Product_CANCRUD');
 	}
