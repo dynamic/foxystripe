@@ -28,285 +28,146 @@
         </ul>
       </header>
       <section>
-        <h2>
-<a id="foxystripe" class="anchor" href="#foxystripe" aria-hidden="true"><span class="octicon octicon-link"></span></a>FoxyStripe</h2>
 
-<p><a href="https://codeclimate.com/github/dynamic/FoxyStripe"><img src="https://codeclimate.com/github/dynamic/FoxyStripe/badges/gpa.svg" alt="Code Climate"></a>
-<a href="https://codeclimate.com/github/dynamic/FoxyStripe"><img src="https://codeclimate.com/github/dynamic/FoxyStripe/badges/coverage.svg" alt="Test Coverage"></a>
-<a href="https://travis-ci.org/dynamic/FoxyStripe"><img src="https://travis-ci.org/dynamic/FoxyStripe.svg?branch=master" alt="Build Status"></a></p>
+          <h1>FoxyStripe</h1>
 
-<p>FoxyStripe is a SilverStripe ecommerce module designed to integrate with <a href="http://www.foxycart.com/">FoxyCart</a>.</p>
+              <p><a href="https://travis-ci.org/dynamic/FoxyStripe"><img src="https://camo.githubusercontent.com/ac258fad7ad9d4bf4e904668a88c8c50e2631ee2/68747470733a2f2f7472617669732d63692e6f72672f64796e616d69632f466f78795374726970652e7376673f6272616e63683d6d6173746572" alt="Build Status" data-canonical-src="https://travis-ci.org/dynamic/FoxyStripe.svg?branch=master" style="max-width:100%;"></a>
+                  <a href="https://codeclimate.com/github/dynamic/FoxyStripe"><img src="https://camo.githubusercontent.com/7a34b55d074bbc8572f99e58736e994ca7f1fa2f/68747470733a2f2f636f6465636c696d6174652e636f6d2f6769746875622f64796e616d69632f466f78795374726970652f6261646765732f6770612e737667" alt="Code Climate" data-canonical-src="https://codeclimate.com/github/dynamic/FoxyStripe/badges/gpa.svg" style="max-width:100%;"></a></p>
 
-<p>FoxyCart provides you with a flexible, powerful, customizable, and secure ecommerce platform. FoxyStripe provides a product catalog that integrates with the FoxyCart shopping cart and API.</p>
+              <p>FoxyStripe is a <a href="http://silverstripe.org">SilverStripe</a> ecommerce module designed to integrate with <a href="http://www.foxycart.com/">FoxyCart</a>.</p>
 
-<p>Features include:</p>
+              <p>FoxyCart provides you with a flexible, powerful, customizable, and secure ecommerce platform. FoxyStripe provides a product catalog that integrates with the FoxyCart shopping cart and API.</p>
 
-<ul>
-<li>  Add to Cart Form</li>
-<li>  Product Options</li>
-<li>  Order History</li>
-<li>  Single Sign On</li>
-<li>  HMAC Product Verification</li>
-</ul>
+              <p>Features include:</p>
 
-<h3>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h3>
+              <ul class="task-list">
+                  <li>  FoxyCart Add to Cart Form with Product Options and Modifiers</li>
+                  <li>  Customer Order History</li>
+                  <li>  Two-way Single Sign On with FoxyCart</li>
+                  <li>  HMAC Product Validation</li>
+              </ul>
 
-<h4>
-<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h4>
+              <p>Read more about <a href="/dynamic/FoxyStripe/blob/master/docs/en/Use.MD">Using FoxyStripe</a> and <a href="/dynamic/FoxyStripe/blob/master/docs/en/Features.MD">Advanced Features</a></p>
 
-<ul>
-<li> SilverStripe 3.1.x</li>
-</ul>
+              <h2>
+                  <a id="user-content-installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<h4>
-<a id="composer-installation" class="anchor" href="#composer-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Composer Installation</h4>
+              <h3>
+                  <a id="user-content-requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h3>
 
-<p><code>"require": { "dynamic/foxystripe": "dev-master }</code></p>
+              <ul class="task-list">
+                  <li> SilverStripe 3.1.x</li>
+                  <li> FoxyCart Store 2.x</li>
+              </ul>
 
-<p>Add <code>foxystripe</code> to your <code>.gitignore</code> file.</p>
+              <h3>
+                  <a id="user-content-composer-installation" class="anchor" href="#composer-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Composer Installation</h3>
 
-<h4>
-<a id="git-installation" class="anchor" href="#git-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Git Installation</h4>
+              <p><code>"require": { "dynamic/foxystripe": "dev-master }</code></p>
 
-<p><code>git clone git@github.com:dynamic/FoxyStripe.git foxystripe</code></p>
+              <h3>
+                  <a id="user-content-git-installation" class="anchor" href="#git-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Git Installation</h3>
 
-<h4>
-<a id="recommended-add-ons" class="anchor" href="#recommended-add-ons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Recommended Add-Ons</h4>
+              <p><code>git clone git@github.com:dynamic/FoxyStripe.git foxystripe</code></p>
 
-<p>The following add-ons are optional, but will enhance FoxyStripe when installed:</p>
+              <h3>
+                  <a id="user-content-manual-installation" class="anchor" href="#manual-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manual Installation</h3>
 
-<ul>
-<li>  <a href="http://addons.silverstripe.org/add-ons/unclecheese/betterbuttons">GridField Better Buttons</a>
-</li>
-<li>  <a href="http://addons.silverstripe.org/add-ons/colymba/gridfield-bulk-editing-tools">GridField Bulk Editing Tools</a>
-</li>
-<li>  <a href="http://addons.silverstripe.org/add-ons/sheadawson/quickaddnew">Quick Add New</a>
-</li>
-<li>  <a href="http://addons.silverstripe.org/add-ons/undefinedoffset/sortablegridfield">Sortable GridField</a>
-</li>
-</ul>
+              <p>Place this directory in the root of your SilverStripe installation, and rename the folder to 'foxystripe'.</p>
 
-<h3>
-<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h3>
+              <h3>
+                  <a id="user-content-recommended-add-ons" class="anchor" href="#recommended-add-ons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Recommended Add-Ons</h3>
 
-<p>Once FoxyStripe is installed, run a dev/build to setup the database.</p>
+              <p>The following add-ons are optional, but will enhance FoxyStripe when installed:</p>
 
-<h4>
-<a id="foxycart-setup" class="anchor" href="#foxycart-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>FoxyCart Setup</h4>
+              <ul class="task-list">
+                  <li>  <a href="http://addons.silverstripe.org/add-ons/unclecheese/betterbuttons">GridField Better Buttons</a>
+                  </li>
+                  <li>  <a href="http://addons.silverstripe.org/add-ons/colymba/gridfield-bulk-editing-tools">GridField Bulk Editing Tools</a>
+                  </li>
+                  <li>  <a href="http://addons.silverstripe.org/add-ons/sheadawson/quickaddnew">Quick Add New</a>
+                  </li>
+                  <li>  <a href="http://addons.silverstripe.org/add-ons/undefinedoffset/sortablegridfield">Sortable GridField</a>
+                  </li>
+              </ul>
 
-<p>Login to your <a href="https://admin.foxycart.com/admin.php">FoxyCart Account</a> and create a new store. See <a href="https://wiki.foxycart.com/v/1.1/getting_started/foxycart_setup">Creating a FoxyCart Account</a> for detailed instructions.</p>
+              <h2>
+                  <a id="user-content-setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h2>
 
-<p>Once you've completed the initial FoxyCart setup, your store is ready to work with FoxyStripe. You'll want to revisit the FoxyCart admin to setup Shipping, Taxes, and additional Product Categories.</p>
+              <p>Once FoxyStripe is installed, run a dev/build to setup the database.</p>
 
-<h4>
-<a id="foxystripe-setup" class="anchor" href="#foxystripe-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>FoxyStripe Setup</h4>
+              <h3>
+                  <a id="user-content-foxycart-setup" class="anchor" href="#foxycart-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>FoxyCart Setup</h3>
 
-<p>Now that your store has been created, you'll need to grab some information from FoxyCart to configure your FoxyStripe site.</p>
+              <p>Login to your <a href="https://admin.foxycart.com/admin.php">FoxyCart Account</a> and create a new store. See <a href="https://wiki.foxycart.com/v/2.0/getting_started/foxycart_setup">Creating a FoxyCart Account</a> for detailed instructions.</p>
 
-<p>In CMS &gt; Settings &gt; FoxyStripe</p>
+              <h3>
+                  <a id="user-content-foxystripe-setup" class="anchor" href="#foxystripe-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>FoxyStripe Setup</h3>
 
-<ol>
-<li>Store Name - enter value from FoxyCart &gt; Store &gt; Settings &gt; Store sub domain - ex: <code>myfoxystripestore</code>
-</li>
-<li>Store Key - enter value from FoxyCart &gt; Store &gt; Advanced  &gt; API key - ex: <code>xxxxxxxxxxxxx1234</code>
-</li>
-</ol>
+              <p>Now that your store has been created, you'll need to grab some information from FoxyCart to configure your FoxyStripe site.</p>
 
-<p>Your FoxyStripe store is now setup and ready for business. </p>
+              <p>In CMS &gt; Settings &gt; FoxyStripe</p>
 
-<h3>
-<a id="use" class="anchor" href="#use" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use</h3>
+              <ol class="task-list">
+                  <li>Store Name - enter value from FoxyCart &gt; Store &gt; Settings &gt; Store sub domain - ex: <code>myfoxystripestore</code>
+                  </li>
+                  <li>Store Key - enter value from FoxyCart &gt; Store &gt; Advanced  &gt; API key - ex: <code>xxxxxxxxxxxxx1234</code>
+                  </li>
+              </ol>
 
-<h4>
-<a id="product-groups" class="anchor" href="#product-groups" aria-hidden="true"><span class="octicon octicon-link"></span></a>Product Groups</h4>
+              <p>Your FoxyStripe store is now setup and ready for business. To get started, see <a href="/dynamic/FoxyStripe/blob/master/docs/en/Use.MD">Using FoxyStripe</a></p>
 
-<p>Product Groups are Pages in the CMS that display a list of related products. By default, Product Groups will show its child Product Pages.</p>
+              <p>To set up additional features, such as Single Sign On and Order History, see <a href="/dynamic/FoxyStripe/blob/master/docs/en/Features.MD">Advanced Features</a></p>
 
-<p>A Product can also be added to multiple Product Groups via the Products tab on a Product Group Page. To enable this feature, go to Settings &gt; FoxyStripe and check <code>Multi-Group Support</code>.</p>
+              <h3>
+                  <a id="user-content-security" class="anchor" href="#security" aria-hidden="true"><span class="octicon octicon-link"></span></a>Security</h3>
 
-<h4>
-<a id="products" class="anchor" href="#products" aria-hidden="true"><span class="octicon octicon-link"></span></a>Products</h4>
+              <p>While SSL is not required to use FoxyStripe, it is recommended that you run your production instance of FoxyStripe as SSL. This will prevent any 'insecure connection' warnings you may receive during the checkout process.</p>
 
-<p>Products are managed as Pages in the CMS. To add a Product to a Product Group, create a new Product Page under a Product Group page in the Site Tree.</p>
+              <p>In <code>mysite/config_php</code>, add the following to force the site into SSL in live mode:</p>
 
-<p>Once your Product Page is saved, it will include an Add to Cart form, allowing customers to add it to the FoxyCart shopping cart for purchase.</p>
+              <p><code>if(Director::isLive()) {
+                  Director::forceSSL();
+                  }</code></p>
 
-<p>Note - all products are required to have a unique Product Code. FoxyCart will use this as a unique identifier in transactions.</p>
+              <h2>
+                  <a id="user-content-additional-information" class="anchor" href="#additional-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>Additional Information</h2>
 
-<h5>
-<a id="product-options" class="anchor" href="#product-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Product Options</h5>
+              <h3>
+                  <a id="user-content-foxycart-documentation" class="anchor" href="#foxycart-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>FoxyCart Documentation</h3>
 
-<p>Product Options allow you to set modifiers to your products. Examples include:</p>
+              <ul class="task-list">
+                  <li><a href="https://wiki.foxycart.com/v/2.0/start">FoxyCart 2.0 API Docs</a></li>
+              </ul>
 
-<ul>
-<li>  Size - Small, Medium, Large</li>
-<li>  Color - Red, Blue, Green</li>
-</ul>
+              <h3>
+                  <a id="user-content-maintainer-contact" class="anchor" href="#maintainer-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maintainer Contact</h3>
 
-<p>By using the fields in the 'Modifiers' tab, you can change certain Product values if that option is selected. These include:</p>
+              <ul class="task-list">
+                  <li> <a href="http://www.dynamicdoes.com">Dynamic</a> (<a href="mailto:info@dynamicdoes.com">info@dynamicdoes.com</a>)</li>
+              </ul>
 
-<ul>
-<li>  Weight - +/- shipping costs</li>
-<li>  Price - a hardcover book costs more than a paperback</li>
-<li>  Product Code - add a style number to your product code</li>
-</ul>
+              <h3>
+                  <a id="user-content-credits" class="anchor" href="#credits" aria-hidden="true"><span class="octicon octicon-link"></span></a>Credits</h3>
 
-<p>These values and modifications will be passed to FoxyCart, and will be displayed on the order receipt.</p>
+              <p>Inspired by previous work done by <a href="https://github.com/cbryer">cbryer</a>.</p>
 
-<h5>
-<a id="foxycart-product-categories" class="anchor" href="#foxycart-product-categories" aria-hidden="true"><span class="octicon octicon-link"></span></a>FoxyCart Product Categories</h5>
-
-<p>Each Product asks you to assign a FoxyCart Product Category.</p>
-
-<p>FoxyCart categories offer a way to give products additional behaviors that cannot be accomplished by product options alone. You can assign properties for groups of products, such as Taxes, Shipping and Coupon Codes.</p>
-
-<p>Product Categories are created in your FoxyCart account under Products &gt; Categories. You must also manually create this category in your FoxyStripe store.</p>
-
-<p>In CMS &gt; Products &gt; FoxyCart Category:</p>
-
-<ol>
-<li>Click <code>Add FoxyCart Category</code>
-</li>
-<li>FoxyCart Category Description - enter value from FoxyCart &gt; Category &gt; Description</li>
-<li>FoxyCart Category Code - enter value from FoxyCart &gt; Category &gt; Category code</li>
-<li>Click <code>Create</code>
-</li>
-</ol>
-
-<p>See <a href="https://wiki.foxycart.com/v/1.1/categories">Product Categories</a> for more information on setting up categories in FoxyCart.</p>
-
-<h4>
-<a id="security" class="anchor" href="#security" aria-hidden="true"><span class="octicon octicon-link"></span></a>Security</h4>
-
-<p>While SSL is not required to use FoxyStripe, it is recommended that you run your production instance of FoxyStripe as SSL. This will prevent any 'insecure connection' warnings you may receive during the checkout process.</p>
-
-<p>In <code>mysite/config_php</code>, add the following to force the site into SSL in live mode:</p>
-
-<p><code>if(Director::isLive()) {
-    Director::forceSSL();
-}</code></p>
-
-<h3>
-<a id="additional-features" class="anchor" href="#additional-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Additional Features</h3>
-
-<h4>
-<a id="foxycart-datafeed" class="anchor" href="#foxycart-datafeed" aria-hidden="true"><span class="octicon octicon-link"></span></a>FoxyCart DataFeed</h4>
-
-<p>Next we will setup your store's DataFeed, which allows FoxyCart to push transaction and user information to your FoxyStripe site. This is required for the more advanced features listed below, such as Single Sign On and Order History</p>
-
-<p>In CMS &gt; Settings &gt; FoxyStripe</p>
-
-<ol>
-<li>Copy <code>FoxyCart DataFeed URL</code> to your clipboard - <code>https://myfoxystripestore.com/foxycart</code>
-</li>
-</ol>
-
-<p>In FoxyCart &gt; Store &gt; Advanced:</p>
-
-<ol>
-<li>click 'would you like to enable your store's datafeed?' to enable the DataFeed</li>
-<li>Datafeed URL -  paste value from FoxyStripe</li>
-</ol>
-
-<p>Your FoxyCart store will now be able to communicate with your FoxyStripe site.</p>
-
-<h4>
-<a id="single-sign-on" class="anchor" href="#single-sign-on" aria-hidden="true"><span class="octicon octicon-link"></span></a>Single Sign On</h4>
-
-<p>Enabling single sign on will sync user account information between your SilverStripe site and FoxyCart. If the user is logged into your SilverStripe site prior to checkout, they will be auto logged in to FoxyCart.</p>
-
-<p>You can enable this feature by doing the following:</p>
-
-<ol>
-<li>In CMS &gt; Settings &gt; FoxyStripe:
-
-<ul>
-<li>  Check 'Enable Single Sign On'</li>
-<li>  Copy <code>Single Sign On URL</code> to your clipboard - <code>https://myfoxystripestore.com/foxycart/sso</code>
-</li>
-</ul>
-</li>
-<li>In FoxyCart &gt; Store &gt; Advanced:
-
-<ul>
-<li>  Check <code>enable single sign on</code>
-</li>
-<li>  Single sign on url - paste the value from FoxyStripe</li>
-<li>  Customer password hash type - select <code>SHA-1, salted (suffix)</code>
-</li>
-<li>  Customer password has config - enter <code>40</code>
-</li>
-</ul>
-</li>
-</ol>
-
-<p>This will setup a two way sync of user information between FoxyCart and FoxyStripe. If a user is created or modified in FoxyStripe, it will push that info via FoxyCart's API. If the user is created or modified during a FoxyCart transaction, FoxyStripe will receive the info via FoxyCart's DataFeed.</p>
-
-<p><a href="http://addons.silverstripe.org/add-ons/ajshort/silverstripe-memberprofiles">Member Profiles</a> is recommended for user login/registration, but any member management system should work with FoxyStripe.</p>
-
-<h4>
-<a id="order-history" class="anchor" href="#order-history" aria-hidden="true"><span class="octicon octicon-link"></span></a>Order History</h4>
-
-<p>If you have Single Sign On enabled, and have setup a user login/registration system, you can allow your customers to view their order history in your FoxyStripe site.</p>
-
-<p>Simply create an Order History page in the appropriate area of your Site Tree. Once logged in, Customers will be able to review their order history, and access receipt from FoxyCart.</p>
-
-<h4>
-<a id="hmac-product-validation" class="anchor" href="#hmac-product-validation" aria-hidden="true"><span class="octicon octicon-link"></span></a>HMAC Product Validation</h4>
-
-<p>HMAC Product Validation will encrypt the add to cart forms on Product Pages. This prevents a user from manipulating the form prior to adding to cart. </p>
-
-<p>To enable HMAC Product Validation in FoxyStripe:</p>
-
-<ol>
-<li>In FoxyCart &gt; Store &gt; Advanced:
-
-<ul>
-<li>  Check `would you like to enable cart validation?'</li>
-</ul>
-</li>
-<li>In CMS &gt; Settings &gt; FoxyStripe:
-
-<ul>
-<li>  Check 'enable cart validation'</li>
-</ul>
-</li>
-</ol>
-
-<h3>
-<a id="maintainer-contact" class="anchor" href="#maintainer-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maintainer Contact</h3>
-
-<ul>
-<li> <a href="http://www.dynamicdoes.com">Dynamic</a> (<a href="mailto:info@dynamicdoes.com">info@dynamicdoes.com</a>)</li>
-</ul>
-
-<h3>
-<a id="foxycart-documentation" class="anchor" href="#foxycart-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>FoxyCart Documentation</h3>
-
-<p><a href="https://wiki.foxycart.com/v/2.0/start">FoxyCart 2.0 API Docs</a></p>
-
-<p><a href="https://wiki.foxycart.com/v/1.1/start">FoxyCart 1.1 API Docs</a></p>
-
-<h3>
-<a id="credits" class="anchor" href="#credits" aria-hidden="true"><span class="octicon octicon-link"></span></a>Credits</h3>
-
-<p>Inspired by previous work done by <a href="https://github.com/cbryer">cbryer</a>.</p>
-
-<h3>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h3>
+              <h2>
+                  <a id="user-content-license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
 <pre><code>Copyright (c) 2014, Dynamic Inc
-All rights reserved.
+    All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+    Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
-Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+    Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </code></pre>
+          </article>
+
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/dynamic">dynamic</a></p>
