@@ -8,7 +8,7 @@
 class ProductPage extends Page implements PermissionProvider {
 
 	private static $allowed_children = 'none';
-	
+
 	private static $db = array(
 		'Price' => 'Currency',
 		'Weight' => 'Float',
@@ -17,12 +17,12 @@ class ProductPage extends Page implements PermissionProvider {
 		'Featured' => 'Boolean',
 		'Available' => 'Boolean'
 	);
-	
+
 	private static $has_one = array(
 		'PreviewImage' => 'Image',
 		'Category' => 'ProductCategory'
 	);
-	
+
 	private static $has_many = array(
 		'ProductImages' => 'ProductImage',
 		'ProductOptions' => 'OptionItem',
@@ -40,7 +40,7 @@ class ProductPage extends Page implements PermissionProvider {
     private static $indexes = array(
         'Code' => true // make unique
     );
-	
+
 	private static $defaults = array(
 		'ShowInMenus' => false,
 		'Available' => true,
@@ -75,10 +75,12 @@ class ProductPage extends Page implements PermissionProvider {
 
         return $labels;
     }
-     
+
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
-		
+
+		$previewDescription = ($this->stat('customPreviewDescription')) ? $this->stat('customPreviewDescription') : 'Image used throughout site to represent this product';
+
 		// Cateogry Dropdown field w/ add new
 		$source = function(){
 		    return ProductCategory::get()->map()->toArray();
@@ -87,7 +89,7 @@ class ProductPage extends Page implements PermissionProvider {
             ->setEmptyString('')
             ->setDescription('Required, must also exist in <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">FoxyCart Categories</a>. Used to set category specific options like shipping and taxes. Managed in <a href="admin/settings">Settings > FoxyStripe > Categories</a>');
 		if (class_exists('QuickAddNewExtension')) $catField->useAddNew('ProductCategory', $source);
-		
+
 		// Product Images gridfield
 		$config = GridFieldConfig_RelationEditor::create();
 		if (class_exists('GridFieldSortableRows')) $config->addComponent(new GridFieldSortableRows('SortOrder'));
@@ -96,7 +98,7 @@ class ProductPage extends Page implements PermissionProvider {
 			$config->getComponentByType('GridFieldBulkUpload')->setUfConfig('folderName', 'Uploads/ProductImages');
 		}
 		$prodImagesField = GridField::create('ProductImages', 'Images', $this->ProductImages(), $config);
-		
+
 		// Product Options field
 		$config = GridFieldConfig_RelationEditor::create();
 		if (class_exists('GridFieldBulkManager')) $config->addComponent(new GridFieldBulkManager());
@@ -108,12 +110,12 @@ class ProductPage extends Page implements PermissionProvider {
 		}
 		$config->removeComponentsByType('GridFieldAddExistingAutocompleter');
 		$prodOptField = GridField::create('ProductOptions', 'Options', $products, $config);
-		
+
 		// Option Groups field
 		$config = GridFieldConfig_RecordEditor::create();
 		$optGroupField = GridField::create('OptionGroup', 'Option Group', OptionGroup::get(), $config);
-		
-		
+
+
 		// Details tab
 		$fields->addFieldsToTab('Root.Details', array(
 			HeaderField::create('DetailHD', 'Product Details', 2),
@@ -132,12 +134,12 @@ class ProductPage extends Page implements PermissionProvider {
             TextField::create('ReceiptTitle', 'Product Title for Receipt')
                 ->setDescription('Optional')
 		));
-		
+
 		// Images tab
 		$fields->addFieldsToTab('Root.Images', array(
 			HeaderField::create('MainImageHD', 'Product Image', 2),
 			UploadField::create('PreviewImage', '')
-				->setDescription('Image used throughout site to represent this product')
+				->setDescription($previewDescription)
 				->setFolderName('Uploads/Products')
 				->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'))
 				->setAllowedMaxFileNumber(1),
@@ -145,7 +147,7 @@ class ProductPage extends Page implements PermissionProvider {
 			$prodImagesField
 				->setDescription('Additional Product Images, shown in gallery on Product page')
 		));
-		
+
 		// Options Tab
 		$fields->addFieldsToTab('Root.Options', array(
 			HeaderField::create('OptionsHD', 'Product Options', 2),
@@ -159,10 +161,10 @@ class ProductPage extends Page implements PermissionProvider {
 		if(FoxyCart::store_name_warning()!==null){
 			$fields->addFieldToTab('Root.Main', new LiteralField("StoreSubDomainHeaderWarning", "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"), 'Title');
 		}
-		
+
 		// allows CMS fields to be extended
 		$this->extend('updateCMSFields', $fields);
-		
+
 		return $fields;
 	}
 
@@ -172,7 +174,7 @@ class ProductPage extends Page implements PermissionProvider {
 			$default = ProductCategory::get()->filter(array('Code' => 'DEFAULT'))->first();
 			$this->CategoryID = $default->ID;
 		}
-		
+
 		//update many_many lists when multi-group is on
 		if(SiteConfig::current_site_config()->MultiGroup){
 			$holders = $this->ProductHolders();
@@ -187,7 +189,7 @@ class ProductPage extends Page implements PermissionProvider {
 				if($holders->find('ID', $origParent)){
 					$holders->removeByID($origParent);
 				}
-				
+
 			}
 			$holders->add($currentParent);
 		}
@@ -196,11 +198,11 @@ class ProductPage extends Page implements PermissionProvider {
 
 	public function onAfterWrite(){
 		parent::onAfterWrite();
-		
-		
+
+
 
 	}
-	
+
 	public function onBeforeDelete() {
 		if($this->Status != "Published") {
 			if($this->ProductOptions()) {
@@ -237,22 +239,22 @@ class ProductPage extends Page implements PermissionProvider {
 
 		return $result;
 	}
-	
+
 	public function getCMSValidator() {
 		return new RequiredFields(array('CategoryID', 'Price', 'Weight', 'Code'));
 	}
-	
+
 	public function getFormTag() {
 		return FoxyCart::FormActionURL();
 	}
-	
+
 	public function PurchaseForm(){
 		if($this->Available){
 			return (SiteConfig::current_site_config()->CartValidation) ? FoxyCart_Helper::fc_hash_html($this->ProductOptionsForm()) : $this->ProductOptionsForm();
 		}
 		return "<h3 class=\"unavailable-product\">Product currently unavailable</h3>";
 	}
-	
+
 	public function SingleProductForm() {
 		//make sure to urlencode url params
 		return sprintf('<div class="addToCartContainer"><a href="%s?name=%s&price=%2.2f&code=%s&category=%s&weight=%s&image=%s"><span class="addToCart">Add To Cart</span><span class="submitPrice">%s $%2.2f</span></a></div>',
@@ -267,7 +269,7 @@ class ProductPage extends Page implements PermissionProvider {
 			$this->Price
 		);
 	}
-	
+
 	public function ProductOptionsForm() {
 		$form = $this->StartForm();
 		$form .= $this->AddBaseProductDetails();
@@ -276,7 +278,7 @@ class ProductPage extends Page implements PermissionProvider {
 		$form .= $this->EndForm();
 		return $form;
 	}
-	
+
 	public function StartForm() {
 		//start form
 		$formclass = 'foxycartForm';
@@ -287,11 +289,11 @@ class ProductPage extends Page implements PermissionProvider {
 		);
 		return $form;
 	}
-	
+
 	public function EndForm() {
 		return "</form>";
 	}
-	
+
 	public function AddBaseProductDetails(){
 		$form = $this->hiddenTag('name', ($this->ReceiptTitle) ? htmlspecialchars($this->ReceiptTitle) : htmlspecialchars($this->Title));
 		$form .= $this->hiddenTag('category',$this->Category()->Code);
@@ -303,34 +305,34 @@ class ProductPage extends Page implements PermissionProvider {
 		if($this->PreviewImage()->Exists()) $form .= $this->hiddenTag('image', $this->PreviewImage()->PaddedImage(80,80)->absoluteURL);
 		return $form;
 	}
-	
+
 	public function ProductOptionsSet() {
 		$options = $this->ProductOptions();
-		
-		$groupedProductOptions = new GroupedList($options); 
+
+		$groupedProductOptions = new GroupedList($options);
 		$grp = $groupedProductOptions->groupBy("ProductOptionGroupID");
-		
+
 		//$grp = $options->groupBy('ProductOptionGroupID');
-		
+
 		$form = "<div class='foxycartOptionsContainer'>";
 		foreach($grp as $id=>$optionSet){
 			$optionGroupTitle = DataObject::get_by_id('OptionGroup',$id)->Title;
 			$form .= $this->selectField($optionGroupTitle, $id, $optionSet);
 		}
 		$form .= "</div>";
-		
-		
+
+
 		$script = <<<JS
 jQuery(function(){
-	
+
 	jQuery('.foxycartOptionsContainer select').change(function(){
 		refreshAddToCartPrice();
 	});
-	
+
 	function refreshAddToCartPrice(){
 
 		var newProductPrice = parseFloat(jQuery('#basePrice').val());;
-		
+
 		jQuery('form.foxycartForm#product{$this->ID} select').each(function(){
 
 		    if ( jQuery(this).attr('id') == 'qty' ) {
@@ -360,7 +362,7 @@ jQuery(function(){
                     }
                 }
             }
-		
+
 
 		});
 		jQuery('form.foxycartForm#product{$this->ID} .submitPrice').html('$'+newProductPrice.toFixed(2));
@@ -370,10 +372,10 @@ jQuery(function(){
 JS;
 
 		Requirements::customScript($script);
-		
+
 		return $form;
 	}
-	
+
 	public function AddToCartForm() {
 		$form = "<div class='field'>";
 		$form .= "<label for='quantity'>Quantity</label><div class='foxycart_qty'>";
@@ -389,7 +391,7 @@ JS;
 		$form .= "</div>";
 		return $form;
 	}
-	
+
 	public function selectField($name = null, $id = null, $optionSet = null) {
 		if($optionSet && $id && $name){
 			$selectField = '<div class="field selectfield">';
@@ -399,19 +401,19 @@ JS;
 				$selectField .= "<label for='{$name}'>&nbsp;</label><select name='{$name}' id='{$id}'>";
 			}
 			foreach($optionSet as $option){
-				
+
 				$modPrice = ($option->PriceModifier) ? (string)$option->PriceModifier : '0';
 				$modPriceWithSymbol = OptionItem::getOptionModifierActionSymbol($option->PriceModifierAction).$modPrice;
-				
+
 				$modWeight = ($option->WeightModifier) ? (string)$option->WeightModifier : '0';
 				$modWeight = OptionItem::getOptionModifierActionSymbol($option->WeightModifierAction).$modWeight;
-				
+
 				$modCode = OptionItem::getOptionModifierActionSymbol($option->CodeModifierAction).$option->CodeModifier;
-				
+
 				// is product option avaiable for purchase?
 				$available = '';
 				if ($option->Available == 0) $available = ' class="outOfStock"';
-				
+
 				$selectField .= sprintf('<option value="%s{p%s|w%s|c%s}" %s>%s%s</option>',
 					$option->Title,
 					$modPriceWithSymbol,
@@ -426,14 +428,14 @@ JS;
 			return $selectField;
 		}
 	}
-		
+
 	public function hiddenTag($name=null, $val=null) {
 		return sprintf('<input type="hidden" name="%s" value="%s" />',
 			$name,
 			$val
 		);
 	}
-	
+
 	// get FoxyCart Store Name for JS call
 	public function getColorBoxScript() {
         return (class_exists('FoxyStripeCache_Controller') && SiteConfig::current_site_config()->CartPage == true)
@@ -470,7 +472,7 @@ JS;
 			'Product_CANCRUD' => 'Allow user to manage Products and related objects'
 		);
 	}
-	
+
 }
 
 class ProductPage_Controller extends Page_Controller {
