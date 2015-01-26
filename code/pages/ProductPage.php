@@ -13,7 +13,7 @@ class ProductPage extends Page implements PermissionProvider {
 		'Price' => 'Currency',
 		'Weight' => 'Float',
 		'Code' => 'Varchar(100)',
-		'ReceiptTitle' => 'Text',
+		'ReceiptTitle' => 'HTMLVarchar(255)',
 		'Featured' => 'Boolean',
 		'Available' => 'Boolean'
 	);
