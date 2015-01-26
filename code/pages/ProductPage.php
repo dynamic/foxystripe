@@ -442,11 +442,9 @@ JS;
 	}
 
 	// get FoxyCart Store Name for JS call
-	public function getColorBoxScript() {
-        return (class_exists('FoxyStripeCache_Controller') && SiteConfig::current_site_config()->CartPage == true)
-            ? false
-            : '<script src="//cdn.foxycart.com/' . FoxyCart::getFoxyCartStoreName() . '/loader.js" async defer></script>';
-    }
+	public function getCartScript() {
+		return '<script src="https://cdn.foxycart.com/' . FoxyCart::getFoxyCartStoreName() . '/loader.js" async defer></script>';
+	}
 
 	/**
 	 * @param Member $member
