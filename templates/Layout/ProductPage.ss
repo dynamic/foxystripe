@@ -18,7 +18,7 @@
         <div class="unit size3of5 productSummaryText">
             <article>
 
-                    <h1>$Title</h1>
+                <h1><% if $ReceiptTitle %>$ReceiptTitle<% else %>$Title<% end_if %></h1>
                     <p>
                         <strong>Base Price:</strong> $Price.Nice<br>
                         <strong>Weight:</strong> $Weight lbs<br>
