@@ -194,6 +194,11 @@ class ProductPage extends Page implements PermissionProvider {
 			$holders->add($currentParent);
 		}
 
+		$title = ltrim($this->Title);
+		$title = rtrim($title);
+		$this->Title = $title;
+
+
 	}
 
 	public function onAfterWrite(){
