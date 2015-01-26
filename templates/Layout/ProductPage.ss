@@ -40,4 +40,4 @@
 <% require javascript('foxystripe/thirdparty/flexslider/jquery.flexslider.js') %>
 <% require javascript('foxystripe/thirdparty/shadowbox/shadowbox.js') %>
 <% require javascript('foxystripe/javascript/product_init.js') %>
-$ColorBoxScript
+$CartScript
