@@ -81,11 +81,11 @@ class FoxyStripeSiteConfig extends DataExtension{
 	}
 
     private static function getSSOLink() {
-        return Director::absoluteBaseURL()."foxystripe/sso";
+        return Director::absoluteBaseURL()."foxystripe/sso/";
     }
 
     private static function getDataFeedLink() {
-        return Director::absoluteBaseURL()."foxystripe";
+        return Director::absoluteBaseURL()."foxystripe/";
     }
 
 }
