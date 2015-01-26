@@ -1,6 +1,6 @@
 # FoxyStripe
 
-[![Build Status](https://travis-ci.org/dynamic/FoxyStripe.svg?branch=master)](https://travis-ci.org/dynamic/FoxyStripe)
+[![Build Status](https://travis-ci.org/dynamic/foxystripe.svg?branch=master)](https://travis-ci.org/dynamic/foxystripe)
 [![Code Climate](https://codeclimate.com/github/dynamic/FoxyStripe/badges/gpa.svg)](https://codeclimate.com/github/dynamic/FoxyStripe)
 
 FoxyStripe is a [SilverStripe](http://silverstripe.org) ecommerce module designed to integrate with [FoxyCart](http://www.foxycart.com/).
