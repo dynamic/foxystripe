@@ -44,6 +44,28 @@ class ProductPageTest extends FS_Test{
 
 	}
 
+	function testProductTitleLeadingWhiteSpace(){
+
+		$this->logInWithPermission('ADMIN');
+		$product = $this->objFromFixture('ProductPage', 'product1');
+		$product->Title = " Test with leading space";
+		$product->doPublish();
+
+		$this->assertTrue($product->Title == 'Test with leading space');
+
+	}
+
+	function testProductTitleTrailingWhiteSpace(){
+
+		$this->logInWithPermission('ADMIN');
+		$product = $this->objFromFixture('ProductPage', 'product1');
+		$product->Title = "Test with trailing space ";
+		$product->doPublish();
+
+		$this->assertTrue($product->Title == 'Test with trailing space');
+
+	}
+
 	function testProductCategoryCreation(){
 
 		$this->logInWithPermission('Product_CANCRUD');
