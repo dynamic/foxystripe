@@ -26,6 +26,12 @@ class OptionGroup extends DataObject{
 
 	public function requireDefaultRecords() {
 		parent::requireDefaultRecords();
+		// create a catch-all group
+		if(!OptionGroup::get()->filter(array('Title' => 'Options'))->first()) {
+			$do = new OptionGroup();
+			$do->Title = "Options";
+			$do->write();
+		}
 		if(!OptionGroup::get()->filter(array('Title' => 'Size'))->first()) {
             $do = new OptionGroup();
             $do->Title = "Size";
@@ -50,7 +56,7 @@ class OptionGroup extends DataObject{
 		$items = OptionItem::get()->filter(array('ProductOptionGroupID' => $this->ID));
 
 		if(isset($items)){
-			$noneGroup = OptionGroup::get()->filter(array('Title' => 'None'))->first();
+			$noneGroup = OptionGroup::get()->filter(array('Title' => 'Options'))->first();
 			foreach($items as $item){
 				$item->ProductOptionGroupID = $noneGroup->ID;
 				$item->write();
@@ -63,11 +69,19 @@ class OptionGroup extends DataObject{
 	}
 
 	public function canEdit($member = null) {
-		return Permission::check('Product_CANCRUD');
+		switch($this->Title){
+			case 'Options':
+				return false;
+				break;
+			default:
+				return Permission::check('Product_CANCRUD');
+				break;
+		}
+
 	}
 
 	public function canDelete($member = null) {
-		return Permission::check('Product_CANCRUD');
+		return $this->canEdit();
 	}
 
 	public function canCreate($member = null) {
