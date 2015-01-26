@@ -22,7 +22,7 @@ class OptionItem extends DataObject{
 	private static $has_one = array(
 		'Product' => 'ProductPage',
 		'ProductOptionGroup' => 'OptionGroup',
-		'Category' => 'ProductCategory'
+		//'Category' => 'ProductCategory'
 	);
 
     private static $belongs_many_many = array(
@@ -68,10 +68,13 @@ class OptionItem extends DataObject{
 		$categories = function(){
 		    return ProductCategory::get()->map()->toArray();
 		};
+		/*
+		// to do - have OptionItem category override set ProductPage category if selected: issue #155
 		$categoryField = DropdownField::create('CategoryID', 'Category', $categories())
 			->setEmptyString('')
             ->setDescription('Categories can be managed in <a href="admin/settings">Settings > FoxyStripe > Categories</a>');
 		if (class_exists('QuickAddNewExtension')) $categoryField->useAddNew('ProductCategory', $categories);
+		*/
 
 		$fields->addFieldsToTab('Root.Main', array(
 			HeaderField::create('DetailsHD', 'Product Option Details', 2),
@@ -80,7 +83,7 @@ class OptionItem extends DataObject{
 				->setTitle('Available for purchase')
                 ->setDescription('If unchecked, will disable this option in the drop down menu'),
 			$groupField,
-			$categoryField
+			//$categoryField
 		));
 
 		$fields->addFieldsToTab('Root.Modifiers', array(
