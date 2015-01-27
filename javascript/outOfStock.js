@@ -1,7 +1,7 @@
 jQuery('option.outOfStock').prop('disabled', true)
+jQuery('option.outOfStock').append(document.createTextNode(" (out of stock)"));
 
-if (jQuery('option').hasClass('outOfStock')) {
-	jQuery('option.outOfStock').append(document.createTextNode(" (out of stock)"));
+if (jQuery('option:selected').hasClass('outOfStock')) {
 	jQuery('.field.checkoutbtn input').hide();
 	jQuery('.submitPrice').after("<p class='unavailableText'><strong><em>Currently out of stock</em></strong></p>");
 };
