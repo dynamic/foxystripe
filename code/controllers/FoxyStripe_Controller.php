@@ -210,9 +210,18 @@ class FoxyStripe_Controller extends Page_Controller {
 
 	    // GET variables from FoxyCart Request
         $fcsid = $this->request->getVar('fcsid');
-
-        $Member = Member::currentUser();
         $timestampNew = strtotime('+30 days');
+
+        // get current member if logged in. If not, create a 'fake' user with Customer_ID = 0
+        // fake user will redirect to FC checkout, ask customer to log in
+        // to do: consider a login/registration form here if not logged in
+        if($Member = Member::currentUser()) {
+            $Member = Member::currentUser();
+        } else {
+            $Member = new Member();
+            $Member->Customer_ID = 0;
+        }
+
         $auth_token = sha1($Member->Customer_ID . '|' . $timestampNew . '|' . FoxyCart::getStoreKey());
 
         $redirect_complete = 'https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/checkout?fc_auth_token=' . $auth_token .
