@@ -61,7 +61,7 @@ Now that your store has been created, you'll need to grab some information from 
 In CMS > Settings > FoxyStripe
 	
 1. Store Name - enter value from FoxyCart > Store > Settings > Store sub domain - ex: `myfoxystripestore`
-2. Store Key - enter value from FoxyCart > Store > Advanced  > API key - ex: `xxxxxxxxxxxxx1234`
+2. Store Key - copy value to FoxyCart > Store > Advanced  > API key - ex: `xxxxxxxxxxxxx1234`
 
 Your FoxyStripe store is now setup and ready for business. To get started, see [Using FoxyStripe](docs/en/Use.MD)
 
