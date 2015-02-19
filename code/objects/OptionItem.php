@@ -167,6 +167,26 @@ class OptionItem extends DataObject{
 		return $this->ProductOptionGroup()->Title;
 	}
 
+	public function getGeneratedValue(){
+		$modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
+		$modPriceWithSymbol = OptionItem::getOptionModifierActionSymbol($this->PriceModifierAction).$modPrice;
+		$modWeight = ($this->WeightModifier) ? (string)$this->WeightModifier : '0';
+		$modWeight = OptionItem::getOptionModifierActionSymbol($this->WeightModifierAction).$modWeight;
+		$modCode = OptionItem::getOptionModifierActionSymbol($this->CodeModifierAction).$this->CodeModifier;
+		return $this->Title.'{p'.$modPriceWithSymbol.'|w'.$modWeight.'|c'.$modCode.'}';
+	}
+
+	public function getGeneratedTitle(){
+		$modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
+		$title = $this->Title;
+		$title .= ($this->PriceModifier != 0) ? ': ('.OptionItem::getOptionModifierActionSymbol($this->PriceModifierAction, $returnWithOnlyPlusMinus=true).'$'.$modPrice.')' : '';
+		return $title;
+	}
+
+	public function getAvailability(){
+		return ($this->Available == 0) ? true : false ;
+	}
+
 	public function canView($member = false) {
 		return true;
 	}
