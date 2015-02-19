@@ -7,7 +7,8 @@ class FoxyStripeSiteConfig extends DataExtension{
 		'StoreKey' => 'Varchar(60)',
 		'MultiGroup' => 'Boolean',
 		'ProductLimit' => 'Int',
-		'CartValidation' => 'Boolean'
+		'CartValidation' => 'Boolean',
+		'MaxQuantity' => 'Int'
 	);
 
     // Set Default values
@@ -56,9 +57,6 @@ class FoxyStripeSiteConfig extends DataExtension{
 			ReadonlyField::create('SSOLink', 'Single Sign On URL', self::getSSOLink())
 				->setDescription('copy/paste to FoxyCart')
 		);
-		if(FoxyCart::store_key_warning()!==null){
-			array_unshift($fieldSet1, new LiteralField("StoreKeyHeaderWarning", "<p class=\"message error\">Store key must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"));
-		}
 		if(FoxyCart::store_name_warning()!==null){
 			array_unshift($fieldSet1, new LiteralField("StoreSubDomainHeaderWarning", "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"));
 		}
@@ -73,7 +71,11 @@ class FoxyStripeSiteConfig extends DataExtension{
 			HeaderField::create('ProductGroupHeader', 'Product Groups', 3),
 			NumericField::create('ProductLimit')
 				->setTitle('Products per Page')
-				->setDescription('Number of Products to show per page on a Product Group')
+				->setDescription('Number of Products to show per page on a Product Group'),
+			HeaderField::create('ProductQuantityHeader', 'Product Form Max Quantity', 3),
+			NumericField::create('MaxQuantity')
+				->setTitle('Max Quantity')
+				->setDescription('Sets max quantity for product form dropdown (add to cart form - default 10)')
 		));
 
 		$fields->addFieldsToTab('Root.FoxyStripe.Categories', array(

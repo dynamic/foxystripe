@@ -11,7 +11,7 @@ class ProductPage extends Page implements PermissionProvider {
 
 	private static $db = array(
 		'Price' => 'Currency',
-		'Weight' => 'Float',
+		'Weight' => 'Decimal',
 		'Code' => 'Varchar(100)',
 		'ReceiptTitle' => 'HTMLVarchar(255)',
 		'Featured' => 'Boolean',
@@ -246,196 +246,10 @@ class ProductPage extends Page implements PermissionProvider {
 		return new RequiredFields(array('CategoryID', 'Price', 'Weight', 'Code'));
 	}
 
-	public function getFormTag() {
-		return FoxyCart::FormActionURL();
-	}
-
-	public function PurchaseForm(){
-		if($this->Available){
-			return (SiteConfig::current_site_config()->CartValidation) ? FoxyCart_Helper::fc_hash_html($this->ProductOptionsForm()) : $this->ProductOptionsForm();
-		}
-		return "<h3 class=\"unavailable-product\">Product currently unavailable</h3>";
-	}
-
-	public function SingleProductForm() {
-		//make sure to urlencode url params
-		return sprintf('<div class="addToCartContainer"><a href="%s?name=%s&price=%2.2f&code=%s&category=%s&weight=%s&image=%s"><span class="addToCart">Add To Cart</span><span class="submitPrice">%s $%2.2f</span></a></div>',
-			self::getFormTag(),
-			($this->ReceiptTitle) ? $this->dbObject('ReceiptTitle')->URLATT() : $this->dbObject('Title')->URLATT(),
-			$this->Price,
-			$this->Code,
-			$this->Category()->Code,
-			$this->Weight,
-			$this->PreviewImage()->PaddedImage(80,80)->URL,
-			$this->Title,
-			$this->Price
-		);
-	}
-
-	public function ProductOptionsForm() {
-		$form = $this->StartForm();
-		$form .= $this->AddBaseProductDetails();
-		$form .= $this->ProductOptionsSet();
-		$form .= $this->AddToCartForm();
-		$form .= $this->EndForm();
-		return $form;
-	}
-
-	public function StartForm() {
-		//start form
-		$formclass = 'foxycartForm';
-		$form = sprintf('<form action="%s" method="post" accept-charset="utf-8" class="foxycart %s" id="product%s">',
-			self::getFormTag(),
-			$formclass,
-			$this->ID
-		);
-		return $form;
-	}
-
-	public function EndForm() {
-		return "</form>";
-	}
-
-	public function AddBaseProductDetails(){
-		$form = $this->hiddenTag('name', ($this->ReceiptTitle) ? htmlspecialchars($this->ReceiptTitle) : htmlspecialchars($this->Title));
-		$form .= $this->hiddenTag('category',$this->Category()->Code);
-		$form .= $this->hiddenTag('code', $this->Code);
-        $form .= $this->hiddenTag('product_id', $this->ID);
-        $form .= '<input type="hidden" name="price" value="' . $this->Price . '" id="basePrice" />';
-		//$form .= $this->hiddenTag('price', $this->Price);
-		$form .= $this->hiddenTag('weight', $this->Weight);
-		if($this->PreviewImage()->Exists()) $form .= $this->hiddenTag('image', $this->PreviewImage()->PaddedImage(80,80)->absoluteURL);
-		return $form;
-	}
-
-	public function ProductOptionsSet() {
-		$options = $this->ProductOptions();
-
-		$groupedProductOptions = new GroupedList($options);
-		$grp = $groupedProductOptions->groupBy("ProductOptionGroupID");
-
-		//$grp = $options->groupBy('ProductOptionGroupID');
-
-		$form = "<div class='foxycartOptionsContainer'>";
-		foreach($grp as $id=>$optionSet){
-			$optionGroupTitle = DataObject::get_by_id('OptionGroup',$id)->Title;
-			$form .= $this->selectField($optionGroupTitle, $id, $optionSet);
-		}
-		$form .= "</div>";
-
-
-		$script = <<<JS
-jQuery(function(){
-
-	jQuery('.foxycartOptionsContainer select').change(function(){
-		refreshAddToCartPrice();
-	});
-
-	function refreshAddToCartPrice(){
-
-		var newProductPrice = parseFloat(jQuery('#basePrice').val());;
-
-		jQuery('form.foxycartForm#product{$this->ID} select').each(function(){
-
-		    if ( jQuery(this).attr('id') == 'qty' ) {
-		        // todo: modify newProductPrice by Quantity?
-
-            } else {
-                var currentOption = jQuery(this).val();
-                //get an array of the modifiers
-                currentOption = currentOption.substring(currentOption.lastIndexOf('{')+1, currentOption.lastIndexOf('}')).split('|');
-
-                //build a different array of key-value pairs, options[p,c,w] = value
-                //more reliable than hoping price is the first array index of currentOption..
-                var options = [];
-                for(i=0; i< currentOption.length; i++){
-                    var k = currentOption[i].substr(0,1);
-                    var val = currentOption[i].substr(1);
-                    options[k] = val;
-                }
-
-                if(typeof options['p'] != 'undefined'){
-                    var pricemodifier = options['p'].substr(0,1); // return +,-,:
-
-                    if(pricemodifier == ':'){
-                        newProductPrice = parseFloat(options['p'].substr(1));
-                    } else {
-                        newProductPrice = newProductPrice+parseFloat(options['p']);
-                    }
-                }
-            }
-
-
-		});
-		jQuery('form.foxycartForm#product{$this->ID} .submitPrice').html('$'+newProductPrice.toFixed(2));
-	}
-	if(jQuery('.foxycartOptionsContainer select').length > 0) refreshAddToCartPrice();
-});
-JS;
-
-		Requirements::customScript($script);
-
-		return $form;
-	}
-
-	public function AddToCartForm() {
-		$form = "<div class='field'>";
-		$form .= "<label for='quantity'>Quantity</label><div class='foxycart_qty'>";
-		$form .= "<select name='quantity' id='qty'>";
-		$form .= "<option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option>";
-		$form .= "</select>";
-		$form .= "</div>";
-		$form .= sprintf("<div class='field checkoutbtn'><h4 class='submitPrice' id='SubmitPrice%s'>$%2.2f</h4><input type='submit' value='%s' class='submit' /></div>",
-			$this->ID,
-			$this->Price,
-			'Add to Cart'
-		);
-		$form .= "</div>";
-		return $form;
-	}
-
-	public function selectField($name = null, $id = null, $optionSet = null) {
-		if($optionSet && $id && $name){
-			$selectField = '<div class="field selectfield">';
-			if($name != 'None'){
-				$selectField .= "<label for='{$name}'>$name</label><select name='{$name}' id='{$id}'>";
-			} else {
-				$selectField .= "<label for='{$name}'>&nbsp;</label><select name='{$name}' id='{$id}'>";
-			}
-			foreach($optionSet as $option){
-
-				$modPrice = ($option->PriceModifier) ? (string)$option->PriceModifier : '0';
-				$modPriceWithSymbol = OptionItem::getOptionModifierActionSymbol($option->PriceModifierAction).$modPrice;
-
-				$modWeight = ($option->WeightModifier) ? (string)$option->WeightModifier : '0';
-				$modWeight = OptionItem::getOptionModifierActionSymbol($option->WeightModifierAction).$modWeight;
-
-				$modCode = OptionItem::getOptionModifierActionSymbol($option->CodeModifierAction).$option->CodeModifier;
-
-				// is product option avaiable for purchase?
-				$available = '';
-				if ($option->Available == 0) $available = ' class="outOfStock"';
-
-				$selectField .= sprintf('<option value="%s{p%s|w%s|c%s}" %s>%s%s</option>',
-					$option->Title,
-					$modPriceWithSymbol,
-					$modWeight,
-					$modCode,
-					$available,
-					$option->Title,
-					($option->PriceModifier != 0) ? ': ('.OptionItem::getOptionModifierActionSymbol($option->PriceModifierAction, $returnWithOnlyPlusMinus=true).'$'.$modPrice.')' : ''
-				);
-			}
-			$selectField .= '</select></div>';
-			return $selectField;
-		}
-	}
-
-	public function hiddenTag($name=null, $val=null) {
-		return sprintf('<input type="hidden" name="%s" value="%s" />',
-			$name,
-			$val
-		);
+	public static function getGeneratedValue($productCode = null, $optionName = null, $optionValue = null, $method = 'name', $output = false, $urlEncode = false){
+		return (SiteConfig::current_site_config()->CartValidation)
+			? FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode):
+			$optionValue;
 	}
 
 	// get FoxyCart Store Name for JS call
@@ -473,11 +287,96 @@ JS;
 
 class ProductPage_Controller extends Page_Controller {
 
-	private static $allowed_actions = array();
+	private static $allowed_actions = array(
+		'PurchaseForm'
+	);
 
 	public function init(){
 		parent::init();
 		Requirements::javascript("framework/thirdparty/jquery/jquery.js");
-		Requirements::javascript("foxystripe/javascript/outOfStock.js");
+		Requirements::javascript("foxystripe/javascript/outOfStock.min.js");
+		Requirements::javascript("foxystripe/javascript/ProductOptions.min.js");
+
+		Requirements::customScript(<<<JS
+		var productID = {$this->data()->ID};
+JS
+);
+	}
+
+	public function PurchaseForm() {
+
+		$config = SiteConfig::current_site_config();
+
+		$assignAvailable = function($self){
+			$self->Available = ($self->getAvailability()) ? true : false;
+		};
+
+		$fields = FieldList::create();
+
+		$data = $this->data();
+		$hiddenTitle = ($data->ReceiptTitle) ? htmlspecialchars($data->ReceiptTitle) : htmlspecialchars($data->Title);
+		$code = $data->Code;
+
+		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'name', $hiddenTitle))->setValue($hiddenTitle));
+		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'category', $data->Category()->Code))->setValue($data->Category()->Code));
+		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'code', $data->Code))->setValue($data->Code));
+		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'product_id', $data->ID))->setValue($data->ID));
+		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'price', $data->Price))->setValue($data->Price));//can't override id
+		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'weight', $data->Weight))->setValue($data->Weight));
+		if($this->PreviewImage()->Exists()) $fields->push(
+			HiddenField::create(ProductPage::getGeneratedValue($code, 'image', $data->PreviewImage()->PaddedImage(80,80)->absoluteURL))
+				->setValue($data->PreviewImage()->PaddedImage(80,80)->absoluteURL)
+		);
+
+		$options = $data->ProductOptions();
+		$groupedOptions = new GroupedList($options);
+		$groupedBy = $groupedOptions->groupBy('ProductOptionGroupID');
+
+		$optionsSet = CompositeField::create();
+
+		foreach($groupedBy as $id => $set){
+			$group = OptionGroup::get()->byID($id);
+			$title = $group->Title;
+			$set->each($assignAvailable);
+			$disabled = array();
+			$fullOptions = array();
+			foreach($set as $item){
+				$fullOptions[ProductPage::getGeneratedValue($data->Code, $group->Title, $item->getGeneratedValue(), 'value')] = $item->getGeneratedTitle();
+				if(!$item->Availability) array_push($disabled, ProductPage::getGeneratedValue($data->Code, $group->Title, $item->getGeneratedValue(), 'value'));
+			}
+			$optionsSet->push(
+				$dropdown = DropdownField::create($title, $title, $fullOptions)
+			);
+			$dropdown->setDisabledItems($disabled);
+		}
+
+		$optionsSet->addExtraClass('foxycartOptionsContainer');
+		$fields->push($optionsSet);
+
+		$quantityMax = ($config->MaxQuantity) ? $config->MaxQuantity : 10;
+		$count = 1;
+		$quantity = array();
+		while($count <= $quantityMax){
+			$countVal = ProductPage::getGeneratedValue($data->Code, 'quantity', $count, 'value');
+			$quantity[$countVal] = $count;
+			$count++;
+		}
+
+		$fields->push(DropdownField::create('quantity', 'Quantity', $quantity));
+
+		$fields->push(HeaderField::create('submitPrice', '$'.$data->Price, 4));
+
+
+		$actions = FieldList::create(FormAction::create('Submit', _t('ProductForm.AddToCart', 'Add to Cart')));
+
+		$this->extend('updatePurchaseFormFields', $fields);
+
+		$form = Form::create($this, 'PurchaseForm', $fields, $actions);
+		$form->setAttribute('action',FoxyCart::FormActionURL());
+		$form->disableSecurityToken();
+
+		$this->extend('updatePurchaseForm', $form);
+
+		return $form;
 	}
 }
