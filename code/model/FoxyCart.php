@@ -7,12 +7,17 @@
 
 class FoxyCart extends Object {
 
-	public static function store_key_warning(){
-		$warning = null;
-		if(self::getStoreKey()===null){
-			$warning = 'Must define FoxyCart Store Key in your site settings in the cms';
+	private static $keyPrefix = 'dYnm1c';
+
+	public static function setStoreKey($length = 54, $count = 0){
+		$charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.strtotime('now');
+		$strLength = strlen($charset);
+		$str = '';
+		while($count < $length){
+			$str .= $charset[mt_rand(0, $strLength-1)];
+			$count++;
 		}
-		return $warning;
+		return self::getKeyPrefix().substr(base64_encode($str),0,$length);
 	}
 
 	public static function getStoreKey(){
@@ -30,7 +35,7 @@ class FoxyCart extends Object {
 		}
 		return $warning;
 	}
-	
+
 	public static function getFoxyCartStoreName(){
 		$config = SiteConfig::current_site_config();
 		if($config->StoreName){
@@ -38,7 +43,7 @@ class FoxyCart extends Object {
 		}
 		return null;
 	}
-	
+
 	public static function FormActionURL() {
 		return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName() );
 	}
@@ -106,5 +111,9 @@ class FoxyCart extends Object {
 
         return self::getAPIRequest($foxyData);
     }
-	
+
+	public static function getKeyPrefix(){
+		return self::$keyPrefix;
+	}
+
 }

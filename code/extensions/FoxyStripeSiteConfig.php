@@ -4,7 +4,7 @@ class FoxyStripeSiteConfig extends DataExtension{
 
 	private static $db = array(
 		'StoreName' => 'Varchar(255)',
-		'StoreKey' => 'Varchar(255)',
+		'StoreKey' => 'Varchar(60)',
 		'MultiGroup' => 'Boolean',
 		'ProductLimit' => 'Int',
 		'CartValidation' => 'Boolean'
@@ -14,6 +14,16 @@ class FoxyStripeSiteConfig extends DataExtension{
     private static $defaults = array(
         'ProductLimit' => 10
     );
+
+	public function populateDefaults(){
+		parent::populateDefaults();
+
+		$key = FoxyCart::setStoreKey();
+		while(!ctype_alnum($key)){
+			$key = FoxyCart::setStoreKey();
+		}
+		$this->owner->StoreKey = $key;
+	}
 
 
 	public function updateCMSFields(FieldList $fields){
@@ -40,9 +50,9 @@ class FoxyStripeSiteConfig extends DataExtension{
 			CheckboxField::create('CartValidation')
 				->setTitle('Enable Cart Validation')
 				->setDescription('You must <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures#use_cart_validation" target="_blank">enable cart validation</a> in the FoxyCart admin.'),
-			TextField::create('StoreKey')
+			ReadonlyField::create('StoreKey')
 				->setTitle('FoxyCart API Key')
-				->setDescription('copy/paste from FoxyCart'),
+				->setDescription('copy/paste to FoxyCart'),
 			ReadonlyField::create('SSOLink', 'Single Sign On URL', self::getSSOLink())
 				->setDescription('copy/paste to FoxyCart')
 		);
