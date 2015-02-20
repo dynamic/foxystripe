@@ -6,6 +6,10 @@ class ProductPageTest extends FS_Test{
 
 	function setUp(){
 		parent::setUp();
+
+		$groupForItem = OptionGroup::create();
+		$groupForItem->Title = 'Sample-Group';
+		$groupForItem->write();
 	}
 
 	function testProductCreation(){
@@ -141,21 +145,15 @@ class ProductPageTest extends FS_Test{
 	function testOptionItemCreation(){
 
 		$this->logInWithPermission('Product_CANCRUD');
-		$optionGroup = (OptionGroup::get()->first())
-			? OptionGroup::get()->first()
-			: OptionGroup::create();
-		if($optionGroup->ID == 0){
-			$optionGroup->Title = 'Size';
-			$optionGroup->write();
-		}
+		$optionGroup = OptionGroup::get()->filter(array('Title' => 'Sample-Group'))->first();
 		$option = $this->objFromFixture('OptionItem', 'large');
 		$option->ProductOptionGroupID = $optionGroup->ID;
 		$option->write();
 		$optionID = $option->ID;
 
-		$optionItem = OptionItem::get()->first();
+		$optionItem = OptionItem::get()->filter(array('ProductOptionGroupID' => $optionGroup->ID))->first();
 
-		$this->assertTrue($optionID == $optionItem->ID);
+		$this->assertEquals($optionID, $optionItem->ID);
 
 	}
 
