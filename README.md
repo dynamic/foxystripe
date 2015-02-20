@@ -37,6 +37,12 @@ Read more about [Using FoxyStripe](docs/en/Use.MD) and [Advanced Features](docs/
 
 Place this directory in the root of your SilverStripe installation, and rename the folder to 'foxystripe'.
 
+### Required Add-Ons
+
+The folowing add-on(s) are required:
+
+*   [SilverStripe has_one field](http://addons.silverstripe.org/add-ons/burnbright/silverstripe-hasonefield)
+
 ### Recommended Add-Ons
 
 The following add-ons are optional, but will enhance FoxyStripe when installed:

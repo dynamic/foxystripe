@@ -57,14 +57,21 @@ OptionItem:
     PriceModifierAction: Subtract
     Available: true
   small:
-      Title: Small
-      WeightModifier: 2
-      CodeModifier: ABC457
-      PriceModifier: 2.5
-      WeightModifierAction: Set
-      CodeModifieraction: Subtract
-      PriceModifierAction: Add
-      Available: false
+    Title: Small
+    WeightModifier: 2
+    CodeModifier: ABC457
+    PriceModifier: 2.5
+    WeightModifierAction: Set
+    CodeModifieraction: Subtract
+    PriceModifierAction: Add
+    Available: false
+ProductDiscount:
+  bulk:
+    Title: Bulk Discount
+ProductDiscountTier:
+  fiveforten:
+    Quantity: 5
+    Percentage: 10
 # ------------------------------------------
 # Groups
 # ------------------------------------------

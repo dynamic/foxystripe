@@ -16,7 +16,8 @@
         "unclecheese/betterbuttons": "*",
         "colymba/gridfield-bulk-editing-tools": "*",
         "sheadawson/quickaddnew": "*",
-        "undefinedoffset/sortablegridfield": "*"
+        "undefinedoffset/sortablegridfield": "*",
+		"burnbright/silverstripe-hasonefield": "*"
     },
 	"extra": {
 		"installer-name": "foxystripe"

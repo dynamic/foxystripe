@@ -20,7 +20,8 @@ class ProductPage extends Page implements PermissionProvider {
 
 	private static $has_one = array(
 		'PreviewImage' => 'Image',
-		'Category' => 'ProductCategory'
+		'Category' => 'ProductCategory',
+		'ProductDiscount' => 'ProductDiscount'
 	);
 
 	private static $has_many = array(
@@ -134,6 +135,19 @@ class ProductPage extends Page implements PermissionProvider {
             TextField::create('ReceiptTitle', 'Product Title for Receipt')
                 ->setDescription('Optional')
 		));
+
+		if($this->ProductDiscount()->exists()){
+			$fields->addFieldToTab(
+				'Root.Details',
+				ReadonlyField::create(
+					'add',
+					'Discount',
+					$this->ProductDiscount()->toString()
+				)
+			);
+		}
+		$fields->removeByName('ProductDiscountID');
+		$fields->addFieldToTab('Root.Details', HasOneButtonField::create('ProductDiscount', 'Product Discount', $this));
 
 		// Images tab
 		$fields->addFieldsToTab('Root.Images', array(
@@ -323,6 +337,9 @@ JS
 		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'product_id', $data->ID))->setValue($data->ID));
 		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'price', $data->Price))->setValue($data->Price));//can't override id
 		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'weight', $data->Weight))->setValue($data->Weight));
+		if($this->ProductDiscount()->getDiscountField()){
+			$fields->push($this->ProductDiscount()->getDiscountField());
+		}
 		if($this->PreviewImage()->Exists()) $fields->push(
 			HiddenField::create(ProductPage::getGeneratedValue($code, 'image', $data->PreviewImage()->PaddedImage(80,80)->absoluteURL))
 				->setValue($data->PreviewImage()->PaddedImage(80,80)->absoluteURL)
@@ -367,7 +384,13 @@ JS
 		$fields->push(HeaderField::create('submitPrice', '$'.$data->Price, 4));
 
 
-		$actions = FieldList::create(FormAction::create('Submit', _t('ProductForm.AddToCart', 'Add to Cart')));
+		$actions = FieldList::create(
+			$submit = FormAction::create(
+				'',
+				_t('ProductForm.AddToCart', 'Add to Cart')
+			)
+		);
+		$submit->setAttribute('name', ProductPage::getGeneratedValue($code, 'Submit', _t('ProductForm.AddToCart', 'Add to Cart')));
 
 		$this->extend('updatePurchaseFormFields', $fields);
 
