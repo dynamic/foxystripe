@@ -71,18 +71,18 @@ class Order extends DataObject implements PermissionProvider{
     function fieldLabels($includerelations = true) {
         $labels = parent::fieldLabels();
 
-        $labels['Order_ID'] = 'Order ID';
-        $labels['TransactionDate'] = "Date";
-        $labels['TransactionDate.NiceUS'] = "Date";
-        $labels['Member.Name'] = 'Customer';
-        $labels['Member.ID'] = 'Customer';
-        $labels['ProductTotal.Nice'] = 'Sub Total';
-        $labels['TaxTotal.Nice'] = 'Tax';
-        $labels['ShippingTotal.Nice'] = 'Shipping';
-        $labels['OrderTotal'] = 'Total';
-        $labels['OrderTotal.Nice'] = 'Total';
-        $labels['ReceiptLink'] = 'Invoice';
-        $labels['Details.ProductID'] = 'Product';
+        $labels['Order_ID'] = _t('Order.Order_ID', 'Order ID');
+        $labels['TransactionDate'] = _t('Order.TransactionDate', "Date");
+        $labels['TransactionDate.NiceUS'] = _t('Order.TransactionDate', "Date");
+        $labels['Member.Name'] = _t('Order.MemberName', 'Customer');
+        $labels['Member.ID'] = _t('Order.MemberName', 'Customer');
+        $labels['ProductTotal.Nice'] = _t('Order.ProductTotal', 'Sub Total');
+        $labels['TaxTotal.Nice'] = _t('Order.TaxTotal', 'Tax');
+        $labels['ShippingTotal.Nice'] = _t('Order.ShippingTotal', 'Shipping');
+        $labels['OrderTotal'] = _t('Order.OrderTotal', 'Total');
+        $labels['OrderTotal.Nice'] = _t('Order.OrderTotal', 'Total');
+        $labels['ReceiptLink'] = _t('Order.ReceiptLink', 'Invoice');
+        $labels['Details.ProductID'] = _t('Order.Details.ProductID', 'Product');
 
         return $labels;
     }

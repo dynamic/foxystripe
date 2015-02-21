@@ -67,13 +67,13 @@ class ProductPage extends Page implements PermissionProvider {
     function fieldLabels($includerelations = true) {
         $labels = parent::fieldLabels();
 
-        $labels['Title'] = 'Name';
-        $labels['Code'] = "Code";
-        $labels['Price.Nice'] = 'Price';
-        $labels['Featured.Nice'] = 'Featured';
-        $labels['Available.Nice'] = 'Available';
-        $labels['Category.ID'] = 'Category';
-        $labels['Category.Title'] = 'Category';
+        $labels['Title'] = _t('ProductPage.TitleLabel', 'Name');
+        $labels['Code'] = _t('ProductPage.CodeLabel', "Code");
+        $labels['Price.Nice'] = _t('ProductPage.PriceLabel', 'Price');
+        $labels['Featured.Nice'] = _t('ProductPage.NiceLabel', 'Featured');
+        $labels['Available.Nice'] = _t('ProductPage.AvailableLabel', 'Available');
+        $labels['Category.ID'] = _t('ProductPage.IDLabel', 'Category');
+        $labels['Category.Title'] = _t('ProductPage.CategoryTitleLabel', 'Category');
 
         return $labels;
     }
@@ -81,15 +81,26 @@ class ProductPage extends Page implements PermissionProvider {
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 
-		$previewDescription = ($this->stat('customPreviewDescription')) ? $this->stat('customPreviewDescription') : 'Image used throughout site to represent this product';
+        // allow extensions of ProductPage to override the PreviewImage field description
+		$previewDescription = ($this->stat('customPreviewDescription')) ? $this->stat('customPreviewDescription') : _t('ProductPage.PreviewImageDescription', 'Image used throughout site to represent this product');
 
 		// Cateogry Dropdown field w/ add new
 		$source = function(){
 		    return ProductCategory::get()->map()->toArray();
 		};
-		$catField = DropdownField::create('CategoryID', 'FoxyCart Category', $source())
+		$catField = DropdownField::create('CategoryID', _t('ProductPage.Category', 'FoxyCart Category'), $source())
             ->setEmptyString('')
-            ->setDescription('Required, must also exist in <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">FoxyCart Categories</a>. Used to set category specific options like shipping and taxes. Managed in <a href="admin/settings">Settings > FoxyStripe > Categories</a>');
+            ->setDescription(_t(
+                'ProductPage.CategoryDescription',
+                'Required, must also exist in
+                    <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
+                        FoxyCart Categories
+                    </a>.
+                    Used to set category specific options like shipping and taxes. Managed in
+                        <a href="admin/settings">
+                            Settings > FoxyStripe > Categories
+                        </a>'
+            ));
 		if (class_exists('QuickAddNewExtension')) $catField->useAddNew('ProductCategory', $source);
 
 		// Product Images gridfield
@@ -99,7 +110,12 @@ class ProductPage extends Page implements PermissionProvider {
 			$config->addComponent(new GridFieldBulkUpload());
 			$config->getComponentByType('GridFieldBulkUpload')->setUfConfig('folderName', 'Uploads/ProductImages');
 		}
-		$prodImagesField = GridField::create('ProductImages', 'Images', $this->ProductImages(), $config);
+		$prodImagesField = GridField::create(
+            'ProductImages',
+            _t('ProductPage.ProductImages', 'Images'),
+            $this->ProductImages(),
+            $config
+        );
 
 		// Product Options field
 		$config = GridFieldConfig_RelationEditor::create();
@@ -111,49 +127,74 @@ class ProductPage extends Page implements PermissionProvider {
 			$products = $this->ProductOptions();
 		}
 		$config->removeComponentsByType('GridFieldAddExistingAutocompleter');
-		$prodOptField = GridField::create('ProductOptions', 'Options', $products, $config);
-
-		// Option Groups field
-		$config = GridFieldConfig_RecordEditor::create();
-		$optGroupField = GridField::create('OptionGroup', 'Option Group', OptionGroup::get(), $config);
-
+		$prodOptField = GridField::create(
+            'ProductOptions',
+            _t('ProductPage.ProductOptions', 'Options'),
+            $products,
+            $config
+        );
 
 		// Details tab
 		$fields->addFieldsToTab('Root.Details', array(
 			HeaderField::create('DetailHD', 'Product Details', 2),
 			CheckboxField::create('Available')
-				->setTitle('Available for purchase')
-                ->setDescription('If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'),
-            TextField::create('Code', 'Product Code')
-                ->setDescription('Required, must be unique. Product identifier used by FoxyCart in transactions'),
+				->setTitle(_t('ProductPage.Available', 'Available for purchase'))
+                ->setDescription(_t(
+                    'ProductPage.AvailableDescription',
+                    'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
+                )),
+            TextField::create('Code')
+                ->setTitle(_t('ProductPage.Code', 'Product Code'))
+                ->setDescription(_t(
+                    'ProductPage.CodeDescription',
+                    'Required, must be unique. Product identifier used by FoxyCart in transactions'
+                )),
             $catField,
             CurrencyField::create('Price')
-                ->setDescription('Base price for this product. Can be modified using Product Options'),
+                ->setTitle(_t('ProductPage.Price', 'Price'))
+                ->setDescription(_t(
+                    'ProductPage.PriceDescription',
+                    'Base price for this product. Can be modified using Product Options'
+                )),
             NumericField::create('Weight')
-                ->setDescription('Base weight for this product. Can be modified using Product Options'),
+                ->setTitle(_t('ProductPage.Weight', 'Weight'))
+                ->setDescription(_t(
+                    'ProductPage.WeightDescription',
+                    'Base weight for this product in lbs. Can be modified using Product Options'
+                )),
 			CheckboxField::create('Featured')
-				->setTitle('Featured Product'),
-            TextField::create('ReceiptTitle', 'Product Title for Receipt')
-                ->setDescription('Optional')
+				->setTitle(_t('ProductPage.Featured', 'Featured Product')),
+            TextField::create('ReceiptTitle')
+                ->setTitle(_t('ProductPage.ReceiptTitle', 'Product Title for Receipt'))
+                ->setDescription(_t(
+                        'ProductPage.ReceiptTitleDescription', 'Optional'
+                ))
 		));
 
 		// Images tab
 		$fields->addFieldsToTab('Root.Images', array(
-			HeaderField::create('MainImageHD', 'Product Image', 2),
+			HeaderField::create('MainImageHD', _t('ProductPage.MainImageHD', 'Product Image'), 2),
 			UploadField::create('PreviewImage', '')
 				->setDescription($previewDescription)
 				->setFolderName('Uploads/Products')
 				->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'))
 				->setAllowedMaxFileNumber(1),
-			HeaderField::create('ProductImagesHD', 'Product Image Gallery', 2),
+			HeaderField::create('ProductImagesHD', _t('ProductPage.ProductImagesHD'. 'Product Image Gallery'), 2),
 			$prodImagesField
-				->setDescription('Additional Product Images, shown in gallery on Product page')
+				->setDescription(_t(
+                        'ProductPage.ProductImagesDescription',
+                        'Additional Product Images, shown in gallery on Product page'
+                ))
 		));
 
 		// Options Tab
 		$fields->addFieldsToTab('Root.Options', array(
-			HeaderField::create('OptionsHD', 'Product Options', 2),
-			LiteralField::create('OptionsDescrip', '<p>Product Options allow products to be customized by attributes such as size or color. Options can also modify the product\'s price, weight or code.</p>'),
+			HeaderField::create('OptionsHD', _t('ProductPage.OptionsHD', 'Product Options'), 2),
+			LiteralField::create('OptionsDescrip', _t(
+                'Page.OptionsDescrip',
+                '<p>Product Options allow products to be customized by attributes such as size or color.
+                    Options can also modify the product\'s price, weight or code.</p>'
+            )),
 			$prodOptField
 		));
 
@@ -170,7 +211,10 @@ class ProductPage extends Page implements PermissionProvider {
 		$fields->addFieldToTab('Root.Discounts', $discountGrid);
 
 		if(FoxyCart::store_name_warning()!==null){
-			$fields->addFieldToTab('Root.Main', new LiteralField("StoreSubDomainHeaderWarning", "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"), 'Title');
+			$fields->addFieldToTab('Root.Main', LiteralField::create("StoreSubDomainHeaderWarning", _t(
+                'ProductPage.StoreSubDomainHeaderWarning',
+                "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"
+            )), 'Title');
 		}
 
 		// allows CMS fields to be extended

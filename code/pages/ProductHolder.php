@@ -14,7 +14,7 @@ class ProductHolder extends Page {
 	);
 	
 	private static $has_one = array(
-		'PreviewImage' => 'Image'
+
 	);
 
 	private static $many_many = array(
@@ -37,7 +37,6 @@ class ProductHolder extends Page {
 	
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
-		$fields->addFieldToTab('Root.Image', new UploadField('PreviewImage', 'Preview Image'));
 
 		if(SiteConfig::current_site_config()->MultiGroup){
 			$config = GridFieldConfig_RelationEditor::create();
@@ -50,9 +49,9 @@ class ProductHolder extends Page {
 			}
 			$fields->addFieldToTab(
 				'Root.Products',
-				new GridField(
+				GridField::create(
 					'Products',
-					'Products',
+					_t('ProductHolder.Products', 'Products'),
 					$this->Products(),
 					$config
 				)
@@ -60,6 +59,7 @@ class ProductHolder extends Page {
 		}
 
 		$this->extend('updateCMSFields', $fields);
+
 		return $fields;
 	}
 
@@ -91,7 +91,7 @@ class ProductHolder extends Page {
 	 * ProductGroupIDs function.
 	 * 
 	 * @access public
-	 * @return void
+	 * @return array
 	 */
 	public function ProductGroupIDs() {
 		$holderIDs = array();
@@ -103,7 +103,7 @@ class ProductHolder extends Page {
 	 * Products function.
 	 * 
 	 * @access public
-	 * @return void
+	 * @return array
 	 */
 	public function ProductList($limit = 10) {
 
