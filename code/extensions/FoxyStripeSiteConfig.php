@@ -16,15 +16,23 @@ class FoxyStripeSiteConfig extends DataExtension{
         'ProductLimit' => 10
     );
 
-	public function populateDefaults(){
-		parent::populateDefaults();
+    public function requireDefaultRecords() {
 
-		$key = FoxyCart::setStoreKey();
-		while(!ctype_alnum($key)){
-			$key = FoxyCart::setStoreKey();
-		}
-		$this->owner->StoreKey = $key;
-	}
+        $siteConfig = SiteConfig::current_site_config();
+        $siteConfig = SiteConfig::get()->byID($siteConfig->ID);
+        if(!isset($siteConfig->StoreKey) || $siteConfig->StoreKey === NULL){
+            $key = FoxyCart::setStoreKey();
+            while(!ctype_alnum($key)){
+                $key = FoxyCart::setStoreKey();
+            }
+            $siteConfig->StoreKey = $key;
+            $siteConfig->write();
+            DB::alteration_message($siteConfig->ClassName.": created FoxyCart Store Key " . $key, 'created');
+        }
+
+        parent::requireDefaultRecords();
+
+    }
 
 
 	public function updateCMSFields(FieldList $fields){
