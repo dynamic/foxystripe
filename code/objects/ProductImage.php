@@ -25,11 +25,18 @@ class ProductImage extends DataObject{
 	);
 	
 	public function getCMSFields(){
-		$fields = new FieldList();
-		$fields->push(new TextField('Title', 'Product Image Title'));
-		$fields->push(new UploadField('Image', 'Product Image'));
+		$fields = FieldList::create(
+            TextField::create('Title')
+                ->setTitle(_t('ProductImage.Title', 'Product Image Title')),
+            UploadField::create('Image')
+                ->setTitle(_t('ProductCategory.Image', 'Product Image'))
+                ->setFolderName('Uploads/Products')
+                ->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'))
+        );
+
 		$this->extend('getCMSFields', $fields);
-		return $fields;
+
+        return $fields;
 	}
 
 	public function canView($member = false) {

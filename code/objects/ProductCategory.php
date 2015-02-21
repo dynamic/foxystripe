@@ -26,21 +26,29 @@ class ProductCategory extends DataObject {
 	);
 
     public function getCMSFields() {
+
 		$fields = FieldList::create(
             LiteralField::create(
                 'PCIntro',
-                '<p>Categories must be created in your
-                    <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
-                        FoxyCart Product Categories
-                    </a>, and also manually created in FoxyStripe.
-                </p>'
+                _t(
+                    'ProductCategory.PCIntro',
+                    '<p>Categories must be created in your
+                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
+                            FoxyCart Product Categories
+                        </a>, and also manually created in FoxyStripe.
+                    </p>'
+                )
             ),
-            TextField::create('Code', 'FoxyCart Category Code')
-                ->setDescription('copy/paste from FoxyCart'),
-            TextField::create('Title', 'FoxyCart Category Description')
-                ->setDescription('copy/paste from FoxyCart')
+            TextField::create('Code')
+                ->setTitle(_t('ProductCategory.Code', 'FoxyCart Category Code'))
+                ->setDescription(_t('ProductCategory.CodeDescription', 'copy/paste from FoxyCart')),
+            TextField::create('Title')
+                ->setTitle(_t('ProductCategory.Title', 'FoxyCart Category Description'))
+                ->setDescription(_t('ProductCategory.TitleDescription', 'copy/paste from FoxyCart'))
         );
+
         $this->extend('updateCMSFields', $fields);
+
         return $fields;
 	}
 

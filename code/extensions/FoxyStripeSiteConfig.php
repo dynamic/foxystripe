@@ -32,62 +32,103 @@ class FoxyStripeSiteConfig extends DataExtension{
         // set TabSet names to avoid spaces from camel case
         $fields->addFieldToTab('Root', new TabSet('FoxyStripe', 'FoxyStripe'));
 
-		$fieldSet1 = array(
-			// Store Details
-			HeaderField::create('StoreDetails', 'Store Settings', 3),
-			LiteralField::create('DetailsIntro',
-				'<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditStore" target="_blank">FoxyCart store settings</a>.'
-			),
+        // settings tab
+        $fields->addFieldsToTab('Root.FoxyStripe.Settings', array(
+            // Store Details
+			HeaderField::create('StoreDetails', _t('FoxyStripeSiteConfig.StoreDetails', 'Store Settings'), 3),
+			LiteralField::create('DetailsIntro', _t(
+				'FoxyStripeSiteConfig.DetailsIntro',
+                '<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditStore" target="_blank">FoxyCart store settings</a>.'
+            )),
 			TextField::create('StoreName')
-				->setTitle('Store Sub Domain')
-				->setDescription('the sub domain for your FoxyCart store'),
+				->setTitle(_t('FoxyStripeSiteConfig.StoreName', 'Store Sub Domain'))
+				->setDescription(_t('FoxyStripeSiteConfig.StoreNameDescription', 'the sub domain for your FoxyCart store')),
+
 			// Advanced Settings
-			HeaderField::create('AdvanceHeader', 'Advanced Settings', 3),
-			LiteralField::create('AdvancedIntro',
+			HeaderField::create('AdvanceHeader', _t('FoxyStripeSiteConfig.AdvancedHeader', 'Advanced Settings'), 3),
+			LiteralField::create('AdvancedIntro', _t(
+                'FoxyStripeSiteConfig.AdvancedIntro',
 				'<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures" target="_blank">FoxyCart advanced store settings</a>.</p>'
-			),
-			ReadonlyField::create('DataFeedLink', 'FoxyCart DataFeed URL', self::getDataFeedLink())
-				->setDescription('copy/paste to FoxyCart'),
+			)),
+			ReadonlyField::create('DataFeedLink', _t('FoxyStripeSiteConfig.DataFeedLink', 'FoxyCart DataFeed URL'), self::getDataFeedLink())
+				->setDescription(_t('FoxyStripeSiteConfig.DataFeedLinkDescription', 'copy/paste to FoxyCart')),
 			CheckboxField::create('CartValidation')
-				->setTitle('Enable Cart Validation')
-				->setDescription('You must <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures#use_cart_validation" target="_blank">enable cart validation</a> in the FoxyCart admin.'),
+				->setTitle(_t('FoxyStripeSiteConfig.CartValidation', 'Enable Cart Validation'))
+				->setDescription(_t(
+                    'FoxyStripeSiteConfig.CartValidationDescription',
+                    'You must <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures#use_cart_validation" target="_blank">enable cart validation</a> in the FoxyCart admin.'
+            )),
 			ReadonlyField::create('StoreKey')
-				->setTitle('FoxyCart API Key')
-				->setDescription('copy/paste to FoxyCart'),
-			ReadonlyField::create('SSOLink', 'Single Sign On URL', self::getSSOLink())
-				->setDescription('copy/paste to FoxyCart')
-		);
+				->setTitle(_t('FoxyStripeSiteConfig.StoreKey', 'FoxyCart API Key'))
+				->setDescription(_t('FoxyStripeSiteConfig.StoreKeyDescription', 'copy/paste to FoxyCart')),
+			ReadonlyField::create('SSOLink', _t('FoxyStripeSiteConfig.SSOLink', 'Single Sign On URL'), self::getSSOLink())
+				->setDescription(_t('FoxyStripeSiteConfig.SSOLinkDescription', 'copy/paste to FoxyCart'))
+        ));
+
+        // configuration warning
 		if(FoxyCart::store_name_warning()!==null){
-			array_unshift($fieldSet1, new LiteralField("StoreSubDomainHeaderWarning", "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"));
+			$fields->insertBefore(LiteralField::create(
+                "StoreSubDomainHeaderWarning",
+                _t(
+                    'FoxyStripeSiteConfig.StoreSubDomainHeadingWarning',
+                    "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"
+                )
+            ), 'StoreDetails');
 		}
 
-        $fields->addFieldsToTab('Root.FoxyStripe.Settings', $fieldSet1);
-
+        // products tab
 		$fields->addFieldsToTab('Root.FoxyStripe.Products', array(
-			HeaderField::create('ProductHeader', 'Products', 3),
+			HeaderField::create('ProductHeader', _t('FoxyStripeSiteConfig.ProductHeader', 'Products'), 3),
 			CheckboxField::create('MultiGroup')
-				->setTitle('Multiple Groups')
-				->setDescription('Allows products to be shown in multiple Product Groups'),
-			HeaderField::create('ProductGroupHeader', 'Product Groups', 3),
+				->setTitle(_t('FoxyStripeSiteConfig.MultiGroup', 'Multiple Groups'))
+				->setDescription(_t(
+                    'FoxyStripeSiteConfig.MultiGroupDescription',
+                    'Allows products to be shown in multiple Product Groups'
+                )),
+			HeaderField::create('ProductGroupHD', _t('FoxyStripeSiteConfig.ProductGroupHD', 'Product Groups'), 3),
 			NumericField::create('ProductLimit')
-				->setTitle('Products per Page')
-				->setDescription('Number of Products to show per page on a Product Group'),
-			HeaderField::create('ProductQuantityHeader', 'Product Form Max Quantity', 3),
+				->setTitle(_t('FoxyStripeSiteConfig.ProductLimit', 'Products per Page'))
+				->setDescription(_t(
+                    'FoxyStripeSiteConfig.ProductLimitDescription',
+                    'Number of Products to show per page on a Product Group'
+                )),
+			HeaderField::create('ProductQuantityHD', _t('FoxyStripeSiteConfig.ProductQuantityHD', 'Product Form Max Quantity'), 3),
 			NumericField::create('MaxQuantity')
-				->setTitle('Max Quantity')
-				->setDescription('Sets max quantity for product form dropdown (add to cart form - default 10)')
+				->setTitle(_t('FoxyStripeSiteConfig.MaxQuantity', 'Max Quantity'))
+				->setDescription(_t(
+                    'FoxyStripeSiteConfig.MaxQuantityDescription',
+                    'Sets max quantity for product form dropdown (add to cart form - default 10)'
+                ))
 		));
 
+        // categories tab
 		$fields->addFieldsToTab('Root.FoxyStripe.Categories', array(
-			HeaderField::create('CategoryHead', 'FoxyStripe Categories', 3),
-			LiteralField::create('CategoryDescrip', '<p>FoxyCart Categories offer a way to give products additional behaviors that cannot be accomplished by product options alone, including category specific coupon codes, shipping and handling fees, and email receipts. <a href="https://wiki.foxycart.com/v/2.0/categories" target="_blank">Learn More</a></p><p>Categories you\'ve created in FoxyStripe must also be created in your <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">FoxyCart Categories</a> admin panel.</p>'),
-			GridField::create('ProductCategory', 'FoxyCart Categories', ProductCategory::get(), GridFieldConfig_RecordEditor::create())
+			HeaderField::create('CategoryHD', _t('FoxyStripeSiteConfig.CategoryHD', 'FoxyStripe Categories'), 3),
+			LiteralField::create('CategoryDescrip', _t(
+                'FoxyStripeSiteConfig.CategoryDescrip',
+                '<p>FoxyCart Categories offer a way to give products additional behaviors that cannot be accomplished by product options alone, including category specific coupon codes, shipping and handling fees, and email receipts. <a href="https://wiki.foxycart.com/v/2.0/categories" target="_blank">Learn More</a></p><p>Categories you\'ve created in FoxyStripe must also be created in your <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">FoxyCart Categories</a> admin panel.</p>'
+            )),
+			GridField::create(
+                'ProductCategory',
+                _t('FoxyStripeSiteConfig.ProductCategory', 'FoxyCart Categories'),
+                ProductCategory::get(),
+                GridFieldConfig_RecordEditor::create()
+            )
 		));
 
+        // option groups tab
 		$fields->addFieldsToTab('Root.FoxyStripe.Groups', array(
-			HeaderField::create('OptionGroupsHead', 'Product Option Groups', 3),
-			LiteralField::create('OptionGroupsDescrip', '<p>Product Option Groups allow you to name a set of product options.</p>'),
-			GridField::create('OptionGroup', 'Product Option Groups', OptionGroup::get(), GridFieldConfig_RecordEditor::create())
+			HeaderField::create('OptionGroupsHead', _t('FoxyStripeSiteConfig', 'Product Option Groups'), 3),
+			LiteralField::create('OptionGroupsDescrip', _t(
+                'FoxyStripeSiteConfig.OptionGroupsDescrip',
+                '<p>Product Option Groups allow you to name a set of product options.</p>'
+            )),
+			GridField::create(
+                'OptionGroup',
+                _t('FoxyStripeSiteConfig.OptionGroup', 'Product Option Groups'),
+                OptionGroup::get(),
+                GridFieldConfig_RecordEditor::create()
+            )
 		));
 
 	}
