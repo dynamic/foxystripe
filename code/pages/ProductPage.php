@@ -15,7 +15,8 @@ class ProductPage extends Page implements PermissionProvider {
 		'Code' => 'Varchar(100)',
 		'ReceiptTitle' => 'HTMLVarchar(255)',
 		'Featured' => 'Boolean',
-		'Available' => 'Boolean'
+		'Available' => 'Boolean',
+		'DiscountTitle' => 'Varchar(50)'
 	);
 
 	private static $has_one = array(
@@ -26,7 +27,8 @@ class ProductPage extends Page implements PermissionProvider {
 	private static $has_many = array(
 		'ProductImages' => 'ProductImage',
 		'ProductOptions' => 'OptionItem',
-        'OrderDetails' => 'OrderDetail'
+        'OrderDetails' => 'OrderDetail',
+		'ProductDiscountTiers' => 'ProductDiscountTier'
 	);
 
     private static $belongs_many_many = array(
@@ -155,6 +157,18 @@ class ProductPage extends Page implements PermissionProvider {
 			$prodOptField
 		));
 
+		if(!$this->DiscountTitle && $this->ProductDiscountTiers()->exists()){
+			$fields->addFieldTotab('Root.Discounts', new LiteralField("ProductDiscountHeaderWarning", "<p class=\"message warning\">A discount title is required for FoxyCart to properly parse the value. The discounts will not be applied until a title is entered.</p>"));
+		}
+
+		$fields->addFieldToTab('Root.Discounts', TextField::create('DiscountTitle')->setTitle(_t('Product.DiscountTitle','Discount Title')));
+		$discountsConfig = GridFieldConfig_RelationEditor::create();
+		$discountsConfig->removeComponentsByType('GridFieldAddExistingAutocompleter');
+		$discountsConfig->removeComponentsByType('GridFieldDeleteAction');
+		$discountsConfig->addComponent(new GridFieldDeleteAction(false));
+		$discountGrid = GridField::create('ProductDiscountTiers', 'Product Discounts', $this->ProductDiscountTiers(), $discountsConfig);
+		$fields->addFieldToTab('Root.Discounts', $discountGrid);
+
 		if(FoxyCart::store_name_warning()!==null){
 			$fields->addFieldToTab('Root.Main', new LiteralField("StoreSubDomainHeaderWarning", "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"), 'Title');
 		}
@@ -257,6 +271,15 @@ class ProductPage extends Page implements PermissionProvider {
 		return '<script src="https://cdn.foxycart.com/' . FoxyCart::getFoxyCartStoreName() . '/loader.js" async defer></script>';
 	}
 
+	public function getDiscountFieldValue(){
+		$tiers = $this->ProductDiscountTiers();
+		$bulkString = '';
+		foreach($tiers as $tier){
+			$bulkString .= "|{$tier->Quantity}-{$tier->Percentage}";
+		}
+		return "{$this->Title}{allunits{$bulkString}}";
+	}
+
 	/**
 	 * @param Member $member
 	 * @return boolean
@@ -323,6 +346,9 @@ JS
 		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'product_id', $data->ID))->setValue($data->ID));
 		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'price', $data->Price))->setValue($data->Price));//can't override id
 		$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'weight', $data->Weight))->setValue($data->Weight));
+		if($this->DiscountTitle && $this->ProductDiscountTiers()->exists()){
+			$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'discount_quantity_percentage', $data->getDiscountFieldValue()))->setValue($data->getDiscountFieldValue()));
+		}
 		if($this->PreviewImage()->Exists()) $fields->push(
 			HiddenField::create(ProductPage::getGeneratedValue($code, 'image', $data->PreviewImage()->PaddedImage(80,80)->absoluteURL))
 				->setValue($data->PreviewImage()->PaddedImage(80,80)->absoluteURL)
@@ -367,7 +393,13 @@ JS
 		$fields->push(HeaderField::create('submitPrice', '$'.$data->Price, 4));
 
 
-		$actions = FieldList::create(FormAction::create('Submit', _t('ProductForm.AddToCart', 'Add to Cart')));
+		$actions = FieldList::create(
+			$submit = FormAction::create(
+				'',
+				_t('ProductForm.AddToCart', 'Add to Cart')
+			)
+		);
+		$submit->setAttribute('name', ProductPage::getGeneratedValue($code, 'Submit', _t('ProductForm.AddToCart', 'Add to Cart')));
 
 		$this->extend('updatePurchaseFormFields', $fields);
 
