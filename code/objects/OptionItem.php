@@ -184,14 +184,16 @@ class OptionItem extends DataObject{
 
 	public static function getOptionModifierActionSymbol($oma, $returnWithOnlyPlusMinus=false){
 		switch($oma){
-			case 'Add':
-				return '+';
 			case 'Subtract':
-				return '-';
+				$symbol = '-';
+				break;
 			case 'Set':
-				return ($returnWithOnlyPlusMinus) ? '' : ':';
+				$symbol = ($returnWithOnlyPlusMinus) ? '' : ':';
+				break;
+			default:
+				$symbol = '+';
 		}
-		return '';
+		return $symbol;
 	}
 
 	public function getWeightModifierWithSymbol(){
