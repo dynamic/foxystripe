@@ -71,7 +71,7 @@ class Order extends DataObject implements PermissionProvider{
     function fieldLabels($includerelations = true) {
         $labels = parent::fieldLabels();
 
-        $labels['Order_ID'] = _t('Order.Order_ID', 'Order ID');
+        $labels['Order_ID'] = _t('Order.Order_ID', 'Order ID#');
         $labels['TransactionDate'] = _t('Order.TransactionDate', "Date");
         $labels['TransactionDate.NiceUS'] = _t('Order.TransactionDate', "Date");
         $labels['Member.Name'] = _t('Order.MemberName', 'Customer');
@@ -96,20 +96,6 @@ class Order extends DataObject implements PermissionProvider{
         $obj->setValue('<a href="' . $this->ReceiptURL . '" target="_blank" class="cms-panel-link action external-link">view</a>');
         return $obj;
     }
-
-	public function getCMSFields(){
-        $fields = parent::getCMSFields();
-
-        /*
-        $fields->removeByName('Details');
-        $fields->addFieldsToTab('Root.Main', array(
-            CheckboxSetField::create('Details', 'Order Details', $this->Details())
-        ));
-        */
-
-		$this->extend('updateCMSFields', $fields);
-		return $fields;
-	}
 
 	public function canView($member = false) {
 		return Permission::check('Product_ORDERS');
