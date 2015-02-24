@@ -9,6 +9,7 @@ class StoreSettingsTest extends FS_Test{
 
 		$siteConf = SiteConfig::current_site_config();
 		$siteConf->StoreName = 'foxystripe';
+        $siteConf->requireDefaultRecords();
 		$siteConf->write();
 	}
 
@@ -17,14 +18,14 @@ class StoreSettingsTest extends FS_Test{
 		$siteConf = SiteConfig::current_site_config();
 
 		$this->assertTrue(ctype_alnum($siteConf->StoreKey));
-		$this->assertTrue(strlen($siteConf->StoreKey) == 60);
-		$this->assertTrue(substr($siteConf->StoreKey, 0, 6) == $pref);
+        $this->assertEquals(strlen($siteConf->StoreKey), 60);
+        $this->assertEquals(substr($siteConf->StoreKey, 0, 6), $pref);
 	}
 
 	function testStoreName(){
 		$siteConf = SiteConfig::current_site_config();
 
-		$this->assertTrue($siteConf->StoreName == 'foxystripe');
+        $this->assertEquals($siteConf->StoreName, 'foxystripe');
 	}
 
 }

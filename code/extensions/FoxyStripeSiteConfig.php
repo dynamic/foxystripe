@@ -16,17 +16,6 @@ class FoxyStripeSiteConfig extends DataExtension{
         'ProductLimit' => 10
     );
 
-	public function populateDefaults(){
-		parent::populateDefaults();
-
-		$key = FoxyCart::setStoreKey();
-		while(!ctype_alnum($key)){
-			$key = FoxyCart::setStoreKey();
-		}
-		$this->owner->StoreKey = $key;
-	}
-
-
 	public function updateCMSFields(FieldList $fields){
 
         // set TabSet names to avoid spaces from camel case
@@ -139,6 +128,24 @@ class FoxyStripeSiteConfig extends DataExtension{
 
     private static function getDataFeedLink() {
         return Director::absoluteBaseURL()."foxystripe/";
+    }
+
+    // generate key on install
+    public function requireDefaultRecords() {
+
+        parent::requireDefaultRecords();
+
+        $siteConfig = SiteConfig::current_site_config();
+
+        if(!$siteConfig->StoreKey) {
+            $key = FoxyCart::setStoreKey();
+            while(!ctype_alnum($key)){
+                $key = FoxyCart::setStoreKey();
+            }
+            $siteConfig->StoreKey = $key;
+            $siteConfig->write();
+            DB::alteration_message($siteConfig->ClassName.": created FoxyCart Store Key " . $key, 'created');
+        }
     }
 
 }
