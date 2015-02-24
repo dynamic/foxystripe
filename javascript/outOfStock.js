@@ -1,24 +1,25 @@
-jQuery('option.outOfStock').prop('disabled', true)
-jQuery('option.outOfStock').append(document.createTextNode(" (out of stock)"));
+var unavailable = jQuery('.unavailableText'),
+	submit = jQuery('#Form_PurchaseForm_action_');
+
+unavailable.hide();
+jQuery('option:disabled').each(function(){
+	jQuery(this).prop('disabled', false).addClass('outOfStock').append(document.createTextNode(" (out of stock)"));
+});
 
 if (jQuery('option:selected').hasClass('outOfStock')) {
-	jQuery('.field.checkoutbtn input').hide();
-	jQuery('.submitPrice').after("<p class='unavailableText'><strong><em>Currently out of stock</em></strong></p>");
-};
+	submit.hide();
+	unavailable.show();
+}
 
 jQuery('select').on('change', function() {
-	
-	var OutOfStock = jQuery('option:selected').hasClass('outOfStock');
-	
-	if (OutOfStock) {
-		jQuery('.field.checkoutbtn input').hide();
-		if (jQuery('p.unavailableText').length > 0) {
 
-		} else {
-			jQuery('.submitPrice').after("<p class='unavailableText'><strong><em>Currently out of stock</em></strong></p>");
-		};
+	var OutOfStock = jQuery('option:selected').hasClass('outOfStock');
+
+	if (OutOfStock) {
+		submit.hide();
+		unavailable.show();
 	} else {
-		jQuery('.field.checkoutbtn input').show();
-		jQuery('p.unavailableText').remove();
+		submit.show();
+		unavailable.remove();
 	}
 });
