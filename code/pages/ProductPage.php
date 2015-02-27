@@ -361,8 +361,10 @@ class ProductPage_Controller extends Page_Controller {
 	public function init(){
 		parent::init();
 		Requirements::javascript("framework/thirdparty/jquery/jquery.js");
-		Requirements::javascript("foxystripe/javascript/outOfStock.min.js");
-		Requirements::javascript("foxystripe/javascript/ProductOptions.min.js");
+		if($this->data()->Available && $this->ProductOptions()->exists()){
+			Requirements::javascript("foxystripe/javascript/outOfStock.min.js");
+			Requirements::javascript("foxystripe/javascript/ProductOptions.min.js");
+		}
 
 		Requirements::customScript(<<<JS
 		var productID = {$this->data()->ID};
@@ -435,6 +437,7 @@ JS
 		$fields->push(DropdownField::create('quantity', 'Quantity', $quantity));
 
 		$fields->push(HeaderField::create('submitPrice', '$'.$data->Price, 4));
+		$fields->push(LiteralField::create('unavailableText',"<p class='unavailableText'><strong><em>Currently out of stock</em></strong></p>"));
 
 
 		$actions = FieldList::create(
