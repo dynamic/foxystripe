@@ -305,6 +305,7 @@ class ProductPage extends Page implements PermissionProvider {
 	}
 
 	public static function getGeneratedValue($productCode = null, $optionName = null, $optionValue = null, $method = 'name', $output = false, $urlEncode = false){
+		$optionName = ($optionName !== null) ? preg_replace('/\s/','_', $optionName) : $optionName;
 		return (SiteConfig::current_site_config()->CartValidation)
 			? FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode):
 			$optionValue;
@@ -407,18 +408,19 @@ JS
 
 			$optionsSet = CompositeField::create();
 
-			foreach ($groupedBy as $id => $set) {
+			foreach($groupedBy as $id => $set){
 				$group = OptionGroup::get()->byID($id);
 				$title = $group->Title;
+				$name = preg_replace('/\s/','_', $title);
 				$set->each($assignAvailable);
 				$disabled = array();
 				$fullOptions = array();
-				foreach ($set as $item) {
+				foreach($set as $item){
 					$fullOptions[ProductPage::getGeneratedValue($data->Code, $group->Title, $item->getGeneratedValue(), 'value')] = $item->getGeneratedTitle();
-					if (!$item->Availability) array_push($disabled, ProductPage::getGeneratedValue($data->Code, $group->Title, $item->getGeneratedValue(), 'value'));
+					if(!$item->Availability) array_push($disabled, ProductPage::getGeneratedValue($data->Code, $group->Title, $item->getGeneratedValue(), 'value'));
 				}
 				$optionsSet->push(
-					$dropdown = DropdownField::create($title, $title, $fullOptions)
+					$dropdown = DropdownField::create($name, $title, $fullOptions)->setTitle($title)
 				);
 				$dropdown->setDisabledItems($disabled);
 			}

@@ -49,6 +49,25 @@ class OptionGroup extends DataObject{
         }
 	}
 
+	public function getCMSValidator() {
+		return new RequiredFields(array('Title'));
+	}
+
+	public function validate(){
+		$result = parent::validate();
+
+		$title = $this->Title;
+		$firstChar = substr($title, 0, 1);
+		if(preg_match('/[^a-zA-Z]/', $firstChar)){
+			$result->error('The first character of the Title can only be a letter', 'bad');
+		}
+		if(preg_match('/[^a-zA-Z]\s/', $title)){
+			$result->error('Please only use letters, numbers and spaces in the title', 'bad');
+		}
+
+		return $result;
+	}
+
 	public function onBeforeDelete(){
 		parent::onBeforeDelete();
 
