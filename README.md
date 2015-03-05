@@ -27,7 +27,7 @@ Read more about [Using FoxyStripe](docs/en/Use.MD) and [Advanced Features](docs/
 
 ### Composer Installation
 
-`"require": { "dynamic/foxystripe": "1.1.0" }`
+`"require": { "dynamic/foxystripe": "1.1.1" }`
 
 ### Git Installation
 
@@ -85,7 +85,7 @@ In `mysite/config_php`, add the following to force the site into SSL in live mod
 
 ### Maintainer Contact
 
- *  [Dynamic](http://www.dynamicdoes.com) (<info@dynamicdoes.com>)
+ *  [Dynamic](http://www.dynamicagency.com) (<dev@dynamicdoes.com>)
    
 ### Credits
 
@@ -93,7 +93,7 @@ Inspired by previous work done by [cbryer](https://github.com/cbryer).
 
 ## License
 
-	Copyright (c) 2014, Dynamic Inc
+	Copyright (c) 2015, Dynamic Inc
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
