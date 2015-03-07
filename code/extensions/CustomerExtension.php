@@ -3,13 +3,11 @@
 class CustomerExtension extends DataExtension{
 
     private static $db = array(
-        'Customer_ID' => 'Int',
-        'MinifraudScore' => 'Varchar'
+        'Customer_ID' => 'Int'
     );
 
     private static $has_many = array(
-        'Orders' => 'Order',
-        'OrderAddresses' => 'OrderAddress'
+        'Orders' => 'Order'
     );
 
     private static $indexes = array(
