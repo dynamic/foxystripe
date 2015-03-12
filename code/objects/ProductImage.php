@@ -6,7 +6,7 @@
  */
 
 class ProductImage extends DataObject{
-	
+
 	private static $db = array(
 		'Title' => 'Text',
 		'SortOrder' => 'Int'
@@ -23,7 +23,7 @@ class ProductImage extends DataObject{
 		'Image.CMSThumbnail' => 'Image',
 		'Title' => 'Caption'
 	);
-	
+
 	public function getCMSFields(){
 		$fields = FieldList::create(
             TextField::create('Title')
@@ -34,7 +34,7 @@ class ProductImage extends DataObject{
                 ->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'))
         );
 
-		$this->extend('getCMSFields', $fields);
+		$this->extend('updateCMSFields', $fields);
 
         return $fields;
 	}
