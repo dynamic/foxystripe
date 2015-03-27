@@ -70,6 +70,8 @@ class FoxyStripe_Controller extends Page_Controller {
 
             $this->parseOrderInfo($orders, $transaction);
             $this->parseOrderCustomer($orders, $transaction);
+            // record transaction so user info can be accessed from parseOrderDetails()
+            $transaction->write();
             $this->parseOrderDetails($orders, $transaction);
 
             // record transaction as order
