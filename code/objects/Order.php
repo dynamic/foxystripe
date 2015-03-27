@@ -4,29 +4,18 @@ class Order extends DataObject implements PermissionProvider{
 
 	private static $db = array(
         'Order_ID' => 'Int',
-        'Store_ID' => 'Int',
-        'StoreVersion' => 'Varchar',
-        'IsTest' => 'Boolean',
-        'IsHidden' => 'Boolean',
-        'DataIsFed' => 'Boolean',
         'TransactionDate' => 'SS_Datetime',
-        'ProcessorResponse' => 'Varchar(200)',
-        'ShiptoShippingServiceDescription' => 'Varchar(200)',
         'ProductTotal' => 'Currency',
         'TaxTotal' => 'Currency',
         'ShippingTotal' => 'Currency',
         'OrderTotal' => 'Currency',
-        'PaymentGatewayType' => 'Varchar(100)',
         'ReceiptURL' => 'Varchar(255)',
         'OrderStatus' => 'Varchar(255)',
-        'CustomerIP' => 'Varchar',
         'Response' => 'Text'
     );
 
 	private static $has_one = array(
-        'Member' => 'Member',
-        'BillingAddress' => 'OrderAddress',
-        'ShippingAddress' => 'OrderAddress'
+        'Member' => 'Member'
     );
 
 	private static $has_many = array(
@@ -36,7 +25,7 @@ class Order extends DataObject implements PermissionProvider{
     private static $singular_name = 'Order';
     private static $plural_name = 'Orders';
     private static $description = 'Orders from FoxyCart Datafeed';
-    private static $default_sort = 'TransactionDate DESC';
+    private static $default_sort = 'TransactionDate DESC, ID DESC';
 
     private static $summary_fields = array(
         'Order_ID',
