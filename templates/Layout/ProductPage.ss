@@ -7,7 +7,7 @@
 <% require css('foxystripe/thirdparty/shadowbox/shadowbox.css') %>
 <% require css('foxystripe/css/foxycart.css') %>
 
-<div class="ProductPage">
+<div class="ProductPage line">
     <p>$Breadcrumbs</p>
 
     <div class="content-container unit size3of4">
@@ -23,19 +23,26 @@
                         <strong>Base Price:</strong> $Price.Nice<br>
                         <strong>Weight:</strong> $Weight lbs<br>
                         <strong>Code:</strong> $Code
+                        <% if $ProductRating %><br>$ProductRating<% end_if %>
                     </p>
                     <div class="content">$Content</div>
 
-
             </article>
-            $PageComments
         </div>
     </div>
 
     <div class="sidebar unit size1of4">
         $PurchaseForm
     </div>
+
 </div>
+<% if $ProductReviews %>
+<div class="line">
+    <div class="unit size3of4">
+        $ProductReviews
+    </div>
+</div>
+<% end_if %>
 
 <% require javascript('foxystripe/thirdparty/flexslider/jquery.flexslider.js') %>
 <% require javascript('foxystripe/thirdparty/shadowbox/shadowbox.js') %>
