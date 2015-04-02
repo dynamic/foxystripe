@@ -66,82 +66,16 @@ label {
     }
 }
 
-/*
-@media only screen and (max-width: 960px) {
-    .productSummaryImage,
-    .productSummaryText {
-        width: 100%;
-        margin-bottom: 30px;
-    }
+/*** 5 Star ratings ***/
+.glyphicon {
+    color: #bbb;
+    font-size: 16px;
 }
 
-*/
-
-
-
-/* Product Page */
-
-/*
-.foxycartForm {width: 100%;}
-form span.submitPrice,
-div.addToCartContainer span.submitPrice{
-	font-size:12px;
-	color:#666;
-	font-weight: bold;
+.glyphicon-star {
+    color: #FCAE00;
 }
 
-form div.addToCartContainer{
-	margin:14px 0 20px;
-	float:left;
-	clear:left;
-	width: 100%;
+.small {
+    font-size: 80%;
 }
-
-div.purchaseSection{
-	padding: 10px 20px 10px 10px;
-}
-form div.foxycartOptionsContainer{
-	float:left;
-	width: 100%;
-}
-form div.foxycart_qty{
-	padding-bottom:20px;
-}
-
-.productTextContainer {
-	float: left;
-	width: 100%;
-}
-*/
-
-
-
-/* foxycart */
-
-/*
-#fc_checkout_container input.fc_text{
-	width:392px;
-	background:#e5e5e5;
-	border:1px solid #999;
-}
-#fc_checkout_container label.fc_pre, 
-#fc_checkout_container span.fc_pre, 
-#fc_receipt_container span.fc_pre{
-	text-align: left;
-}
-
-a.anchor-fix {display: inline-block; line-height: 0px;}
-
-input.submit, .submitPrice {display: block; clear: both;}
-.foxycartOptionsContainer select {margin-bottom: 10px;}
-
-table thead #fc_cart_head{
-	border: 1px solid rgb(102, 102, 102);
-}
-
-*/
-
-
-
-
-
