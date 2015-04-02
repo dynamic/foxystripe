@@ -10,6 +10,10 @@ class ProductPageTest extends FS_Test{
 		$groupForItem = OptionGroup::create();
 		$groupForItem->Title = 'Sample-Group';
 		$groupForItem->write();
+
+		$productHolder = ProductHolder::create();
+		$productHolder->Title = 'Product Holder';
+		$productHolder->write();
 	}
 
 	function testProductCreation(){
@@ -18,6 +22,7 @@ class ProductPageTest extends FS_Test{
 		$default = $this->objFromFixture('ProductCategory', 'default');
 		$default->write();
 		$product1 = $this->objFromFixture('ProductPage', 'product1');
+		$product1->ParentID = ProductHolder::get()->first()->ID;
 
 		$product1->doPublish();
 		$this->assertTrue($product1->isPublished());
@@ -28,6 +33,7 @@ class ProductPageTest extends FS_Test{
 
 		$this->logInWithPermission('Product_CANCRUD');
 		$product2 = $this->objFromFixture('ProductPage', 'product2');
+		$product2->ParentID = ProductHolder::get()->first()->ID;
 		$productID = $product2->ID;
 
 		$product2->doPublish();
@@ -53,6 +59,7 @@ class ProductPageTest extends FS_Test{
 		$this->logInWithPermission('ADMIN');
 		$product = $this->objFromFixture('ProductPage', 'product1');
 		$product->Title = " Test with leading space";
+		$product->ParentID = ProductHolder::get()->first()->ID;
 		$product->doPublish();
 
 		$this->assertTrue($product->Title == 'Test with leading space');
@@ -64,6 +71,7 @@ class ProductPageTest extends FS_Test{
 		$this->logInWithPermission('ADMIN');
 		$product = $this->objFromFixture('ProductPage', 'product1');
 		$product->Title = "Test with trailing space ";
+		$product->ParentID = ProductHolder::get()->first()->ID;
 		$product->doPublish();
 
 		$this->assertTrue($product->Title == 'Test with trailing space');
