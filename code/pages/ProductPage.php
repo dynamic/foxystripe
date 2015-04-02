@@ -451,6 +451,9 @@ JS
 				)
 			);
 			$submit->setAttribute('name', ProductPage::getGeneratedValue($code, 'Submit', _t('ProductForm.AddToCart', 'Add to Cart')));
+			if(!$config->StoreName || $config->StoreName == '' || !isset($config->StoreName)){
+				$submit->setAttribute('Disabled', true);
+			}
 			$this->extend('updatePurchaseFormFields', $fields);
 		}else{
 			$fields->push(HeaderField::create('submitPrice', 'Currently Out of Stock'), 4);
