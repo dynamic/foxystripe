@@ -8,6 +8,8 @@
 class ProductPage extends Page implements PermissionProvider {
 
 	private static $allowed_children = 'none';
+    private static $default_parent = 'ProductHolder';
+    private static $can_be_root = false;
 
 	private static $db = array(
 		'Price' => 'Currency',

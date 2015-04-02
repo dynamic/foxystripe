@@ -7,7 +7,12 @@ class ProductDiscountTierTest extends FS_Test{
 	function setUp(){
 		parent::setUp();
 
+		$productHolder = ProductHolder::create();
+		$productHolder->Title = 'Product Holder';
+		$productHolder->write();
+
 		$product = $this->objFromFixture('ProductPage', 'product1');
+		$product->ParentID = $productHolder->ID;
 		$product->write();
 	}
 
