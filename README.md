@@ -27,7 +27,7 @@ Read more about [Using FoxyStripe](docs/en/Use.MD) and [Advanced Features](docs/
 
 ### Composer Installation
 
-`"require": { "dynamic/foxystripe": "1.1.1" }`
+`"require": { "dynamic/foxystripe": "*" }`
 
 ### Git Installation
 
