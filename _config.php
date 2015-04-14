@@ -1,5 +1,7 @@
 <?php
 
+define('MODULE_FOXYSTRIPE_DIR', basename(dirname(__FILE__)));
+
 /** 
  * FoxyStripe config - Change password encryption to something compatible with FoxyCart
  */
