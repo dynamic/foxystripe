@@ -226,7 +226,7 @@ class ProductPage extends Page implements PermissionProvider {
 	}
 
 	public function onBeforeWrite(){
-		parent::onBeforeWrite();
+
 		if(!$this->CategoryID){
 			$default = ProductCategory::get()->filter(array('Code' => 'DEFAULT'))->first();
 			$this->CategoryID = $default->ID;
@@ -234,7 +234,7 @@ class ProductPage extends Page implements PermissionProvider {
 
 		//update many_many lists when multi-group is on
 		if(SiteConfig::current_site_config()->MultiGroup){
-			$holders = $this->ProductHolders();
+			$holders = $this->getManyManyComponents('ProductHolders');
 			$product = ProductPage::get()->byID($this->ID);
 			if (isset($product->ParentID)) {
 				$origParent = $product->ParentID;
@@ -255,13 +255,14 @@ class ProductPage extends Page implements PermissionProvider {
 		$title = rtrim($title);
 		$this->Title = $title;
 
+		parent::onBeforeWrite();
 
 	}
 
 	public function onAfterWrite(){
+
+
 		parent::onAfterWrite();
-
-
 
 	}
 
