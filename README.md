@@ -1,5 +1,7 @@
 # FoxyStripe
 
+[![Join the chat at https://gitter.im/dynamic/foxystripe](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dynamic/foxystripe?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/dynamic/foxystripe.svg?branch=master)](https://travis-ci.org/dynamic/foxystripe)
 [![Latest Stable Version](https://poser.pugx.org/dynamic/foxystripe/v/stable.svg)](https://packagist.org/packages/dynamic/foxystripe) [![Total Downloads](https://poser.pugx.org/dynamic/foxystripe/downloads.svg)](https://packagist.org/packages/dynamic/foxystripe) [![Latest Unstable Version](https://poser.pugx.org/dynamic/foxystripe/v/unstable.svg)](https://packagist.org/packages/dynamic/foxystripe) [![License](https://poser.pugx.org/dynamic/foxystripe/license.svg)](https://packagist.org/packages/dynamic/foxystripe)
 [![Code Climate](https://codeclimate.com/github/dynamic/foxystripe/badges/gpa.svg)](https://codeclimate.com/github/dynamic/foxystripe)
