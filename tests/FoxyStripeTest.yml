@@ -1,3 +1,14 @@
+ProductCategory:
+  default:
+    Title: Default
+    Code: DEFAULT
+  apparel:
+    Title: Apparel
+    Code: APPAREL
+ProductHolder:
+  holder:
+    Title: Product Holder Test
+    URLSegment: product-holder-test
 ProductPage:
   product1:
     Title: Product 1
@@ -9,6 +20,7 @@ ProductPage:
     Featured: 0
     Available: 1
     CategoryID: 1
+    Parent: =>ProductHolder.holder
   product2:
     Title: Product 2
     URLSegment: product-2
@@ -19,7 +31,8 @@ ProductPage:
     Featured: 1
     Available: 1
     CategoryID: 1
-  product2:
+    Parent: =>ProductHolder.holder
+  product3:
     Title: Product 3
     URLSegment: product-3
     Price: 176
@@ -29,18 +42,7 @@ ProductPage:
     Featured: 1
     Available: 0
     CategoryID: 1
-OptionGroup:
-  og1:
-    Title: Size
-  og2:
-    Title: Color
-ProductCategory:
-  default:
-    Title: Default
-    Code: DEFAULT
-  apparel:
-    Title: Apparel
-    Code: APPAREL
+    Parent: =>ProductHolder.holder
 OptionGroup:
   size:
     Title: Size
@@ -56,6 +58,8 @@ OptionItem:
     CodeModifieraction: Add
     PriceModifierAction: Subtract
     Available: true
+    ProductOptionGroup: =>OptionGroup.size
+    Product: =>ProductPage.product1
   small:
     Title: Small
     WeightModifier: 2
@@ -65,6 +69,8 @@ OptionItem:
     CodeModifieraction: Subtract
     PriceModifierAction: Add
     Available: false
+    ProductOptionGroup: =>OptionGroup.size
+    Product: =>ProductPage.product1
 ProductDiscountTier:
   fiveforten:
     Quantity: 5
