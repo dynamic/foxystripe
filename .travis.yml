@@ -4,20 +4,18 @@ php:
 
 env:
   matrix:
-   #- DB=MYSQL CORE_RELEASE=3.0
-   - DB=MYSQL CORE_RELEASE=3.1
-   #- DB=MYSQL CORE_RELEASE=master
-   - DB=PGSQL CORE_RELEASE=3.1
-   - DB=SQLITE CORE_RELEASE=3.1
+   - DB=MYSQL CORE_RELEASE=3.2
+   - DB=PGSQL CORE_RELEASE=3.2
+   - DB=SQLITE CORE_RELEASE=3.2
 
 matrix:
   include:
     - php: 5.4
-      env: DB=MYSQL CORE_RELEASE=3.1
+      env: DB=MYSQL CORE_RELEASE=3.2
     - php: 5.5
-      env: DB=MYSQL CORE_RELEASE=3.1
+      env: DB=MYSQL CORE_RELEASE=3.2
     - php: 5.6
-      env: DB=MYSQL CORE_RELEASE=3.1
+      env: DB=MYSQL CORE_RELEASE=3.2
       #env: DB=MYSQL CORE_RELEASE=master
 
 before_script:
