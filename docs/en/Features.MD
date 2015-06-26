@@ -8,7 +8,7 @@ Next we will setup your store's DataFeed, which allows FoxyCart to push transact
 
 In CMS > Settings > FoxyStripe
 
-1. Copy `FoxyCart DataFeed URL` to your clipboard - `https://myfoxystripestore.com/foxycart`
+1. Copy `FoxyCart DataFeed URL` to your clipboard - `https://myfoxystripestore.com/foxystripe/`
 
 In FoxyCart > Store > Advanced:
 
@@ -25,7 +25,7 @@ You can enable this feature by doing the following:
 
 1. In CMS > Settings > FoxyStripe:
 	*	Check 'Enable Single Sign On'
-	*	Copy `Single Sign On URL` to your clipboard - `https://myfoxystripestore.com/foxycart/sso`
+	*	Copy `Single Sign On URL` to your clipboard - `https://myfoxystripestore.com/foxystripe/sso/`
 2. In FoxyCart > Store > Advanced:
 	* 	Check `enable single sign on`
 	*	Single sign on url - paste the value from FoxyStripe
