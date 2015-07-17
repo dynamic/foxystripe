@@ -266,20 +266,22 @@ class ProductPage extends Page implements PermissionProvider {
 	}
 
 	public function onBeforeDelete() {
-		if($this->Status != "Published") {
+		if(!$this->isPublished()) {
+
+			$delete = function($object){
+				$object->delete();
+			};
+
 			if($this->ProductOptions()) {
 				$options = $this->getComponents('ProductOptions');
-				foreach($options as $option) {
-					$option->delete();
-				}
+				$options->each($delete);
 			}
 			if($this->ProductImages()) {
 				//delete product image dataobjects, not the images themselves.
 				$images = $this->getComponents('ProductImages');
-				foreach($images as $image) {
-					$image->delete();
-				}
+				$images->each($delete);
 			}
+
 		}
 		parent::onBeforeDelete();
 	}
