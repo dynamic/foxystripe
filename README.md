@@ -25,11 +25,11 @@ Read more about [Using FoxyStripe](docs/en/Use.MD) and [Advanced Features](docs/
 ### Requirements
 
 *  SilverStripe 3.1.x
-*  FoxyCart Store 2.x
+*  Guzzle 5.3 (We suggest you composer install FoxyStripe as Guzzle dependencies will be auto loaded)
 
 ### Composer Installation
 
-`"require": { "dynamic/foxystripe": "*" }`
+`"require": { "dynamic/foxystripe": "dev-master" }`
 
 ### Git Installation
 
@@ -84,6 +84,7 @@ In `mysite/config_php`, add the following to force the site into SSL in live mod
 ### FoxyCart Documentation
 
  * [FoxyCart 2.0 API Docs](https://wiki.foxycart.com/v/2.0/start)
+ * [FoxyCart Hypermedia API Gude](https://api-sandbox.foxycart.com/docs/getting-started)
 
 ### Maintainer Contact
 
