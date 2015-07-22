@@ -43,3 +43,4 @@
         <% end_if %>
 	</section>
 </div>
+$CartScript

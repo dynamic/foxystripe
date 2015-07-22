@@ -315,11 +315,6 @@ class ProductPage extends Page implements PermissionProvider {
 			$optionValue;
 	}
 
-	// get FoxyCart Store Name for JS call
-	public function getCartScript() {
-		return '<script src="https://cdn.foxycart.com/' . FoxyCart::getFoxyCartStoreName() . '/loader.js" async defer></script>';
-	}
-
 	public function getDiscountFieldValue(){
 		$tiers = $this->ProductDiscountTiers();
 		$bulkString = '';

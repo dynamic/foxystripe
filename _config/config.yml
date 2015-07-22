@@ -7,6 +7,9 @@ SiteConfig:
 Member:
   extensions:
     - CustomerExtension
+Page:
+  extensions:
+    - FoxyStripePageExtension
 DateField:
   default_config:
     showcalendar: true
