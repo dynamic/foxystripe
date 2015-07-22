@@ -395,7 +395,7 @@ JS
 			$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'name', $hiddenTitle))->setValue($hiddenTitle));
 			$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'category', $data->Category()->Code))->setValue($data->Category()->Code));
 			$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'code', $data->Code))->setValue($data->Code));
-			$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'product_id', $data->ID))->setValue($data->ID));
+			$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'h:product_id', $data->ID))->setValue($data->ID));
 			$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'price', $data->Price))->setValue($data->Price));//can't override id
 			$fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'weight', $data->Weight))->setValue($data->Weight));
 			if ($this->DiscountTitle && $this->ProductDiscountTiers()->exists()) {
@@ -452,7 +452,7 @@ JS
 					_t('ProductForm.AddToCart', 'Add to Cart')
 				)
 			);
-			$submit->setAttribute('name', ProductPage::getGeneratedValue($code, 'Submit', _t('ProductForm.AddToCart', 'Add to Cart')));
+			$submit->setAttribute('name', ProductPage::getGeneratedValue($code, 'h:Submit', _t('ProductForm.AddToCart', 'Add to Cart')));
 			if(!$config->StoreName || $config->StoreName == '' || !isset($config->StoreName)){
 				$submit->setAttribute('Disabled', true);
 			}
