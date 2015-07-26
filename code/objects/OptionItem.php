@@ -9,7 +9,7 @@ class OptionItem extends DataObject{
 
 	private static $db = array(
 		'Title' => 'Text',
-		'WeightModifier' => 'Int',
+		'WeightModifier' => 'Decimal',
 		'CodeModifier' => 'Text',
 		'PriceModifier' => 'Currency',
 		'WeightModifierAction' => "Enum('Add,Subtract,Set','Add')",
