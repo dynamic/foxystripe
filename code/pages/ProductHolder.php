@@ -6,13 +6,13 @@
  */
 
 class ProductHolder extends Page {
-	
+
 	private static $allowed_children = array('ProductHolder', 'ProductPage');
-	
+
 	private static $db = array(
-		
+
 	);
-	
+
 	private static $has_one = array(
 
 	);
@@ -30,23 +30,28 @@ class ProductHolder extends Page {
     private static $singular_name = 'Product Group';
     private static $plural_name = 'Product Groups';
     private static $description = 'Display a list of related products';
-	
+
 	private static $defaults = array(
-		
+
 	);
-	
+
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
 
 		if(SiteConfig::current_site_config()->MultiGroup){
+
 			$config = GridFieldConfig_RelationEditor::create();
-			if(class_exists('GridFieldSortableRows')){
-				$config->addComponent(new GridFieldSortableRows('SortOrder'));
-			}
 			if(class_exists('GridFieldManyRelationHandler')){
+				$config->addComponent(new GridFieldManyRelationHandler(), 'GridFieldPaginator');
+				if(class_exists('GridFieldSortableRows')) {
+					$config->addComponent(new GridFieldSortableRows("SortOrder"), 'GridFieldManyRelationHandler');
+				}
 				$config->removeComponentsByType('GridFieldAddExistingAutocompleter');
-				$config->addComponent(new GridFieldManyRelationHandler());
+			}else{
+				if(class_exists('GridFieldSortableRows')) $config->addComponent(new GridFieldSortableRows("SortOrder"));
 			}
+			$config->removeComponentsByType($config->getComponentByType('GridFieldAddNewButton'));
+
 			$fields->addFieldToTab(
 				'Root.Products',
 				GridField::create(
@@ -63,13 +68,15 @@ class ProductHolder extends Page {
 		return $fields;
 	}
 
+	/*
 	public function Products() {
 		return $this->getManyManyComponents('Products')->sort('SortOrder');
 	}
+	*/
 
 	/**
 	 * loadDescendantProductGroupIDListInto function.
-	 * 
+	 *
 	 * @access public
 	 * @param mixed &$idList
 	 * @return void
@@ -78,18 +85,18 @@ class ProductHolder extends Page {
 		if ($children = $this->AllChildren()) {
 			foreach($children as $child) {
 				if(in_array($child->ID, $idList)) continue;
-				
+
 				if($child instanceof ProductHolder) {
-					$idList[] = $child->ID; 
+					$idList[] = $child->ID;
 					$child->loadDescendantProductGroupIDListInto($idList);
-				}                             
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * ProductGroupIDs function.
-	 * 
+	 *
 	 * @access public
 	 * @return array
 	 */
@@ -98,10 +105,10 @@ class ProductHolder extends Page {
 		$this->loadDescendantProductGroupIDListInto($holderIDs);
 		return $holderIDs;
 	}
-	
+
 	/**
 	 * Products function.
-	 * 
+	 *
 	 * @access public
 	 * @return array
 	 */
@@ -137,12 +144,12 @@ class ProductHolder extends Page {
     	$list = new PaginatedList($entries, Controller::curr()->request);
     	$list->setPageLength($limit);
     	return $list;
-		
+
 	}
 }
 
 class ProductHolder_Controller extends Page_Controller {
-	
+
 	public function init(){
 		parent::init();
 
