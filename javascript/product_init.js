@@ -15,7 +15,7 @@ jQuery('#slider').flexslider({
     pauseOnAction: true,
     pauseOnHover: true,
     slideshow: false,
-    start: function(slider){
+    start: function (slider) {
         jQuery('body').removeClass('loading');
     }
 });

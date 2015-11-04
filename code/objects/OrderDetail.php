@@ -1,66 +1,118 @@
 <?php
 
-class OrderDetail extends DataObject {
+/**
+ * Class OrderDetail
+ * @package foxystripe
+ */
+class OrderDetail extends DataObject
+{
 
-	private static $singular_name = 'Order Detail';
-	private static $plural_name = 'Order Details';
-	private static $description = '';
+    /**
+     * @var string
+     */
+    private static $singular_name = 'Order Detail';
 
-	private static $db = array(
+    /**
+     * @var string
+     */
+    private static $plural_name = 'Order Details';
+
+    /**
+     * @var string
+     */
+    private static $description = '';
+
+    /**
+     * @var array
+     */
+    private static $db = array(
         'Quantity' => 'Int',
         'Price' => 'Currency'
     );
 
-	private static $has_one = array(
+    /**
+     * @var array
+     */
+    private static $has_one = array(
         'Product' => 'ProductPage',
         'Order' => 'Order'
     );
 
-	private static $many_many = array(
+    /**
+     * @var array
+     */
+    private static $many_many = array(
         'Options' => 'OptionItem'
     );
 
-	private static $summary_fields = array(
+    /**
+     * @var array
+     */
+    private static $summary_fields = array(
         'Product.Title',
         'Quantity',
         'Price.Nice'
     );
 
-	public function getCMSFields(){
-		$fields = parent::getCMSFields();
+    /**
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
 
         $fields->addFieldsToTab('Root.Options', array(
             GridField::create('Options', 'Product Options', $this->Options(), GridFieldConfig_RecordViewer::create())
         ));
 
-		$this->extend('updateCMSFields', $fields);
-		return $fields;
-	}
+        $this->extend('updateCMSFields', $fields);
+        return $fields;
+    }
 
-	public function validate(){
-		$result = parent::validate();
+    /**
+     * @return ValidationResult
+     */
+    public function validate()
+    {
+        $result = parent::validate();
 
-		/*if($this->Country == 'DE' && $this->Postcode && strlen($this->Postcode) != 5) {
-			$result->error('Need five digits for German postcodes');
-		}*/
+        return $result;
+    }
 
-		return $result;
-	}
+    /**
+     * @param bool|false $member
+     * @return bool|int
+     */
+    public function canView($member = false)
+    {
+        return Permission::check('Product_ORDERS');
+    }
 
-	public function canView($member = false) {
-		return Permission::check('Product_ORDERS');
-	}
-
-	public function canEdit($member = null) {
+    /**
+     * @param null $member
+     * @return bool
+     */
+    public function canEdit($member = null)
+    {
         return false;
-	}
+    }
 
-	public function canDelete($member = null) {
-		return Permission::check('Product_ORDERS');
-	}
+    /**
+     * @param null $member
+     * @return bool|int
+     */
+    public function canDelete($member = null)
+    {
+        return Permission::check('Product_ORDERS');
+    }
 
-	public function canCreate($member = null) {
-		return false;
-	}
+    /**
+     * @param null $member
+     * @return bool
+     */
+    public function canCreate($member = null)
+    {
+        return false;
+    }
 
 }

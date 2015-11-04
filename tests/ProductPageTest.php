@@ -1,248 +1,316 @@
 <?php
 
-class ProductPageTest extends FS_Test{
+/**
+ * Class ProductPageTest
+ * @package foxystripe
+ */
+class ProductPageTest extends FS_Test
+{
+
+    /**
+     * @var bool
+     */
+    protected static $use_draft_site = true;
+
+    /**
+     *
+     */
+    function setUp()
+    {
+        parent::setUp();
+
+        $groupForItem = OptionGroup::create();
+        $groupForItem->Title = 'Sample-Group';
+        $groupForItem->write();
+    }
+
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    function testProductCreation()
+    {
+
+        $this->logInWithPermission('Product_CANCRUD');
+        $default = $this->objFromFixture('ProductCategory', 'default');
+        $default->write();
+        $holder = $this->objFromFixture('ProductHolder', 'holder');
+        $holder->doPublish();
+        $product1 = $this->objFromFixture('ProductPage', 'product1');
+
+        $product1->doPublish();
+        $this->assertTrue($product1->isPublished());
+
+    }
+
+    /**
+     *
+     */
+    function testProductDeletion()
+    {
 
-	protected static $use_draft_site = true;
+        $this->logInWithPermission('Product_CANCRUD');
+        $holder = $this->objFromFixture('ProductHolder', 'holder');
+        $holder->doPublish();
+        $product2 = $this->objFromFixture('ProductPage', 'product2');
+        $productID = $product2->ID;
 
-	function setUp(){
-		parent::setUp();
+        $product2->doPublish();
+        $this->assertTrue($product2->isPublished());
 
-		$groupForItem = OptionGroup::create();
-		$groupForItem->Title = 'Sample-Group';
-		$groupForItem->write();
+        $versions = DB::query('Select * FROM "ProductPage_versions" WHERE "RecordID" = ' . $productID);
+        $versionsPostPublish = array();
+        foreach ($versions as $versionRow) {
+            $versionsPostPublish[] = $versionRow;
+        }
 
-		/*$productHolder = ProductHolder::create();
-		$productHolder->Title = 'Product Holder';
-		$productHolder->write();*/
-	}
+        $product2->delete();
+        $this->assertTrue(!$product2->isPublished());
 
-	function testProductCreation(){
+        $versions = DB::query('Select * FROM "ProductPage_versions" WHERE "RecordID" = ' . $productID);
+        $versionsPostDelete = array();
+        foreach ($versions as $versionRow) {
+            $versionsPostDelete[] = $versionRow;
+        }
 
-		$this->logInWithPermission('Product_CANCRUD');
-		$default = $this->objFromFixture('ProductCategory', 'default');
-		$default->write();
-		$holder = $this->objFromFixture('ProductHolder', 'holder');
-		$holder->doPublish();
-		$product1 = $this->objFromFixture('ProductPage', 'product1');
-		//$product1->ParentID = ProductHolder::get()->first()->ID;
+        $this->assertTrue($versionsPostPublish == $versionsPostDelete);
 
-		$product1->doPublish();
-		$this->assertTrue($product1->isPublished());
+    }
 
-	}
+    /**
+     *
+     */
+    function testProductTitleLeadingWhiteSpace()
+    {
 
-	function testProductDeletion(){
+        $this->logInWithPermission('ADMIN');
 
-		$this->logInWithPermission('Product_CANCRUD');
-		$holder = $this->objFromFixture('ProductHolder', 'holder');
-		$holder->doPublish();
-		$product2 = $this->objFromFixture('ProductPage', 'product2');
-		$productID = $product2->ID;
+        $holder = $this->objFromFixture('ProductHolder', 'holder');
+        $holder->doPublish();
 
-		$product2->doPublish();
-		$this->assertTrue($product2->isPublished());
+        $product = $this->objFromFixture('ProductPage', 'product1');
+        $product->Title = " Test with leading space";
+        $product->doPublish();
 
-		$versions = DB::query('Select * FROM "ProductPage_versions" WHERE "RecordID" = '. $productID);
-		$versionsPostPublish = array();
-		foreach($versions as $versionRow) $versionsPostPublish[] = $versionRow;
+        $this->assertTrue($product->Title == 'Test with leading space');
 
-		$product2->delete();
-		$this->assertTrue(!$product2->isPublished());
+    }
 
-		$versions = DB::query('Select * FROM "ProductPage_versions" WHERE "RecordID" = '. $productID);
-		$versionsPostDelete = array();
-		foreach($versions as $versionRow) $versionsPostDelete[] = $versionRow;
+    /**
+     *
+     */
+    function testProductTitleTrailingWhiteSpace()
+    {
 
-		$this->assertTrue($versionsPostPublish == $versionsPostDelete);
+        $this->logInWithPermission('ADMIN');
 
-	}
+        $holder = $this->objFromFixture('ProductHolder', 'holder');
+        $holder->doPublish();
 
-	function testProductTitleLeadingWhiteSpace(){
+        $product = $this->objFromFixture('ProductPage', 'product1');
+        $product->Title = "Test with trailing space ";
+        $product->doPublish();
 
-		$this->logInWithPermission('ADMIN');
+        $this->assertTrue($product->Title == 'Test with trailing space');
 
-		$holder = $this->objFromFixture('ProductHolder', 'holder');
-		$holder->doPublish();
+    }
 
-		$product = $this->objFromFixture('ProductPage', 'product1');
-		$product->Title = " Test with leading space";
-		$product->doPublish();
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    function testProductCategoryCreation()
+    {
 
-		$this->assertTrue($product->Title == 'Test with leading space');
+        $this->logInWithPermission('Product_CANCRUD');
+        $category = $this->objFromFixture('ProductCategory', 'apparel');
+        $category->write();
+        $categoryID = $category->ID;
 
-	}
+        $productCategory = ProductCategory::get()->filter(array('Code' => 'APPAREL'))->first();
 
-	function testProductTitleTrailingWhiteSpace(){
+        $this->assertTrue($categoryID == $productCategory->ID);
 
-		$this->logInWithPermission('ADMIN');
+    }
 
-		$holder = $this->objFromFixture('ProductHolder', 'holder');
-		$holder->doPublish();
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    function testProductCategoryDeletion()
+    {
 
-		$product = $this->objFromFixture('ProductPage', 'product1');
-		$product->Title = "Test with trailing space ";
-		$product->doPublish();
+        $this->logInWithPermission('Product_CANCRUD');
 
-		$this->assertTrue($product->Title == 'Test with trailing space');
+        $category = $this->objFromFixture('ProductCategory', 'default');
+        $category->write();
 
-	}
+        $this->assertFalse($category->canDelete());
 
-	function testProductCategoryCreation(){
+        $category2 = $this->objFromFixture('ProductCategory', 'apparel');
+        $category2->write();
+        $category2ID = $category2->ID;
 
-		$this->logInWithPermission('Product_CANCRUD');
-		$category = $this->objFromFixture('ProductCategory', 'apparel');
-		$category->write();
-		$categoryID = $category->ID;
+        $this->assertTrue($category2->canDelete());
 
-		$productCategory = ProductCategory::get()->filter(array('Code'=>'APPAREL'))->first();
+        $this->logOut();
 
-		$this->assertTrue($categoryID == $productCategory->ID);
+        $this->logInWithPermission('ADMIN');
 
-	}
+        $this->assertFalse($category->canDelete());
+        $this->assertTrue($category2->canDelete());
 
-	function testProductCategoryDeletion(){
+        $this->logOut();
+        $this->logInWithPermission('Product_CANCRUD');
 
-		$this->logInWithPermission('Product_CANCRUD');
+        $category2->delete();
 
-		$category = $this->objFromFixture('ProductCategory', 'default');
-		$category->write();
+        $this->assertFalse(in_array($category2ID, ProductCategory::get()->column('ID')));
 
-		$this->assertFalse($category->canDelete());
+    }
 
-		$category2 = $this->objFromFixture('ProductCategory', 'apparel');
-		$category2->write();
-		$category2ID = $category2->ID;
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    function testOptionGroupCreation()
+    {
 
-		$this->assertTrue($category2->canDelete());
+        $this->logInWithPermission('Product_CANCRUD');
 
-		$this->logOut();
+        $group = $this->objFromFixture('OptionGroup', 'size');
+        $group->write();
 
-		$this->logInWithPermission('ADMIN');
+        $this->assertNotNull(OptionGroup::get()->first());
 
-		$this->assertFalse($category->canDelete());
-		$this->assertTrue($category2->canDelete());
+    }
 
-		$this->logOut();
-		$this->logInWithPermission('Product_CANCRUD');
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    function testOptionGroupDeletion()
+    {
 
-		$category2->delete();
+        $this->logInWithPermission('ADMIN');
+        $group = $this->objFromFixture('OptionGroup', 'color');
+        $group->write();
+        $groupID = $group->ID;
 
-		$this->assertFalse(in_array($category2ID,ProductCategory::get()->column('ID')));
+        $this->assertTrue($group->canDelete());
 
-	}
+        $this->logOut();
+        $this->logInWithPermission('Product_CANCRUD');
 
-	function testOptionGroupCreation(){
+        $this->assertTrue($group->canDelete());
+        $group->delete();
 
-		$this->logInWithPermission('Product_CANCRUD');
+        $this->assertFalse(in_array($groupID, OptionGroup::get()->column('ID')));
 
-		$group = $this->objFromFixture('OptionGroup', 'size');
-		$group->write();
+    }
 
-		$this->assertNotNull(OptionGroup::get()->first());
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    function testOptionItemCreation()
+    {
 
-	}
+        $this->logInWithPermission('Product_CANCRUD');
 
-	function testOptionGroupDeletion(){
+        $optionGroup = OptionGroup::get()->filter(array('Title' => 'Sample-Group'))->first();
 
-		$this->logInWithPermission('ADMIN');
-		$group = $this->objFromFixture('OptionGroup', 'color');
-		$group->write();
-		$groupID = $group->ID;
+        $option = $this->objFromFixture('OptionItem', 'large');
+        $option->ProductOptionGroupID = $optionGroup->ID;
+        $option->write();
 
-		$this->assertTrue($group->canDelete());
+        $optionID = $option->ID;
 
-		$this->logOut();
-		$this->logInWithPermission('Product_CANCRUD');
+        $optionItem = OptionItem::get()->filter(array('ProductOptionGroupID' => $optionGroup->ID))->first();
 
-		$this->assertTrue($group->canDelete());
-		$group->delete();
+        $this->assertEquals($optionID, $optionItem->ID);
 
-		$this->assertFalse(in_array($groupID, OptionGroup::get()->column('ID')));
+    }
 
-	}
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    function testOptionItemDeletion()
+    {
 
-	function testOptionItemCreation(){
+        $this->logInWithPermission('ADMIN');
 
-		$this->logInWithPermission('Product_CANCRUD');
+        $optionGroup = $this->objFromFixture('OptionGroup', 'size');
+        $optionGroup->write();
 
-		$optionGroup = OptionGroup::get()->filter(array('Title' => 'Sample-Group'))->first();
+        $option = $this->objFromFixture('OptionItem', 'small');
+        $option->write();
 
-		$option = $this->objFromFixture('OptionItem', 'large');
-		$option->ProductOptionGroupID = $optionGroup->ID;
-		$option->write();
+        $optionID = $option->ID;
 
-		$optionID = $option->ID;
+        $this->assertTrue($option->canDelete());
 
-		$optionItem = OptionItem::get()->filter(array('ProductOptionGroupID' => $optionGroup->ID))->first();
+        $this->logOut();
+        $this->logInWithPermission('Product_CANCRUD');
 
-		$this->assertEquals($optionID, $optionItem->ID);
+        $this->assertTrue($option->canDelete());
+        $option->delete();
 
-	}
+        $this->assertFalse(in_array($optionID, OptionItem::get()->column('ID')));
 
-	function testOptionItemDeletion(){
+    }
 
-		$this->logInWithPermission('ADMIN');
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    public function testProductDraftOptionDeletion()
+    {
 
-		$optionGroup = $this->objFromFixture('OptionGroup', 'size');
-		$optionGroup->write();
+        self::$use_draft_site = false;//make sure we can publish
 
-		$option = $this->objFromFixture('OptionItem', 'small');
-		$option->write();
+        $this->logInWithPermission('ADMIN');
 
-		$optionID = $option->ID;
+        $holder = $this->objFromFixture('ProductHolder',
+            'holder');//build holder page, ProductPage can't be on root level
+        $holder->doPublish();
 
-		$this->assertTrue($option->canDelete());
+        $product = $this->objFromFixture('ProductPage', 'product1');//build product page
+        $product->doPublish();
 
-		$this->logOut();
-		$this->logInWithPermission('Product_CANCRUD');
+        $productID = $product->ID;
 
-		$this->assertTrue($option->canDelete());
-		$option->delete();
 
-		$this->assertFalse(in_array($optionID, OptionItem::get()->column('ID')));
+        $optionGroup = $this->objFromFixture('OptionGroup', 'size');//build the group for the options
+        $optionGroup->write();
+        $option = $this->objFromFixture('OptionItem', 'small');//build first option
+        $option->write();
+        $option2 = $this->objFromFixture('OptionItem', 'large');//build second option
+        $option2->write();
 
-	}
+        $this->assertTrue($product->isPublished());//check that product is published
 
-	public function testProductDraftOptionDeletion(){
+        $product->deleteFromStage('Stage');//remove product from draft site
 
-		self::$use_draft_site = false;//make sure we can publish
+        $this->assertTrue($product->isPublished());//check product is still published
 
-		$this->logInWithPermission('ADMIN');
+        $testOption = OptionItem::get()->filter(array('Title' => 'Large', 'ProductID' => $productID))->first();
 
-		$holder = $this->objFromFixture('ProductHolder', 'holder');//build holder page, ProductPage can't be on root level
-		$holder->doPublish();
+        $this->assertThat($testOption->ID,
+            $this->logicalNot($this->equalTo(0)));//make sure the first option still exists
 
-		$product = $this->objFromFixture('ProductPage', 'product1');//build product page
-		$product->doPublish();
+        $product->doRestoreToStage();//restore page to draft site
+        $product->doUnpublish();//unpublish page
+        $product->deleteFromStage('Stage');//remove product from draft site
 
-		$productID = $product->ID;
+        $checkDeleted = OptionItem::get()->filter(array(
+            'Title' => 'Large',
+            'ProductID' => $productID
+        ))->first();//query same option as above
 
+        $this->assertEquals($checkDeleted->ID, 0);//check that the ID is 0 (empty object/non-existent)
 
-		$optionGroup = $this->objFromFixture('OptionGroup', 'size');//build the group for the options
-		$optionGroup->write();
-		$option = $this->objFromFixture('OptionItem', 'small');//build first option
-		$option->write();
-		$option2 = $this->objFromFixture('OptionItem', 'large');//build second option
-		$option2->write();
-
-		$this->assertTrue($product->isPublished());//check that product is published
-
-		$product->deleteFromStage('Stage');//remove product from draft site
-
-		$this->assertTrue($product->isPublished());//check product is still published
-
-		$testOption = OptionItem::get()->filter(array('Title' => 'Large', 'ProductID' => $productID))->first();
-
-		$this->assertThat($testOption->ID, $this->logicalNot($this->equalTo(0)));//make sure the first option still exists
-
-		$product->doRestoreToStage();//restore page to draft site
-		$product->doUnpublish();//unpublish page
-		$product->deleteFromStage('Stage');//remove product from draft site
-
-		$checkDeleted = OptionItem::get()->filter(array('Title' => 'Large', 'ProductID' => $productID))->first();//query same option as above
-
-		$this->assertEquals($checkDeleted->ID, 0);//check that the ID is 0 (empty object/non-existent)
-
-	}
+    }
 
 }

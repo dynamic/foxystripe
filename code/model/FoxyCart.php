@@ -1,61 +1,102 @@
 <?php
+
 /**
- *
- * @package FoxyStripe
- *
+ * Class FoxyCart
+ * @package foxystripe
  */
+class FoxyCart extends Object
+{
 
-class FoxyCart extends Object {
+    /** @var string */
+    private static $key_prefix = 'dYnm1c';
 
-	private static $keyPrefix = 'dYnm1c';
+    /**
+     * @param int $length
+     * @param int $count
+     * @return string
+     */
+    public static function setStoreKey($length = 54, $count = 0)
+    {
+        $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' . strtotime('now');
+        $strLength = strlen($charset);
+        $str = '';
+        while ($count < $length) {
+            $str .= $charset[mt_rand(0, $strLength - 1)];
+            $count++;
+        }
+        return self::getKeyPrefix() . substr(base64_encode($str), 0, $length);
+    }
 
-	public static function setStoreKey($length = 54, $count = 0){
-		$charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.strtotime('now');
-		$strLength = strlen($charset);
-		$str = '';
-		while($count < $length){
-			$str .= $charset[mt_rand(0, $strLength-1)];
-			$count++;
-		}
-		return self::getKeyPrefix().substr(base64_encode($str),0,$length);
-	}
+    /**
+     * @return string|null
+     */
+    public static function getStoreKey()
+    {
+        $config = SiteConfig::current_site_config();
+        if ($config->StoreKey) {
+            return $config->StoreKey;
+        }
+        return null;
+    }
 
-	public static function getStoreKey(){
-		$config = SiteConfig::current_site_config();
-		if($config->StoreKey){
-			return $config->StoreKey;
-		}
-		return null;
-	}
+    /**
+     * @return null|string
+     */
+    public static function store_name_warning()
+    {
+        Deprecation::notice('3.0', 'FoxyCart::storeNameWarning() instead.');
+        return self::storeNameWarning();
+    }
 
-	public static function store_name_warning(){
-		$warning = null;
-		if(self::getFoxyCartStoreName()===null){
-			$warning = 'Must define FoxyCart Store Name in your site settings in the cms';
-		}
-		return $warning;
-	}
+    /**
+     * @return null|string
+     */
+    public static function storeNameWarning()
+    {
+        $warning = null;
+        return (self::getFoxyCartStoreName() === null) ? 'Must define FoxyCart Store Name in your site settings in the cms' : null;
+    }
 
-	public static function getFoxyCartStoreName(){
-		$config = SiteConfig::current_site_config();
-		if($config->StoreName){
-			return $config->StoreName;
-		}
-		return null;
-	}
+    /**
+     * @return string|null
+     */
+    public static function getFoxyCartStoreName()
+    {
+        $config = SiteConfig::current_site_config();
+        if ($config->StoreName) {
+            return $config->StoreName;
+        }
+        return null;
+    }
 
-	public static function FormActionURL() {
-		return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName() );
-	}
+    /**
+     * @return string
+     */
+    public static function FormActionURL()
+    {
+        Deprecation::notice('3.0', 'Use FoxyCart::formActionURL() instead.');
+        return self::getFormActionURL();
+    }
+
+    /**
+     * @return string
+     */
+    public static function getFormActionURL()
+    {
+        return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName());
+    }
 
     /**
      * FoxyCart API v1.1 functions
+     *
+     * @param array $foxyData
+     *
+     * @return mixed $response
      */
+    private static function getAPIRequest($foxyData = array())
+    {
 
-    // FoxyCart API Request
-    private static function getAPIRequest($foxyData = array()) {
-
-        $foxy_domain = FoxyCart::getFoxyCartStoreName().'.foxycart.com';
+        $foxy_domain = FoxyCart::getFoxyCartStoreName() . '.foxycart.com';
         $foxyData["api_token"] = FoxyCart::getStoreKey();
 
         $ch = curl_init();
@@ -78,31 +119,49 @@ class FoxyCart extends Object {
         return $response;
     }
 
-    public static function getCustomer($Member = null) {
+    /**
+     * @param null $Member
+     * @return mixed
+     */
+    public static function getCustomer($Member = null)
+    {
 
         // throw error if no $Member Object
-        if (!isset($Member)) trigger_error('No Member set', E_USER_ERROR);
+        if (!isset($Member)) {
+            trigger_error('No Member set', E_USER_ERROR);
+        }
 
         // grab customer record from API
 
         $foxyData = array();
         $foxyData["api_action"] = "customer_get";
-        if ($Member->Customer_ID) $foxyData["customer_id"] = $Member->Customer_ID;
+        if ($Member->Customer_ID) {
+            $foxyData["customer_id"] = $Member->Customer_ID;
+        }
         $foxyData["customer_email"] = $Member->Email;
 
         return self::getAPIRequest($foxyData);
 
     }
 
-    public static function putCustomer($Member = null) {
+    /**
+     * @param null $Member
+     * @return mixed
+     */
+    public static function putCustomer($Member = null)
+    {
         // throw error if no $Member Object
-        if (!isset($Member)) ;//trigger_error('No Member set', E_USER_ERROR);
+        if (!isset($Member)) {
+            ;
+        }//trigger_error('No Member set', E_USER_ERROR);
 
         // send updated customer record from API
         $foxyData = array();
         $foxyData["api_action"] = "customer_save";
         // customer_id will be 0 if created in SilverStripe.
-        if ($Member->Customer_ID) $foxyData["customer_id"] = $Member->Customer_ID;
+        if ($Member->Customer_ID) {
+            $foxyData["customer_id"] = $Member->Customer_ID;
+        }
         $foxyData["customer_email"] = $Member->Email;
         $foxyData["customer_password_hash"] = $Member->Password;
         $foxyData["customer_password_salt"] = $Member->Salt;
@@ -112,8 +171,12 @@ class FoxyCart extends Object {
         return self::getAPIRequest($foxyData);
     }
 
-	public static function getKeyPrefix(){
-		return self::$keyPrefix;
-	}
+    /**
+     * @return string
+     */
+    public static function getKeyPrefix()
+    {
+        return self::$key_prefix;
+    }
 
 }

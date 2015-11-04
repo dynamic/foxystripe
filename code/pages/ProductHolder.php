@@ -1,157 +1,177 @@
 <?php
+
 /**
- *
- * @package FoxyStripe
- *
+ * Class ProductHolder
+ * @package foxystripe
  */
+class ProductHolder extends Page
+{
 
-class ProductHolder extends Page {
+    /**
+     * @var array
+     */
+    private static $allowed_children = array('ProductHolder', 'ProductPage');
 
-	private static $allowed_children = array('ProductHolder', 'ProductPage');
+    /**
+     * @var array
+     */
+    private static $many_many = array(
+        'Products' => 'ProductPage'
+    );
 
-	private static $db = array(
+    /**
+     * @var array
+     */
+    private static $many_many_extraFields = array(
+        'Products' => array(
+            'SortOrder' => 'Int'
+        )
+    );
 
-	);
-
-	private static $has_one = array(
-
-	);
-
-	private static $many_many = array(
-		'Products' => 'ProductPage'
-	);
-
-	private static $many_many_extraFields = array(
-		'Products' => array(
-			'SortOrder' => 'Int'
-		)
-	);
-
+    /**
+     * @var string
+     */
     private static $singular_name = 'Product Group';
+
+    /**
+     * @var string
+     */
     private static $plural_name = 'Product Groups';
+
+    /**
+     * @var string
+     */
     private static $description = 'Display a list of related products';
 
-	private static $defaults = array(
+    /**
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
 
-	);
+        if (SiteConfig::current_site_config()->MultiGroup) {
 
-	public function getCMSFields(){
-		$fields = parent::getCMSFields();
+            $config = GridFieldConfig_RelationEditor::create();
+            if (class_exists('GridFieldManyRelationHandler')) {
+                $config->addComponent(new GridFieldManyRelationHandler(), 'GridFieldPaginator');
+                if (class_exists('GridFieldSortableRows')) {
+                    $config->addComponent(new GridFieldSortableRows("SortOrder"), 'GridFieldManyRelationHandler');
+                }
+                $config->removeComponentsByType('GridFieldAddExistingAutocompleter');
+            } else {
+                if (class_exists('GridFieldSortableRows')) {
+                    $config->addComponent(new GridFieldSortableRows("SortOrder"));
+                }
+            }
+            $config->removeComponentsByType($config->getComponentByType('GridFieldAddNewButton'));
 
-		if(SiteConfig::current_site_config()->MultiGroup){
+            $fields->addFieldToTab(
+                'Root.Products',
+                GridField::create(
+                    'Products',
+                    _t('ProductHolder.Products', 'Products'),
+                    $this->Products(),
+                    $config
+                )
+            );
+        }
 
-			$config = GridFieldConfig_RelationEditor::create();
-			if(class_exists('GridFieldManyRelationHandler')){
-				$config->addComponent(new GridFieldManyRelationHandler(), 'GridFieldPaginator');
-				if(class_exists('GridFieldSortableRows')) {
-					$config->addComponent(new GridFieldSortableRows("SortOrder"), 'GridFieldManyRelationHandler');
-				}
-				$config->removeComponentsByType('GridFieldAddExistingAutocompleter');
-			}else{
-				if(class_exists('GridFieldSortableRows')) $config->addComponent(new GridFieldSortableRows("SortOrder"));
-			}
-			$config->removeComponentsByType($config->getComponentByType('GridFieldAddNewButton'));
+        $this->extend('updateCMSFields', $fields);
 
-			$fields->addFieldToTab(
-				'Root.Products',
-				GridField::create(
-					'Products',
-					_t('ProductHolder.Products', 'Products'),
-					$this->Products(),
-					$config
-				)
-			);
-		}
+        return $fields;
+    }
 
-		$this->extend('updateCMSFields', $fields);
+    /**
+     * loadDescendantProductGroupIDListInto function.
+     *
+     * @access public
+     * @param mixed &$idList
+     * @return void
+     */
+    public function loadDescendantProductGroupIDListInto(&$idList)
+    {
+        if ($children = $this->AllChildren()) {
+            foreach ($children as $child) {
+                if (in_array($child->ID, $idList)) {
+                    continue;
+                }
 
-		return $fields;
-	}
+                if ($child instanceof ProductHolder) {
+                    $idList[] = $child->ID;
+                    $child->loadDescendantProductGroupIDListInto($idList);
+                }
+            }
+        }
+    }
 
-	/*
-	public function Products() {
-		return $this->getManyManyComponents('Products')->sort('SortOrder');
-	}
-	*/
+    /**
+     * ProductGroupIDs function.
+     *
+     * @access public
+     * @return array
+     */
+    public function ProductGroupIDs()
+    {
+        $holderIDs = array();
+        $this->loadDescendantProductGroupIDListInto($holderIDs);
+        return $holderIDs;
+    }
 
-	/**
-	 * loadDescendantProductGroupIDListInto function.
-	 *
-	 * @access public
-	 * @param mixed &$idList
-	 * @return void
-	 */
-	public function loadDescendantProductGroupIDListInto(&$idList) {
-		if ($children = $this->AllChildren()) {
-			foreach($children as $child) {
-				if(in_array($child->ID, $idList)) continue;
+    /**
+     * Products function.
+     *
+     * @access public
+     * @return array
+     */
+    public function ProductList($limit = 10)
+    {
 
-				if($child instanceof ProductHolder) {
-					$idList[] = $child->ID;
-					$child->loadDescendantProductGroupIDListInto($idList);
-				}
-			}
-		}
-	}
+        $config = SiteConfig::current_site_config();
 
-	/**
-	 * ProductGroupIDs function.
-	 *
-	 * @access public
-	 * @return array
-	 */
-	public function ProductGroupIDs() {
-		$holderIDs = array();
-		$this->loadDescendantProductGroupIDListInto($holderIDs);
-		return $holderIDs;
-	}
+        if ($config->ProductLimit > 0) {
+            $limit = $config->ProductLimit;
+        }
 
-	/**
-	 * Products function.
-	 *
-	 * @access public
-	 * @return array
-	 */
-	public function ProductList($limit = 10) {
+        if ($config->MultiGroup) {
+            $entries = $this->Products()->sort('SortOrder');
+        } else {
+            $filter = '"ParentID" = ' . $this->ID;
 
-		$config = SiteConfig::current_site_config();
+            // Build a list of all IDs for ProductGroups that are children
+            $holderIDs = $this->ProductGroupIDs();
 
-		if($config->ProductLimit>0){
-			$limit = $config->ProductLimit;
-		}
+            // If no ProductHolders, no ProductPages. So return false
+            if ($holderIDs) {
+                // Otherwise, do the actual query
+                if ($filter) {
+                    $filter .= ' OR ';
+                }
+                $filter .= '"ParentID" IN (' . implode(',', $holderIDs) . ")";
+            }
 
-		if($config->MultiGroup){
-			$entries = $this->Products()->sort('SortOrder');
-		}else{
-			$filter = '"ParentID" = ' . $this->ID;
+            $order = '"SiteTree"."Title" ASC';
 
-			// Build a list of all IDs for ProductGroups that are children
-			$holderIDs = $this->ProductGroupIDs();
-
-			// If no ProductHolders, no ProductPages. So return false
-			if($holderIDs) {
-				// Otherwise, do the actual query
-				if($filter) $filter .= ' OR ';
-				$filter .= '"ParentID" IN (' . implode(',', $holderIDs) . ")";
-			}
-
-			$order = '"SiteTree"."Title" ASC';
-
-			$entries = ProductPage::get()->where($filter);
-		}
+            $entries = ProductPage::get()->where($filter);
+        }
 
 
-    	$list = new PaginatedList($entries, Controller::curr()->request);
-    	$list->setPageLength($limit);
-    	return $list;
+        $list = new PaginatedList($entries, Controller::curr()->request);
+        $list->setPageLength($limit);
+        return $list;
 
-	}
+    }
 }
 
-class ProductHolder_Controller extends Page_Controller {
+class ProductHolder_Controller extends Page_Controller
+{
 
-	public function init(){
-		parent::init();
+    /**
+     *
+     */
+    public function init()
+    {
+        parent::init();
 
-	}
+    }
 }

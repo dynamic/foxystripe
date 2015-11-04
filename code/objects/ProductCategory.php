@@ -1,33 +1,57 @@
 <?php
+
 /**
- *
- * @package FoxyStripe
- *
+ * Class ProductCategory
+ * @package foxystripe
  */
+class ProductCategory extends DataObject
+{
 
-class ProductCategory extends DataObject {
-
+    /**
+     * @var array
+     */
     private static $db = array(
-		'Title' => 'Varchar(255)',
-		'Code' => 'Varchar(50)'
-	);
+        'Title' => 'Varchar(255)',
+        'Code' => 'Varchar(50)'
+    );
 
+    /**
+     * @var string
+     */
     private static $singular_name = 'FoxyCart Category';
+
+    /**
+     * @var string
+     */
     private static $plural_name = 'FoxyCart Categories';
+
+    /**
+     * @var string
+     */
     private static $description = 'Set the FoxyCart Category on a Product';
 
+    /**
+     * @var array
+     */
     private static $summary_fields = array(
         'Title' => 'Name',
         'Code' => 'Code'
     );
 
-	private static $indexes = array(
-		'Code' => true
-	);
+    /**
+     * @var array
+     */
+    private static $indexes = array(
+        'Code' => true
+    );
 
-    public function getCMSFields() {
+    /**
+     * @return mixed
+     */
+    public function getCMSFields()
+    {
 
-		$fields = FieldList::create(
+        $fields = FieldList::create(
             LiteralField::create(
                 'PCIntro',
                 _t(
@@ -50,35 +74,59 @@ class ProductCategory extends DataObject {
         $this->extend('updateCMSFields', $fields);
 
         return $fields;
-	}
+    }
 
-	public function requireDefaultRecords() {
-		parent::requireDefaultRecords();
-		$allCats = DataObject::get('ProductCategory');
-		if(!$allCats->count()){
-			$cat = new ProductCategory();
-			$cat->Title = 'Default';
-			$cat->Code = 'DEFAULT';
-			$cat->write();
-		}
-	}
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    public function requireDefaultRecords()
+    {
+        parent::requireDefaultRecords();
+        $allCats = DataObject::get('ProductCategory');
+        if (!$allCats->count()) {
+            $cat = new ProductCategory();
+            $cat->Title = 'Default';
+            $cat->Code = 'DEFAULT';
+            $cat->write();
+        }
+    }
 
-	public function canView($member = false) {
-		return true;
-	}
+    /**
+     * @param bool|false $member
+     * @return bool
+     */
+    public function canView($member = false)
+    {
+        return true;
+    }
 
-	public function canEdit($member = null) {
-		return Permission::check('Product_CANCRUD');
-	}
+    /**
+     * @param null $member
+     * @return bool|int
+     */
+    public function canEdit($member = null)
+    {
+        return Permission::check('Product_CANCRUD');
+    }
 
-	public function canDelete($member = null) {
+    /**
+     * @param null $member
+     * @return bool|int
+     */
+    public function canDelete($member = null)
+    {
+        //don't allow deletion of DEFAULT category
+        return ($this->Code == 'DEFAULT') ? false : Permission::check('Product_CANCRUD');
+    }
 
-		//don't allow deletion of DEFAULT category
-		return ($this->Code == 'DEFAULT') ? false : Permission::check('Product_CANCRUD');
-	}
-
-	public function canCreate($member = null) {
-		return Permission::check('Product_CANCRUD');
-	}
+    /**
+     * @param null $member
+     * @return bool|int
+     */
+    public function canCreate($member = null)
+    {
+        return Permission::check('Product_CANCRUD');
+    }
 
 }
