@@ -1,31 +1,26 @@
 {
   "name": "dynamic/foxystripe",
-  "description": "FoxyStripe is a SilverStripe ecommerce module designed to integrate with FoxyCart.",
-  "keywords": [
-    "silverstripe",
-    "foxycart",
-    "foxystripe",
-    "dynamic",
-    "ecommerce"
-  ],
   "type": "silverstripe-module",
+  "description": "FoxyStripe is a SilverStripe ecommerce module designed to integrate with FoxyCart.",
+  "homepage": "http://foxystripe.org",
   "license": "BSD-3-Clause",
+  "keywords": ["silverstripe", "foxycart", "foxystripe", "dynamic", "ecommerce"],
   "authors": [
     {
       "name": "Dynamic Inc",
-      "homepage": "http://foxystripe.org",
-      "email": "info@dynamicdoes.com"
+      "homepage": "http://dynamicagency.com",
+      "email": "dev@dynamicagency.com"
     }
   ],
   "require": {
-    "silverstripe/framework": ">=3.1",
-    "silverstripe/cms": ">=3.1"
+    "silverstripe/framework": "^3.1",
+    "silverstripe/cms": "^3.1"
   },
   "suggest": {
-    "unclecheese/betterbuttons": "*",
-    "colymba/gridfield-bulk-editing-tools": "*",
-    "sheadawson/quickaddnew": "*",
-    "undefinedoffset/sortablegridfield": "*"
+    "unclecheese/betterbuttons": "^1.2",
+    "colymba/gridfield-bulk-editing-tools": "^v2.1",
+    "sheadawson/quickaddnew": "^1.1",
+    "undefinedoffset/sortablegridfield": "^0.5"
   },
   "extra": {
     "installer-name": "foxystripe"

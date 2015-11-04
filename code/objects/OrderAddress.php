@@ -1,7 +1,15 @@
 <?php
 
-class OrderAddress extends DataObject {
+/**
+ * Class OrderAddress
+ * @package foxystripe
+ */
+class OrderAddress extends DataObject
+{
 
+    /**
+     * @var array
+     */
     private static $db = array(
         'Name' => 'Varchar(100)',
         'Company' => 'Varchar',
@@ -14,26 +22,47 @@ class OrderAddress extends DataObject {
         'Phone' => 'Varchar(20)'
     );
 
+    /**
+     * @var array
+     */
     private static $has_one = array(
         'Order' => 'Order',
         'Customer' => 'Member'
     );
 
+    /**
+     * @var string
+     */
     private static $singular_name = 'Order Address';
+
+    /**
+     * @var string
+     */
     private static $plural_name = 'Order Addresses';
+
+    /**
+     * @var string
+     */
     private static $description = '';
-    
-    public function getTitle() {
-	    return $this->Name . ', ' . $this->Address1 . ', ' . $this->City . ' ' . $this->State . ' ' . $this->PostalCode . ' ' . $this->Country;
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->Name . ', ' . $this->Address1 . ', ' . $this->City . ' ' . $this->State . ' ' . $this->PostalCode . ' ' . $this->Country;
     }
 
-	public function getCMSFields(){
-		$fields = parent::getCMSFields();
+    /**
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
 
 
-
-		$this->extend('updateCMSFields', $fields);
-		return $fields;
-	}
+        $this->extend('updateCMSFields', $fields);
+        return $fields;
+    }
 
 } 

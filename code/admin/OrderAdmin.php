@@ -1,16 +1,36 @@
 <?php
 
-class OrderAdmin extends ModelAdmin {
+/**
+ * Class OrderAdmin
+ * @package foxystripe
+ */
+class OrderAdmin extends ModelAdmin
+{
 
-	public static $managed_models = array(
-		'Order'
-	);
-	
-	static $url_segment = 'orders';
-	
-	static $menu_title = 'Orders';
+    /**
+     * @var array
+     */
+    private static $managed_models = array(
+        'Order'
+    );
 
-    public function getEditForm($id = null, $fields = null) {
+    /**
+     * @var string
+     */
+    private static $url_segment = 'orders';
+
+    /**
+     * @var string
+     */
+    private static $menu_title = 'Orders';
+
+    /**
+     * @param null $id
+     * @param null $fields
+     * @return Form $form
+     */
+    public function getEditForm($id = null, $fields = null)
+    {
         $form = parent::getEditForm($id, $fields);
 
         $gridFieldName = $this->sanitiseClassName($this->modelClass);
@@ -24,5 +44,5 @@ class OrderAdmin extends ModelAdmin {
 
         return $form;
     }
-	
+
 }

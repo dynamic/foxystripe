@@ -1,80 +1,108 @@
 <?php
 
-class ProductDiscountTierTest extends FS_Test{
+/**
+ * Class ProductDiscountTierTest
+ * @pakcage foxystripe
+ */
+class ProductDiscountTierTest extends FS_Test
+{
 
-	protected static $use_draft_site = true;
+    /**
+     * @var bool
+     */
+    protected static $use_draft_site = true;
 
-	function setUp(){
-		parent::setUp();
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    function setUp()
+    {
+        parent::setUp();
 
-		$productHolder = ProductHolder::create();
-		$productHolder->Title = 'Product Holder';
-		$productHolder->write();
+        $productHolder = ProductHolder::create();
+        $productHolder->Title = 'Product Holder';
+        $productHolder->write();
 
-		$product = $this->objFromFixture('ProductPage', 'product1');
-		$product->ParentID = $productHolder->ID;
-		$product->write();
-	}
+        $product = $this->objFromFixture('ProductPage', 'product1');
+        $product->ParentID = $productHolder->ID;
+        $product->write();
+    }
 
-	public function testProductDiscountTierCreation(){
-		$this->logInWithPermission('Product_CANCRUD');
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    public function testProductDiscountTierCreation()
+    {
+        $this->logInWithPermission('Product_CANCRUD');
 
-		$discount = ProductPage::get()->first();
+        $discount = ProductPage::get()->first();
 
-		$tier = $this->objFromFixture('ProductDiscountTier', 'fiveforten');
-		$tier->ProductPageID = $discount->ID;
-		$tier->write();
-		$tierID = $tier->ID;
+        $tier = $this->objFromFixture('ProductDiscountTier', 'fiveforten');
+        $tier->ProductPageID = $discount->ID;
+        $tier->write();
+        $tierID = $tier->ID;
 
-		$checkTier = ProductDiscountTier::get()->byID($tierID);
+        $checkTier = ProductDiscountTier::get()->byID($tierID);
 
-		$this->assertEquals($checkTier->Quantity, 5);
-		$this->assertEquals($checkTier->Percentage, 10);
+        $this->assertEquals($checkTier->Quantity, 5);
+        $this->assertEquals($checkTier->Percentage, 10);
 
-		$this->logOut();
-	}
+        $this->logOut();
+    }
 
-	public function testProductDiscountTierEdit(){
-		$this->logInWithPermission('ADMIN');
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    public function testProductDiscountTierEdit()
+    {
+        $this->logInWithPermission('ADMIN');
 
-		$discount = ProductPage::get()->first();
+        $discount = ProductPage::get()->first();
 
-		$tier = $this->objFromFixture('ProductDiscountTier', 'fiveforten');
-		$tier->ProductPageID = $discount->ID;
-		$tier->write();
-		$tierID = $tier->ID;
-		$this->logInWithPermission('Product_CANCRUD');
+        $tier = $this->objFromFixture('ProductDiscountTier', 'fiveforten');
+        $tier->ProductPageID = $discount->ID;
+        $tier->write();
+        $tierID = $tier->ID;
+        $this->logInWithPermission('Product_CANCRUD');
 
-		$tier->Quantity = 2;
-		$tier->Percentage = 5;
-		$tier->write();
+        $tier->Quantity = 2;
+        $tier->Percentage = 5;
+        $tier->write();
 
-		$checkTier = ProductDiscountTier::get()->byID($tierID);
+        $checkTier = ProductDiscountTier::get()->byID($tierID);
 
-		$this->assertEquals($checkTier->Quantity, 2);
-		$this->assertEquals($checkTier->Percentage, 5);
+        $this->assertEquals($checkTier->Quantity, 2);
+        $this->assertEquals($checkTier->Percentage, 5);
 
-		$this->logOut();
-	}
+        $this->logOut();
+    }
 
-	public function testProductDiscountTierDeletion(){
-		$this->logInWithPermission('ADMIN');
+    /**
+     * @throws ValidationException
+     * @throws null
+     */
+    public function testProductDiscountTierDeletion()
+    {
+        $this->logInWithPermission('ADMIN');
 
-		$discount = ProductPage::get()->first();
+        $discount = ProductPage::get()->first();
 
-		$tier = $this->objFromFixture('ProductDiscountTier', 'fiveforten');
-		$tier->ProductPageID = $discount->ID;
-		$tier->write();
-		$tierID = $tier->ID;
+        $tier = $this->objFromFixture('ProductDiscountTier', 'fiveforten');
+        $tier->ProductPageID = $discount->ID;
+        $tier->write();
+        $tierID = $tier->ID;
 
-		$this->logOut();
+        $this->logOut();
 
-		$this->logInWithPermission('Product_CANCRUD');
+        $this->logInWithPermission('Product_CANCRUD');
 
-		$tier->delete();
-		$this->assertTrue(!ProductDiscountTier::get()->byID($tierID));
+        $tier->delete();
+        $this->assertTrue(!ProductDiscountTier::get()->byID($tierID));
 
-		$this->logOut();
-	}
+        $this->logOut();
+    }
 
 }

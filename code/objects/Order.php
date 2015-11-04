@@ -1,8 +1,16 @@
 <?php
 
-class Order extends DataObject implements PermissionProvider{
+/**
+ * Class Order
+ * @package foxystripe
+ */
+class Order extends DataObject implements PermissionProvider
+{
 
-	private static $db = array(
+    /**
+     * @var array
+     */
+    private static $db = array(
         'Order_ID' => 'Int',
         'Store_ID' => 'Int',
         'StoreVersion' => 'Varchar',
@@ -23,21 +31,45 @@ class Order extends DataObject implements PermissionProvider{
         'Response' => 'Text'
     );
 
-	private static $has_one = array(
+    /**
+     * @var array
+     */
+    private static $has_one = array(
         'Member' => 'Member',
         'BillingAddress' => 'OrderAddress',
         'ShippingAddress' => 'OrderAddress'
     );
 
-	private static $has_many = array(
+    /**
+     * @var array
+     */
+    private static $has_many = array(
         'Details' => 'OrderDetail'
     );
 
+    /**
+     * @var string
+     */
     private static $singular_name = 'Order';
+
+    /**
+     * @var string
+     */
     private static $plural_name = 'Orders';
+
+    /**
+     * @var string
+     */
     private static $description = 'Orders from FoxyCart Datafeed';
+
+    /**
+     * @var string
+     */
     private static $default_sort = 'TransactionDate DESC';
 
+    /**
+     * @var array
+     */
     private static $summary_fields = array(
         'Order_ID',
         'TransactionDate.NiceUS',
@@ -49,7 +81,10 @@ class Order extends DataObject implements PermissionProvider{
         'ReceiptLink'
     );
 
-	private static $searchable_fields = array(
+    /**
+     * @var array
+     */
+    private static $searchable_fields = array(
         'Order_ID',
         'TransactionDate' => array(
             "field" => "DateField",
@@ -60,15 +95,26 @@ class Order extends DataObject implements PermissionProvider{
         'Details.ProductID'
     );
 
+    /**
+     * @var array
+     */
     private static $casting = array(
         'ReceiptLink' => 'HTMLVarchar'
     );
-    
+
+    /**
+     * @var array
+     */
     private static $indexes = array(
         'Order_ID' => true // make unique
     );
 
-    function fieldLabels($includerelations = true) {
+    /**
+     * @param bool|true $includerelations
+     * @return array|string
+     */
+    public function fieldLabels($includerelations = true)
+    {
         $labels = parent::fieldLabels();
 
         $labels['Order_ID'] = _t('Order.Order_ID', 'Order ID#');
@@ -87,38 +133,65 @@ class Order extends DataObject implements PermissionProvider{
         return $labels;
     }
 
-    function ReceiptLink() {
+    /**
+     * @return mixed
+     */
+    public function ReceiptLink()
+    {
+        Deprecation::notice('3.0', 'Use $this->ReceiptLink or $this->getReceiptLink() instead.');
         return $this->getReceiptLink();
     }
 
-    function getReceiptLink(){
-        $obj= HTMLVarchar::create();
+    /**
+     * @return mixed
+     */
+    function getReceiptLink()
+    {
+        $obj = HTMLVarchar::create();
         $obj->setValue('<a href="' . $this->ReceiptURL . '" target="_blank" class="cms-panel-link action external-link">view</a>');
         return $obj;
     }
 
-	public function canView($member = false) {
-		return Permission::check('Product_ORDERS');
-	}
+    /**
+     * @param bool|false $member
+     * @return bool|int
+     */
+    public function canView($member = false)
+    {
+        return Permission::check('Product_ORDERS');
+    }
 
-	public function canEdit($member = null) {
-        //return Permission::check('Product_ORDERS');
+    /**
+     * @param null $member
+     * @return bool
+     */
+    public function canEdit($member = null)
+    {
         return false;
-	}
+    }
 
-	public function canDelete($member = null) {
+    /**
+     * @param null $member
+     * @return bool
+     */
+    public function canDelete($member = null)
+    {
         return false;
-        //return Permission::check('Product_ORDERS');
-	}
+    }
 
-	public function canCreate($member = null) {
-		return false;
-	}
+    public function canCreate($member = null)
+    {
+        return false;
+    }
 
-	public function providePermissions() {
-		return array(
-			'Product_ORDERS' => 'Allow user to manage Orders and related objects'
-		);
-	}
+    /**
+     * @return array
+     */
+    public function providePermissions()
+    {
+        return array(
+            'Product_ORDERS' => 'Allow user to manage Orders and related objects'
+        );
+    }
 
 }
