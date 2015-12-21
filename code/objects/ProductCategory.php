@@ -5,12 +5,13 @@
  *
  */
 
-class ProductCategory extends DataObject {
+class ProductCategory extends DataObject
+{
 
     private static $db = array(
-		'Title' => 'Varchar(255)',
-		'Code' => 'Varchar(50)'
-	);
+        'Title' => 'Varchar(255)',
+        'Code' => 'Varchar(50)'
+    );
 
     private static $singular_name = 'FoxyCart Category';
     private static $plural_name = 'FoxyCart Categories';
@@ -21,13 +22,13 @@ class ProductCategory extends DataObject {
         'Code' => 'Code'
     );
 
-	private static $indexes = array(
-		'Code' => true
-	);
+    private static $indexes = array(
+        'Code' => true
+    );
 
-    public function getCMSFields() {
-
-		$fields = FieldList::create(
+    public function getCMSFields()
+    {
+        $fields = FieldList::create(
             LiteralField::create(
                 'PCIntro',
                 _t(
@@ -50,35 +51,39 @@ class ProductCategory extends DataObject {
         $this->extend('updateCMSFields', $fields);
 
         return $fields;
-	}
+    }
 
-	public function requireDefaultRecords() {
-		parent::requireDefaultRecords();
-		$allCats = DataObject::get('ProductCategory');
-		if(!$allCats->count()){
-			$cat = new ProductCategory();
-			$cat->Title = 'Default';
-			$cat->Code = 'DEFAULT';
-			$cat->write();
-		}
-	}
+    public function requireDefaultRecords()
+    {
+        parent::requireDefaultRecords();
+        $allCats = DataObject::get('ProductCategory');
+        if (!$allCats->count()) {
+            $cat = new ProductCategory();
+            $cat->Title = 'Default';
+            $cat->Code = 'DEFAULT';
+            $cat->write();
+        }
+    }
 
-	public function canView($member = false) {
-		return true;
-	}
+    public function canView($member = false)
+    {
+        return true;
+    }
 
-	public function canEdit($member = null) {
-		return Permission::check('Product_CANCRUD');
-	}
+    public function canEdit($member = null)
+    {
+        return Permission::check('Product_CANCRUD');
+    }
 
-	public function canDelete($member = null) {
+    public function canDelete($member = null)
+    {
 
-		//don't allow deletion of DEFAULT category
-		return ($this->Code == 'DEFAULT') ? false : Permission::check('Product_CANCRUD');
-	}
+        //don't allow deletion of DEFAULT category
+        return ($this->Code == 'DEFAULT') ? false : Permission::check('Product_CANCRUD');
+    }
 
-	public function canCreate($member = null) {
-		return Permission::check('Product_CANCRUD');
-	}
-
+    public function canCreate($member = null)
+    {
+        return Permission::check('Product_CANCRUD');
+    }
 }

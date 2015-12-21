@@ -1,8 +1,9 @@
 <?php
 
-class Order extends DataObject implements PermissionProvider{
+class Order extends DataObject implements PermissionProvider
+{
 
-	private static $db = array(
+    private static $db = array(
         'Order_ID' => 'Int',
         'TransactionDate' => 'SS_Datetime',
         'ProductTotal' => 'Currency',
@@ -14,11 +15,11 @@ class Order extends DataObject implements PermissionProvider{
         'Response' => 'Text'
     );
 
-	private static $has_one = array(
+    private static $has_one = array(
         'Member' => 'Member'
     );
 
-	private static $has_many = array(
+    private static $has_many = array(
         'Details' => 'OrderDetail'
     );
 
@@ -38,7 +39,7 @@ class Order extends DataObject implements PermissionProvider{
         'ReceiptLink'
     );
 
-	private static $searchable_fields = array(
+    private static $searchable_fields = array(
         'Order_ID',
         'TransactionDate' => array(
             "field" => "DateField",
@@ -57,7 +58,8 @@ class Order extends DataObject implements PermissionProvider{
         'Order_ID' => true // make unique
     );
 
-    function fieldLabels($includerelations = true) {
+    public function fieldLabels($includerelations = true)
+    {
         $labels = parent::fieldLabels();
 
         $labels['Order_ID'] = _t('Order.Order_ID', 'Order ID#');
@@ -76,38 +78,44 @@ class Order extends DataObject implements PermissionProvider{
         return $labels;
     }
 
-    function ReceiptLink() {
+    public function ReceiptLink()
+    {
         return $this->getReceiptLink();
     }
 
-    function getReceiptLink(){
+    public function getReceiptLink()
+    {
         $obj= HTMLVarchar::create();
         $obj->setValue('<a href="' . $this->ReceiptURL . '" target="_blank" class="cms-panel-link action external-link">view</a>');
         return $obj;
     }
 
-	public function canView($member = false) {
-		return Permission::check('Product_ORDERS');
-	}
+    public function canView($member = false)
+    {
+        return Permission::check('Product_ORDERS');
+    }
 
-	public function canEdit($member = null) {
+    public function canEdit($member = null)
+    {
         //return Permission::check('Product_ORDERS');
         return false;
-	}
+    }
 
-	public function canDelete($member = null) {
+    public function canDelete($member = null)
+    {
         return false;
         //return Permission::check('Product_ORDERS');
-	}
+    }
 
-	public function canCreate($member = null) {
-		return false;
-	}
+    public function canCreate($member = null)
+    {
+        return false;
+    }
 
-	public function providePermissions() {
-		return array(
-			'Product_ORDERS' => 'Allow user to manage Orders and related objects'
-		);
-	}
-
+    public function providePermissions()
+    {
+        return array(
+            'Product_ORDERS' => 'Allow user to manage Orders and related objects'
+        );
+    }
 }

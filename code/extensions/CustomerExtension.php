@@ -1,6 +1,7 @@
 <?php
 
-class CustomerExtension extends DataExtension{
+class CustomerExtension extends DataExtension
+{
 
     private static $db = array(
         'Customer_ID' => 'Int'
@@ -14,7 +15,8 @@ class CustomerExtension extends DataExtension{
         'Customer_ID' => true // make unique
     );
 
-    public function onBeforeWrite() {
+    public function onBeforeWrite()
+    {
         parent::onBeforeWrite();
 
         // if Member data was imported from FoxyCart, PasswordEncryption will be set to 'none'.
@@ -25,10 +27,9 @@ class CustomerExtension extends DataExtension{
         $response = FoxyCart::putCustomer($this->owner);
 
         // Grab customer_id record from FoxyCart response, store in Member
-		if($response){
-        	$foxyResponse = new SimpleXMLElement($response);
-        	$this->owner->Customer_ID = (int) $foxyResponse->customer_id;
-		}
+        if ($response) {
+            $foxyResponse = new SimpleXMLElement($response);
+            $this->owner->Customer_ID = (int) $foxyResponse->customer_id;
+        }
     }
-
 }

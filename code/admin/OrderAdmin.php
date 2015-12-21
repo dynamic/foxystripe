@@ -1,16 +1,18 @@
 <?php
 
-class OrderAdmin extends ModelAdmin {
+class OrderAdmin extends ModelAdmin
+{
 
-	public static $managed_models = array(
-		'Order'
-	);
-	
-	static $url_segment = 'orders';
-	
-	static $menu_title = 'Orders';
+    public static $managed_models = array(
+        'Order'
+    );
+    
+    public static $url_segment = 'orders';
+    
+    public static $menu_title = 'Orders';
 
-    public function getEditForm($id = null, $fields = null) {
+    public function getEditForm($id = null, $fields = null)
+    {
         $form = parent::getEditForm($id, $fields);
 
         $gridFieldName = $this->sanitiseClassName($this->modelClass);
@@ -24,5 +26,4 @@ class OrderAdmin extends ModelAdmin {
 
         return $form;
     }
-	
 }
