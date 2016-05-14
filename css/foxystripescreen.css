@@ -1,0 +1,7 @@
+/** ------------------------------------------------------------------ URLSegment field ----------------------------------------------------------------- */
+.field.foxystripestoredomain.loading { background: url(/cms/images/loading.gif) no-repeat 162px 8px; }
+.field.foxystripestoredomain .preview { padding-top: 8px; display: inline-block; }
+.field.foxystripestoredomain input.text { width: 250px; }
+.field.foxystripestoredomain input.text, .field.foxystripestoredomain .cancel, .field.foxystripestoredomain .update, .field.foxystripestoredomain .edit { margin-right: 8px; }
+.field.foxystripestoredomain .help { margin-left: 0; }
+.field.foxystripestoredomain .edit-holder { display: none; }

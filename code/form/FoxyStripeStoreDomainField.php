@@ -65,15 +65,15 @@ class FoxyStripeStoreDomainField extends TextField
                 )
             );
 
-            $siteConfig = SiteConfig::current_site_config();
+            $foxyStripeConfig = FoxyStripeConfig::current_foxystripe_config();
             $guzzle = new \GuzzleHttp\Client($guzzleConfig);
             $fc = new \Foxy\FoxyClient\FoxyClient($guzzle, array(
-                'use_sandbox' => true,
-                'access_token' => $siteConfig->AccessToken,
-                'access_token_expires' => $siteConfig->AccessTokenExpires,
-                'refresh_token' => $siteConfig->RefreshToken,
-                'client_id' => $siteConfig->ClientID,
-                'client_secret' => $siteConfig->ClientSecret
+                'use_sandbox' => $foxyStripeConfig->UseSandbox,
+                'access_token' => $foxyStripeConfig->AccessToken,
+                'access_token_expires' => $foxyStripeConfig->AccessTokenExpires,
+                'refresh_token' => $foxyStripeConfig->RefreshToken,
+                'client_id' => $foxyStripeConfig->ClientID,
+                'client_secret' => $foxyStripeConfig->ClientSecret
             ));
 
             $data = array(
