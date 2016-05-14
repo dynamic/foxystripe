@@ -233,7 +233,7 @@ class ProductPage extends Page implements PermissionProvider {
 		}
 
 		//update many_many lists when multi-group is on
-		if(SiteConfig::current_site_config()->MultiGroup){
+		if(FoxyStripeConfig::current_foxystripe_config()->MultiGroup){
 			$holders = $this->ProductHolders();
 			$product = ProductPage::get()->byID($this->ID);
 			if (isset($product->ParentID)) {
@@ -308,7 +308,7 @@ class ProductPage extends Page implements PermissionProvider {
 
 	public static function getGeneratedValue($productCode = null, $optionName = null, $optionValue = null, $method = 'name', $output = false, $urlEncode = false){
 		$optionName = ($optionName !== null) ? preg_replace('/\s/','_', $optionName) : $optionName;
-		return (SiteConfig::current_site_config()->CartValidation)
+		return (FoxyStripeConfig::current_foxystripe_config()->CartValidation)
 			? FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode):
 			$optionValue;
 	}
@@ -377,7 +377,7 @@ JS
 
 	public function PurchaseForm() {
 
-		$config = SiteConfig::current_site_config();
+		$config = FoxyStripeConfig::current_foxystripe_config();
 
 		$assignAvailable = function($self){
 			$self->Available = ($self->getAvailability()) ? true : false;

@@ -1,9 +1,6 @@
 ---
 Name: foxystripe
 ---
-SiteConfig:
-  extensions:
-    - FoxyStripeSiteConfig
 Member:
   extensions:
     - CustomerExtension
