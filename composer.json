@@ -28,10 +28,10 @@
     "unclecheese/betterbuttons": "^1.2",
     "sheadawson/quickaddnew": "^1.1",
     "undefinedoffset/sortablegridfield": "^0.5",
-    "foxycart/foxyclient": "dev-master"
-  },
-  "suggest": {
-    "colymba/gridfield-bulk-editing-tools": "^v2.1"
+    "foxycart/foxyclient": "dev-master",
+    "colymba/gridfield-bulk-editing-tools": "^v2.1",
+    "guzzlehttp/guzzle": "~5.2",
+    "guzzlehttp/cache-subscriber": "0.1.*@dev"
   },
   "extra": {
     "installer-name": "foxystripe",

@@ -2,6 +2,19 @@
 
 /**
  * Class FoxyStripeConfig
+ * 
+ * @property string $StoreName
+ * @property string $StoreKey
+ * @property bool $MultiGroup
+ * @property int $ProductLimit
+ * @property bool $CartValidation
+ * @property int $MaxQuantity
+ * @property string $AccessToken
+ * @property string $RefreshToken
+ * @property string $ClientID
+ * @property string $ClientSecret
+ * @property int $AccessTokenExpires
+ * @property bool $Live
  */
 class FoxyStripeConfig extends DataObject implements PermissionProvider
 {
@@ -33,7 +46,8 @@ class FoxyStripeConfig extends DataObject implements PermissionProvider
         'RefreshToken' => 'Varchar(255)',
         'ClientID' => 'Varchar(255)',
         'ClientSecret' => 'Varchar(255)',
-        'AccessTokenExpires' => 'Int'
+        'AccessTokenExpires' => 'Int',
+        'Live' => 'Boolean',
     );
 
     /**

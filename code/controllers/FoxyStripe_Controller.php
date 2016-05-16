@@ -1,40 +1,66 @@
 <?php
 
-class FoxyStripe_Controller extends Page_Controller {
-	
-	const URLSegment = 'foxystripe';
+/**
+ * Class FoxyStripe_Controller
+ */
+class FoxyStripe_Controller extends Page_Controller
+{
 
-	public function getURLSegment() {
-		return self::URLSegment;
-	}
-	
-	static $allowed_actions = array(
-		'index',
-        'sso'
-	);
-	
-	public function index() {
-	    // handle POST from FoxyCart API transaction
-		if ((isset($_POST["FoxyData"]) OR isset($_POST['FoxySubscriptionData']))) {
-			$FoxyData_encrypted = (isset($_POST["FoxyData"])) ?
+    /**
+     *
+     */
+    const URLSegment = 'foxystripe';
+
+    /**
+     * @return string
+     */
+    public function getURLSegment()
+    {
+        return self::URLSegment;
+    }
+
+    /**
+     * @var array
+     */
+    private static $allowed_actions = array(
+        'index',
+        'sso',
+        'SetupForm',
+        'setup',
+    );
+
+
+    /**
+     * @return string
+     */
+    public function index()
+    {
+        // handle POST from FoxyCart API transaction
+        if ((isset($_POST["FoxyData"]) OR isset($_POST['FoxySubscriptionData']))) {
+            $FoxyData_encrypted = (isset($_POST["FoxyData"])) ?
                 urldecode($_POST["FoxyData"]) :
                 urldecode($_POST["FoxySubscriptionData"]);
-			$FoxyData_decrypted = rc4crypt::decrypt(FoxyCart::getStoreKey(),$FoxyData_encrypted);
-			self::handleDataFeed($FoxyData_encrypted, $FoxyData_decrypted);
-			
-			// extend to allow for additional integrations with Datafeed
-			$this->extend('addIntegrations', $FoxyData_encrypted);
-			
-			return 'foxy';
-			
-		} else {
-			
-			return "No FoxyData or FoxySubscriptionData received.";
-			
-		}
-	}
+            $FoxyData_decrypted = rc4crypt::decrypt(FoxyCart::getStoreKey(), $FoxyData_encrypted);
+            self::handleDataFeed($FoxyData_encrypted, $FoxyData_decrypted);
 
-    public function handleDataFeed($encrypted, $decrypted){
+            // extend to allow for additional integrations with Datafeed
+            $this->extend('addIntegrations', $FoxyData_encrypted);
+
+            return 'foxy';
+
+        } else {
+
+            return "No FoxyData or FoxySubscriptionData received.";
+
+        }
+    }
+
+    /**
+     * @param $encrypted
+     * @param $decrypted
+     */
+    public function handleDataFeed($encrypted, $decrypted)
+    {
         //handle encrypted & decrypted data
         $orders = new SimpleXMLElement($decrypted);
 
@@ -48,7 +74,7 @@ class FoxyStripe_Controller extends Page_Controller {
             }
 
             // save base order info
-            $transaction->Order_ID = (int) $order->id;
+            $transaction->Order_ID = (int)$order->id;
             $transaction->Response = $decrypted;
 
             // record transaction as order
@@ -60,7 +86,11 @@ class FoxyStripe_Controller extends Page_Controller {
         }
     }
 
-    public function parseOrder($Order_ID) {
+    /**
+     * @param $Order_ID
+     */
+    public function parseOrder($Order_ID)
+    {
 
         $transaction = Order::get()->filter(array('Order_ID' => $Order_ID))->First();
 
@@ -79,7 +109,12 @@ class FoxyStripe_Controller extends Page_Controller {
         }
     }
 
-    public function parseOrderInfo($orders, $transaction) {
+    /**
+     * @param $orders
+     * @param $transaction
+     */
+    public function parseOrderInfo($orders, $transaction)
+    {
 
         foreach ($orders->transactions->transaction as $order) {
 
@@ -95,7 +130,12 @@ class FoxyStripe_Controller extends Page_Controller {
         }
     }
 
-    public function parseOrderCustomer($orders, $transaction) {
+    /**
+     * @param $orders
+     * @param $transaction
+     */
+    public function parseOrderCustomer($orders, $transaction)
+    {
 
         foreach ($orders->transactions->transaction as $order) {
 
@@ -103,7 +143,7 @@ class FoxyStripe_Controller extends Page_Controller {
             if (isset($order->customer_email) && $order->is_anonymous == 0) {
 
                 // if Customer is existing member, associate with current order
-                if(Member::get()->filter('Email', $order->customer_email)->First()) {
+                if (Member::get()->filter('Email', $order->customer_email)->First()) {
 
                     $customer = Member::get()->filter('Email', $order->customer_email)->First();
 
@@ -133,7 +173,12 @@ class FoxyStripe_Controller extends Page_Controller {
         }
     }
 
-    public function parseOrderDetails($orders, $transaction) {
+    /**
+     * @param $orders
+     * @param $transaction
+     */
+    public function parseOrderDetails($orders, $transaction)
+    {
 
         // remove previous OrderDetails so we don't end up with duplicates
         foreach ($transaction->Details() as $detail) {
@@ -202,18 +247,20 @@ class FoxyStripe_Controller extends Page_Controller {
     }
 
 
+    /**
+     * Single Sign on integration with FoxyCart
+     */
+    public function sso()
+    {
 
-	// Single Sign on integration with FoxyCart
-    public function sso() {
-
-	    // GET variables from FoxyCart Request
+        // GET variables from FoxyCart Request
         $fcsid = $this->request->getVar('fcsid');
         $timestampNew = strtotime('+30 days');
 
         // get current member if logged in. If not, create a 'fake' user with Customer_ID = 0
         // fake user will redirect to FC checkout, ask customer to log in
         // to do: consider a login/registration form here if not logged in
-        if($Member = Member::currentUser()) {
+        if ($Member = Member::currentUser()) {
             $Member = Member::currentUser();
         } else {
             $Member = new Member();
@@ -224,9 +271,63 @@ class FoxyStripe_Controller extends Page_Controller {
 
         $redirect_complete = 'https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/checkout?fc_auth_token=' . $auth_token .
             '&fcsid=' . $fcsid . '&fc_customer_id=' . $Member->Customer_ID . '&timestamp=' . $timestampNew;
-	
-	    $this->redirect($redirect_complete);
+
+        $this->redirect($redirect_complete);
 
     }
-	
+
+    /**
+     * @return mixed
+     */
+    public function SetupForm()
+    {
+        return FoxyCartApplicationRegistrationForm::create($this, __FUNCTION__)->setFormAction('/foxystripe/SetupForm');
+
+    }
+
+    /**
+     * @param SS_HTTPRequest $request
+     * @return HTMLText
+     */
+    public function setup(SS_HTTPRequest $request)
+    {
+
+        $form = $this->SetupForm();
+
+        return $this->customise(array(
+            'Form' => $form,
+        ))->renderWith(array(
+            'ApplicationSetup',
+            'Page',
+        ));
+
+    }
+
+    public function doFoxyCartApplicationRegistration($data, $form)
+    {
+        
+        $config = array(
+            'use_sandbox' => (!FoxyStripeConfig::current_foxystripe_config()->Live),
+        );
+
+        $guzzle_config = array(
+            'defaults' => array(
+                'debug' => false,
+                'exceptions' => false
+            )
+        );
+
+        /**
+         * Set up our Guzzle Client
+         */
+        $guzzle = new Client($guzzle_config);
+        CacheSubscriber::attach($guzzle);
+
+        $fc = new FoxyClient($guzzle, $config);
+
+        Debug::show($fc);
+        die;
+
+    }
+
 }
