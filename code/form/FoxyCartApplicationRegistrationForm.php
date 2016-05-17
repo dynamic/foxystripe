@@ -23,6 +23,8 @@ class FoxyCartApplicationRegistrationForm extends Form
             TextField::create('project_description')
                 ->setTitle('Project Description')
                 ->setAttribute('maxlength', 200),
+            $company = TextField::create('company_name')
+                ->setTitle('Company Name'),
             TextField::create('company_url')
                 ->setTitle('Company URL')
                 ->setAttribute('maxlength', 200),
@@ -31,8 +33,16 @@ class FoxyCartApplicationRegistrationForm extends Form
             EmailField::create('contact_email')
                 ->setTitle('Contact Email'),
             PhoneNumberField::create('contact_phone')
-                ->setTitle('Contact Phone')
+                ->setTitle('Contact Phone'),
+            TextField::create('redirect_uri')
+                ->setTitle('Redirect URI')
         );
+
+        if(FoxyStripeConfig::current_foxystripe_config()->CompanyTitle){
+            $company
+                ->setValue(FoxyStripeConfig::current_foxystripe_config()->CompanyTitle)
+                ->performReadonlyTransformation();
+        }
 
         $actions = FieldList::create(
             FormAction::create('doFoxyCartApplicationRegistration')

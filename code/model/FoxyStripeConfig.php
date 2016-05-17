@@ -2,7 +2,10 @@
 
 /**
  * Class FoxyStripeConfig
- * 
+ *
+ * @package FoxyStripe
+ *
+ * @property string $CompanyTitle
  * @property string $StoreName
  * @property string $StoreKey
  * @property bool $MultiGroup
@@ -36,6 +39,7 @@ class FoxyStripeConfig extends DataObject implements PermissionProvider
      * @var array
      */
     private static $db = array(
+        'CompanyTitle' => 'Varchar(255)',
         'StoreName' => 'Varchar(255)',
         'StoreKey' => 'Varchar(60)',
         'MultiGroup' => 'Boolean',
@@ -276,6 +280,22 @@ class FoxyStripeConfig extends DataObject implements PermissionProvider
     }
 
     /**
+     * Return data from the {@link FoxyStripeConfig} that can be used in templates.
+     *
+     * @return ArrayData
+     */
+    public static function current_foxystripe_config_public(){
+        $config = self::current_foxystripe_config();
+        return ArrayData::create(
+            array(
+                'CompanyTitle' => $config->CompanyTitle,
+                'StoreName' => $config->StoreName,
+                'Live' => $config->Live,
+            )
+        );
+    }
+
+    /**
      * @return string
      */
     public function CMSEditLink()
@@ -305,7 +325,7 @@ class FoxyStripeConfig extends DataObject implements PermissionProvider
     public static function get_template_global_variables()
     {
         return array(
-            'FoxyStripeConfig' => 'current_foxystripe_config',
+            'FoxyStripeConfig' => 'current_foxystripe_config_public',
         );
     }
 

@@ -1,7 +1,8 @@
 <?php
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Subscriber\Cache;
+use GuzzleHttp\Subscriber\Cache\CacheSubscriber;
+use Foxy\FoxyClient\FoxyClient;
 
 
 /**
@@ -27,9 +28,9 @@ class FoxyStripeClient
 
     /**
      * FoxyStripeClient constructor.
-     * @param $config
+     * @param array $config
      */
-    public function __construct($config)
+    public function __construct($config = array())
     {
 
         $this->setClient($config);
@@ -48,9 +49,12 @@ class FoxyStripeClient
      * @param $config
      * @return $this
      */
-    public function setClient($config)
+    public function setClient($config = array())
     {
-        $this->client = new FoxyClient(new Client($this->getGuzzleConfig()), $config);
+        $config = empty($config) ? $this->getGuzzleConfig() : $config;
+        $guzzle = new GuzzleHttp\Client($this->getGuzzleConfig());
+        CacheSubscriber::attach($guzzle);
+        $this->client = new FoxyClient($guzzle, $config);
         return $this;
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+use Foxy\FoxyClient\FoxyClient;
+
 /**
  * Class FoxyStripe_Controller
  */
@@ -305,7 +307,7 @@ class FoxyStripe_Controller extends Page_Controller
 
     public function doFoxyCartApplicationRegistration($data, $form)
     {
-        
+
         $config = array(
             'use_sandbox' => (!FoxyStripeConfig::current_foxystripe_config()->Live),
         );
@@ -320,14 +322,72 @@ class FoxyStripe_Controller extends Page_Controller
         /**
          * Set up our Guzzle Client
          */
-        $guzzle = new Client($guzzle_config);
-        CacheSubscriber::attach($guzzle);
+        $fc = new FoxyStripeClient($config);
 
-        $fc = new FoxyClient($guzzle, $config);
+        $isSuccessful = self::register_foxycart_application($fc->getClient(), $data);
+        if ($isSuccessful === true) {
+            return $this->redirect('/admin/foxystripe-config/');
+        }
+        $form->setMessage($isSuccessful, 'bad');
+        return $this->redirectBack();
 
-        Debug::show($fc);
-        die;
+    }
 
+    protected static function register_foxycart_application(FoxyClient $fc, $data = array())
+    {
+        $errors = array();
+        $fc->clearCredentials();
+        $result = $fc->get();
+        $errors = array_merge($errors, $fc->getErrors($result));
+        $create_client_uri = $fc->getLink('fx:create_client');
+        if ($create_client_uri == '') {
+            $errors[] = 'Unable to obtain fx:create_client href';
+        }
+        $data = array(
+            'redirect_uri' => $data['redirect_uri'],
+            'project_name' => $data['project_name'],
+            'project_description' => $data['project_description'],
+            'company_name' => $data['company_name'],
+            'company_url' => (isset($data['company_url'])) ? $data['company_url'] : '',
+            'company_logo' => (isset($data['company_logo'])) ? $data['company_logo'] : '',
+            'contact_name' => $data['contact_name'],
+            'contact_email' => $data['contact_email'],
+            'contact_phone' => $data['contact_phone'],
+        );
+        if (!count($errors)) {
+            if ($result = $fc->post($create_client_uri, $data)) {
+                $errors = array_merge($errors, $fc->getErrors($result));
+                if (!count($errors)) {
+                    $foxyConfig = FoxyStripeConfig::current_foxystripe_config();
+                    $foxyConfig->AccessToken = $result['token']['access_token'];
+                    $foxyConfig->RefreshToken = $result['token']['refresh_token'];
+                    $foxyConfig->AccessTokenExpires = time() + $result['token']['expires_in'];
+                    $fc->setAccessToken($foxyConfig->AccessToken);
+                    $fc->setRefreshToken($foxyConfig->RefreshToken);
+                    $fc->setAccessTokenExpires($foxyConfig->AccessTokenExpires);
+                    $result = $fc->get();
+                    $errors = array_merge($errors, $fc->getErrors($result));
+                    $client_uri = $fc->getLink('fx:client');
+                    if ($client_uri == '') {
+                        $errors[] = 'Unable to obtain fx:client href';
+                    }
+                    if (!count($errors)) {
+                        $result = $fc->get($client_uri);
+                        $errors = array_merge($errors, $fc->getErrors($result));
+                        if (!count($errors)) {
+                            $foxyConfig->ClientID = $result['client_id'];
+                            $foxyConfig->ClientSecret = $result['client_secret'];
+                            $foxyConfig->write();
+                            $fc->setClientId($foxyConfig->ClientID);
+                            $fc->setClientSecret($foxyConfig->ClientSecret);
+                        }
+                    }
+                }
+            }
+        }
+        return (count($errors))
+            ? 'An error occurred, ' . $errors[0] . '.'
+            : true;
     }
 
 }
