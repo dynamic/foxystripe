@@ -7,7 +7,7 @@ class StoreSettingsTest extends FS_Test{
 	function setUp(){
 		parent::setUp();
 
-		$siteConf = SiteConfig::current_site_config();
+		$siteConf = FoxyStripeConfig::current_foxystripe_config();
 		$siteConf->StoreName = 'foxystripe';
         $siteConf->requireDefaultRecords();
 		$siteConf->write();
@@ -15,7 +15,7 @@ class StoreSettingsTest extends FS_Test{
 
 	function testStoreKey(){
 		$pref = FoxyCart::getKeyPrefix();
-		$siteConf = SiteConfig::current_site_config();
+		$siteConf = FoxyStripeConfig::current_foxystripe_config();
 
 		$this->assertTrue(ctype_alnum($siteConf->StoreKey));
         $this->assertEquals(strlen($siteConf->StoreKey), 60);
@@ -23,7 +23,7 @@ class StoreSettingsTest extends FS_Test{
 	}
 
 	function testStoreName(){
-		$siteConf = SiteConfig::current_site_config();
+		$siteConf = FoxyStripeConfig::current_foxystripe_config();
 
         $this->assertEquals($siteConf->StoreName, 'foxystripe');
 	}

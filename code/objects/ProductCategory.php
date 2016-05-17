@@ -1,44 +1,58 @@
 <?php
+
 /**
- *
+ * Class ProductCategory
  * @package FoxyStripe
  *
+ * @property string $Title
+ * @property string $Code
  */
+class ProductCategory extends DataObject
+{
 
-class ProductCategory extends DataObject {
-
-    private static $db = array(
-		'Title' => 'Varchar(255)',
-		'Code' => 'Varchar(50)'
-	);
-
+    /**
+     * @var string
+     */
     private static $singular_name = 'FoxyCart Category';
+    /**
+     * @var string
+     */
     private static $plural_name = 'FoxyCart Categories';
+    /**
+     * @var string
+     */
     private static $description = 'Set the FoxyCart Category on a Product';
 
+    /**
+     * @var array
+     */
+    private static $db = array(
+        'Title' => 'Varchar(255)',
+        'Code' => 'Varchar(50)'
+    );
+
+    /**
+     * @var array
+     */
     private static $summary_fields = array(
         'Title' => 'Name',
         'Code' => 'Code'
     );
 
-	private static $indexes = array(
-		'Code' => true
-	);
+    /**
+     * @var array
+     */
+    private static $indexes = array(
+        'Code' => true
+    );
 
-    public function getCMSFields() {
+    /**
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
 
-		$fields = FieldList::create(
-            LiteralField::create(
-                'PCIntro',
-                _t(
-                    'ProductCategory.PCIntro',
-                    '<p>Categories must be created in your
-                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
-                            FoxyCart Product Categories
-                        </a>, and also manually created in FoxyStripe.
-                    </p>'
-                )
-            ),
+        $fields = FieldList::create(
             TextField::create('Code')
                 ->setTitle(_t('ProductCategory.Code', 'FoxyCart Category Code'))
                 ->setDescription(_t('ProductCategory.CodeDescription', 'copy/paste from FoxyCart')),
@@ -50,35 +64,84 @@ class ProductCategory extends DataObject {
         $this->extend('updateCMSFields', $fields);
 
         return $fields;
-	}
+    }
 
-	public function requireDefaultRecords() {
-		parent::requireDefaultRecords();
-		$allCats = DataObject::get('ProductCategory');
-		if(!$allCats->count()){
-			$cat = new ProductCategory();
-			$cat->Title = 'Default';
-			$cat->Code = 'DEFAULT';
-			$cat->write();
-		}
-	}
+    /**
+     *
+     */
+    public function requireDefaultRecords()
+    {
+        parent::requireDefaultRecords();
 
-	public function canView($member = false) {
-		return true;
-	}
+        if (!ProductCategory::get()->filter(array('Title' => 'Default', 'Code' => 'DEFAULT'))->first()) {
+            $cat = ProductCategory::create();
+            $cat->Title = 'Default';
+            $cat->Code = 'DEFAULT';
+            $cat->write();
+        }
+    }
 
-	public function canEdit($member = null) {
-		return Permission::check('Product_CANCRUD');
-	}
+    /**
+     * @param bool $member
+     * @return bool
+     */
+    public function canView($member = false)
+    {
+        return true;
+    }
 
-	public function canDelete($member = null) {
+    /**
+     * @param null $member
+     * @return bool|int
+     */
+    public function canEdit($member = null)
+    {
+        return Permission::check('Product_CANCRUD');
+    }
 
-		//don't allow deletion of DEFAULT category
-		return ($this->Code == 'DEFAULT') ? false : Permission::check('Product_CANCRUD');
-	}
+    /**
+     * @param null $member
+     * @return bool|int
+     */
+    public function canDelete($member = null)
+    {
+        return ($this->Code == 'DEFAULT') ? false : Permission::check('Product_CANCRUD');
+    }
 
-	public function canCreate($member = null) {
-		return Permission::check('Product_CANCRUD');
-	}
+    /**
+     * @param null $member
+     * @return bool|int
+     */
+    public function canCreate($member = null)
+    {
+        return Permission::check('Product_CANCRUD');
+    }
+
+    /**
+     *
+     */
+    public function onAfterWrite()
+    {
+        parent::onAfterWrite();
+        //create/update category in FC
+    }
+
+    /**
+     *
+     */
+    public function onBeforeDelete()
+    {
+        parent::onBeforeDelete();
+        //set item to be deleted
+    }
+
+    /**
+     *
+     */
+    public function onAfterDelete()
+    {
+        parent::onAfterDelete();
+        //get item that was deleted and update FC data
+    }
 
 }

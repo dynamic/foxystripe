@@ -38,7 +38,7 @@ class ProductHolder extends Page {
 	public function getCMSFields(){
 		$fields = parent::getCMSFields();
 
-		if(SiteConfig::current_site_config()->MultiGroup){
+		if(FoxyStripeConfig::current_foxystripe_config()->MultiGroup){
 			$config = GridFieldConfig_RelationEditor::create();
 			if(class_exists('GridFieldSortableRows')){
 				$config->addComponent(new GridFieldSortableRows('SortOrder'));
