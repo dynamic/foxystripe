@@ -1,35 +1,42 @@
 {
-  "name": "dynamic/foxystripe",
-  "description": "FoxyStripe is a SilverStripe ecommerce module designed to integrate with FoxyCart.",
-  "keywords": [
-    "silverstripe",
-    "foxycart",
-    "foxystripe",
-    "dynamic",
-    "ecommerce"
-  ],
-  "type": "silverstripe-module",
-  "license": "BSD-3-Clause",
-  "authors": [
-    {
-      "name": "Dynamic Inc",
-      "email": "dev@dy.ag"
+    "name": "dynamic/foxystripe",
+    "description": "FoxyStripe is a SilverStripe ecommerce module that integrates with FoxyCart for order processing.",
+    "authors": [
+        {
+            "name": "Dynamic, Inc",
+            "email": "dev@dy.ag"
+        }
+    ],
+    "keywords": [
+        "silverstripe",
+        "foxycart",
+        "foxystripe",
+        "dynamic",
+        "ecommerce"
+    ],
+    "type": "silverstripe-module",
+    "license": "BSD-3-Clause",
+    "require": {
+        "silverstripe/cms": "^3.2",
+        "silverstripe/framework": "^3.2",
+        "unclecheese/betterbuttons": "^1.2"
+    },
+    "suggest": {
+        "colymba/gridfield-bulk-editing-tools": "^v2.1",
+        "sheadawson/quickaddnew": "^1.1"
+    },
+    "require-dev": {
+        "phpunit/PHPUnit": "^3.7"
+    },
+    "config": {
+        "process-timeout": 600
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "installer-name": "foxystripe",
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
     }
-  ],
-  "require": {
-    "silverstripe/framework": "^3.1",
-    "silverstripe/cms": "^3.1",
-    "unclecheese/betterbuttons": "^1.2",
-    "sheadawson/quickaddnew": "^1.1",
-    "undefinedoffset/sortablegridfield": "^0.5"
-  },
-  "suggest": {
-    "colymba/gridfield-bulk-editing-tools": "^v2.1"
-  },
-  "extra": {
-    "installer-name": "foxystripe",
-    "branch-alias": {
-      "dev-master": "2.0.x-dev"
-    }
-  }
 }

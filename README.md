@@ -31,31 +31,12 @@ Read more about [Using FoxyStripe](docs/en/Use.MD) and [Advanced Features](docs/
 
 ## Installation
 
-### Requirements
+`composer require dynamic/foxystripe`
 
-*  SilverStripe 3.1.x
+## Requirements
+
+*  SilverStripe ^3.1
 *  FoxyCart Store 2.x
-
-### Composer Installation
-
-`"require": { "dynamic/foxystripe": "*" }`
-
-### Git Installation
-
-`git clone git@github.com:dynamic/FoxyStripe.git foxystripe`
-
-### Manual Installation
-
-Place this directory in the root of your SilverStripe installation, and rename the folder to 'foxystripe'.
-
-### Recommended Add-Ons
-
-The following add-ons are optional, but will enhance FoxyStripe when installed:
-
-*	[GridField Better Buttons](http://addons.silverstripe.org/add-ons/unclecheese/betterbuttons)
-*	[GridField Bulk Editing Tools](http://addons.silverstripe.org/add-ons/colymba/gridfield-bulk-editing-tools)
-*	[Quick Add New](http://addons.silverstripe.org/add-ons/sheadawson/quickaddnew)
-*	[Sortable GridField](http://addons.silverstripe.org/add-ons/undefinedoffset/sortablegridfield)
 
 ## Setup
 
@@ -74,19 +55,9 @@ In CMS > Settings > FoxyStripe
 1. Store Name - enter value from FoxyCart > Store > Settings > Store sub domain - ex: `myfoxystripestore`
 2. Store Key - copy value to FoxyCart > Store > Advanced  > API key - ex: `xxxxxxxxxxxxx1234`
 
-Your FoxyStripe store is now setup and ready for business. To get started, see [Using FoxyStripe](docs/en/Use.MD)
+Your FoxyStripe store is now setup and ready for business. To get started, see [Using FoxyStripe](docs/en/userguide/index.md)
 
-To set up additional features, such as Single Sign On and Order History, see [Advanced Features](docs/en/Features.MD)
-
-### Security
-
-While SSL is not required to use FoxyStripe, it is recommended that you run your production instance of FoxyStripe as SSL. This will prevent any 'insecure connection' warnings you may receive during the checkout process.
-
-In `mysite/config_php`, add the following to force the site into SSL in live mode:
-
-`if(Director::isLive()) {
-	Director::forceSSL();
-}`
+To set up additional features, such as Single Sign On and Order History, see [Advanced Features](docs/en/userguide/features.md)
 
 ## Additional Information
 
@@ -96,21 +67,12 @@ In `mysite/config_php`, add the following to force the site into SSL in live mod
 
 ### Maintainer Contact
 
- *  [Dynamic](http://www.dynamicagency.com) (<dev@dynamicdoes.com>)
+ *  [Dynamic, Inc](http://www.dynamicagency.com) (<dev@dy.ag>)
    
 ### Credits
 
 Inspired by previous work done by [cbryer](https://github.com/cbryer).
 
-## License
+## Documentation
 
-	Copyright (c) 2015, Dynamic Inc
-	All rights reserved.
-
-	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-	Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-	
-	Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-	
-	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+See the [docs/en](docs/en/index.md) folder.
