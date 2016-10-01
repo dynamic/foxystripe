@@ -52,3 +52,15 @@ To enable HMAC Product Validation in FoxyStripe:
 	*	Check `would you like to enable cart validation?'
 2. In CMS > Settings > FoxyStripe:
 	*	Check 'enable cart validation'
+	
+### Security
+
+While SSL is not required to use FoxyStripe, it is recommended that you run your production instance of FoxyStripe as SSL. This will prevent any 'insecure connection' warnings you may receive during the checkout process.
+
+In `mysite/config_php`, add the following to force the site into SSL in live mode:
+
+`if(Director::isLive()) {
+	Director::forceSSL();
+}`
+
+	
