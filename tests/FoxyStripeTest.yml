@@ -79,6 +79,10 @@ ProductDiscountTier:
   fiveforten:
     Quantity: 5
     Percentage: 10
+Order:
+  one:
+    ProductTotal: "$100.00"
+    ReceiptURL: "http://www.foxycart.com/receipt/123"
 # ------------------------------------------
 # Groups
 # ------------------------------------------
@@ -99,6 +103,11 @@ Member:
     Email: admin@test.com
     Password: password
     Groups: =>Group.admin
+  customer:
+    FirstName: "George"
+    Surname: "Costanza"
+    Email: "george@example.com"
+    Groups: =>Group.customers
 # ------------------------------------------
 # Permissions
 # ------------------------------------------
