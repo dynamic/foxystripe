@@ -83,6 +83,17 @@ Order:
   one:
     ProductTotal: "$100.00"
     ReceiptURL: "http://www.foxycart.com/receipt/123"
+OrderDetail:
+  one:
+    Quantity: 2
+    Price: "$10.00"
+    ProductID: =>ProductPage.product1
+    OrderID: =>Order.one
+  two:
+    Quantity: 1
+    Price: "$14.00"
+    ProductID: =>ProductPage.product2
+    OrderID: =>Order.one
 # ------------------------------------------
 # Groups
 # ------------------------------------------
