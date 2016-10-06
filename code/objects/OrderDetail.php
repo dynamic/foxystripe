@@ -25,11 +25,8 @@ class OrderDetail extends DataObject
         'Price' => 'Currency'
     );
 
-    /**
-     * @var array
-     */
-    private static $has_one = array(
-        'Product' => 'ProductPage',
+	private static $has_one = array(
+        'Product' => 'FoxyStripeProduct',
         'Order' => 'Order'
     );
 

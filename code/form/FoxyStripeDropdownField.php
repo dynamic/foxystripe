@@ -55,6 +55,7 @@ class FoxyStripeDropdownField extends DropdownField{
 	 * regardless of the {@link setDisabled()} settings.
 	 *
 	 * @param array $items Collection of array keys, as defined in the $source array
+     * @return $this
 	 */
 	public function setDisabledItems($items){
 		$controller = Controller::curr();
@@ -62,7 +63,7 @@ class FoxyStripeDropdownField extends DropdownField{
 		$updated = [];
 		if(is_array($items) && !empty($items)){
 			foreach($items as $item){
-				array_push($updated, ProductPage::getGeneratedValue($code, $this->getName(), $item, 'value'));
+				array_push($updated, FoxyStripeProduct::getGeneratedValue($code, $this->getName(), $item, 'value'));
 			}
 		}
 		$this->disabledItems = $updated;
@@ -71,6 +72,7 @@ class FoxyStripeDropdownField extends DropdownField{
 
 	/**
 	 * @param array $source
+     * @return $this
 	 */
 	public function setSource($source) {
 		$controller = Controller::curr();
@@ -78,7 +80,7 @@ class FoxyStripeDropdownField extends DropdownField{
 		$updated = [];
 		if(is_array($source) && !empty($source)){
 			foreach($source as $key => $val){
-				$updated[ProductPage::getGeneratedValue($code, $this->getName(), $key, 'value')] = $val;
+				$updated[FoxyStripeProduct::getGeneratedValue($code, $this->getName(), $key, 'value')] = $val;
 			}
 		}
 		$this->source = $updated;

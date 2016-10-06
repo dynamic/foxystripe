@@ -1,75 +1,104 @@
 <?php
 
 /**
- *
- * @package FoxyStripe
- *
+ * Class ProductPage
+ * @package foxystripe
+ * @property string $Title
+ * @property HTMLText $Content
  */
-class ProductPage extends Page implements PermissionProvider
+class FoxyStripeProduct extends DataObject
 {
 
-    private static $allowed_children = 'none';
-    private static $default_parent = 'ProductHolder';
-    private static $can_be_root = false;
+    /**
+     * @var string
+     */
+    private static $singular_name = 'Product';
+    /**
+     * @var string
+     */
+    private static $plural_name = 'Products';
+    /**
+     * @var string
+     */
+    private static $description = 'A product that can be added to the shopping cart';
 
-    private static $db = array(
+    /**
+     * @var array
+     */
+    private static $db = [
         'Price' => 'Currency',
-        'Weight' => 'Decimal',
         'Code' => 'Varchar(100)',
         'ReceiptTitle' => 'HTMLVarchar(255)',
         'Featured' => 'Boolean',
         'Available' => 'Boolean',
         'DiscountTitle' => 'Varchar(50)'
-    );
+    ];
 
-    private static $has_one = array(
+    /**
+     * @var array
+     */
+    private static $has_one = [
         'PreviewImage' => 'Image',
-        'Category' => 'ProductCategory'
-    );
+        'Category' => 'FoxyCartProductCategory'
+    ];
 
-    private static $has_many = array(
+    /**
+     * @var array
+     */
+    private static $has_many = [
         'ProductImages' => 'ProductImage',
         'ProductOptions' => 'OptionItem',
         'OrderDetails' => 'OrderDetail',
         'ProductDiscountTiers' => 'ProductDiscountTier'
-    );
+    ];
 
-    private static $belongs_many_many = array(
+    /**
+     * @var array
+     */
+    private static $belongs_many_many = [
         'ProductHolders' => 'ProductHolder'
-    );
+    ];
 
-    private static $singular_name = 'Product';
-    private static $plural_name = 'Products';
-    private static $description = 'A product that can be added to the shopping cart';
+    /**
+     * @var array
+     */
+    private static $indexes = [
+        'Code' => true,
+    ];
 
-    private static $indexes = array(
-        'Code' => true // make unique
-    );
-
-    private static $defaults = array(
+    /**
+     * @var array
+     */
+    private static $defaults = [
         'ShowInMenus' => false,
         'Available' => true,
         'Weight' => '1.0'
-    );
+    ];
 
-    private static $summary_fields = array(
+    /**
+     * @var array
+     */
+    private static $summary_fields = [
         'Title',
         'Code',
         'Price.Nice',
         'Category.Title'
-    );
+    ];
 
-    private static $searchable_fields = array(
+    /**
+     * @var array
+     */
+    private static $searchable_fields = [
         'Title',
         'Code',
         'Featured',
         'Available',
         'Category.ID'
-    );
+    ];
 
-    function fieldLabels($includerelations = true)
+    public function fieldLabels($includeRelations = true)
     {
-        $labels = parent::fieldLabels();
+        $labels = parent::fieldLabels($includeRelations);
 
         $labels['Title'] = _t('ProductPage.TitleLabel', 'Name');
         $labels['Code'] = _t('ProductPage.CodeLabel', "Code");
@@ -82,17 +111,19 @@ class ProductPage extends Page implements PermissionProvider
         return $labels;
     }
 
+    /**
+     * @return FieldList
+     */
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
 
         // allow extensions of ProductPage to override the PreviewImage field description
-        $previewDescription = ($this->stat('customPreviewDescription')) ? $this->stat('customPreviewDescription') : _t('ProductPage.PreviewImageDescription',
-            'Image used throughout site to represent this product');
+        $previewDescription = ($this->stat('customPreviewDescription')) ? $this->stat('customPreviewDescription') : _t('ProductPage.PreviewImageDescription', 'Image used throughout site to represent this product');
 
         // Cateogry Dropdown field w/ add new
         $source = function () {
-            return ProductCategory::get()->map()->toArray();
+            return FoxyCartProductCategory::get()->map()->toArray();
         };
         $catField = DropdownField::create('CategoryID', _t('ProductPage.Category', 'FoxyCart Category'), $source())
             ->setEmptyString('')
@@ -107,15 +138,11 @@ class ProductPage extends Page implements PermissionProvider
                             Settings > FoxyStripe > Categories
                         </a>'
             ));
-        if (class_exists('QuickAddNewExtension')) {
-            $catField->useAddNew('ProductCategory', $source);
-        }
+        if (class_exists('QuickAddNewExtension')) $catField->useAddNew('FoxyCartProductCategory', $source);
 
         // Product Images gridfield
         $config = GridFieldConfig_RelationEditor::create();
-        if (class_exists('GridFieldSortableRows')) {
-            $config->addComponent(new GridFieldSortableRows('SortOrder'));
-        }
+        if (class_exists('GridFieldSortableRows')) $config->addComponent(new GridFieldSortableRows('SortOrder'));
         if (class_exists('GridFieldBulkImageUpload')) {
             $config->addComponent(new GridFieldBulkUpload());
             $config->getComponentByType('GridFieldBulkUpload')->setUfConfig('folderName', 'Uploads/ProductImages');
@@ -129,9 +156,6 @@ class ProductPage extends Page implements PermissionProvider
 
         // Product Options field
         $config = GridFieldConfig_RelationEditor::create();
-        if (class_exists('GridFieldBulkManager')) {
-            $config->addComponent(new GridFieldBulkManager());
-        }
         if (class_exists('GridFieldSortableRows')) {
             $config->addComponent(new GridFieldSortableRows('SortOrder'));
             $products = $this->ProductOptions()->sort('SortOrder');
@@ -147,7 +171,7 @@ class ProductPage extends Page implements PermissionProvider
         );
 
         // Details tab
-        $fields->addFieldsToTab('Root.Details', array(
+        $fields->addFieldsToTab('Root.Details', [
             HeaderField::create('DetailHD', 'Product Details', 2),
             CheckboxField::create('Available')
                 ->setTitle(_t('ProductPage.Available', 'Available for purchase'))
@@ -181,15 +205,15 @@ class ProductPage extends Page implements PermissionProvider
                 ->setDescription(_t(
                     'ProductPage.ReceiptTitleDescription', 'Optional'
                 ))
-        ));
+        ]);
 
         // Images tab
-        $fields->addFieldsToTab('Root.Images', array(
+        $fields->addFieldsToTab('Root.Images', [
             HeaderField::create('MainImageHD', _t('ProductPage.MainImageHD', 'Product Image'), 2),
             UploadField::create('PreviewImage', '')
                 ->setDescription($previewDescription)
                 ->setFolderName('Uploads/Products')
-                ->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'))
+                ->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png'])
                 ->setAllowedMaxFileNumber(1),
             HeaderField::create('ProductImagesHD', _t('ProductPage.ProductImagesHD' . 'Product Image Gallery'), 2),
             $prodImagesField
@@ -197,10 +221,10 @@ class ProductPage extends Page implements PermissionProvider
                     'ProductPage.ProductImagesDescription',
                     'Additional Product Images, shown in gallery on Product page'
                 ))
-        ));
+        ]);
 
         // Options Tab
-        $fields->addFieldsToTab('Root.Options', array(
+        $fields->addFieldsToTab('Root.Options', [
             HeaderField::create('OptionsHD', _t('ProductPage.OptionsHD', 'Product Options'), 2),
             LiteralField::create('OptionsDescrip', _t(
                 'Page.OptionsDescrip',
@@ -208,21 +232,18 @@ class ProductPage extends Page implements PermissionProvider
                     Options can also modify the product\'s price, weight or code.</p>'
             )),
             $prodOptField
-        ));
+        ]);
 
         if (!$this->DiscountTitle && $this->ProductDiscountTiers()->exists()) {
-            $fields->addFieldTotab('Root.Discounts', new LiteralField("ProductDiscountHeaderWarning",
-                "<p class=\"message warning\">A discount title is required for FoxyCart to properly parse the value. The discounts will not be applied until a title is entered.</p>"));
+            $fields->addFieldTotab('Root.Discounts', new LiteralField("ProductDiscountHeaderWarning", "<p class=\"message warning\">A discount title is required for FoxyCart to properly parse the value. The discounts will not be applied until a title is entered.</p>"));
         }
 
-        $fields->addFieldToTab('Root.Discounts',
-            TextField::create('DiscountTitle')->setTitle(_t('Product.DiscountTitle', 'Discount Title')));
+        $fields->addFieldToTab('Root.Discounts', TextField::create('DiscountTitle')->setTitle(_t('Product.DiscountTitle', 'Discount Title')));
         $discountsConfig = GridFieldConfig_RelationEditor::create();
         $discountsConfig->removeComponentsByType('GridFieldAddExistingAutocompleter');
         $discountsConfig->removeComponentsByType('GridFieldDeleteAction');
         $discountsConfig->addComponent(new GridFieldDeleteAction(false));
-        $discountGrid = GridField::create('ProductDiscountTiers', 'Product Discounts', $this->ProductDiscountTiers(),
-            $discountsConfig);
+        $discountGrid = GridField::create('ProductDiscountTiers', 'Product Discounts', $this->ProductDiscountTiers(), $discountsConfig);
         $fields->addFieldToTab('Root.Discounts', $discountGrid);
 
         if (FoxyCart::store_name_warning() !== null) {
@@ -242,7 +263,7 @@ class ProductPage extends Page implements PermissionProvider
     {
         parent::onBeforeWrite();
         if (!$this->CategoryID) {
-            $default = ProductCategory::get()->filter(array('Code' => 'DEFAULT'))->first();
+            $default = FoxyCartProductCategory::get()->filter(['Code' => 'DEFAULT'])->first();
             $this->CategoryID = $default->ID;
         }
 
@@ -320,27 +341,23 @@ class ProductPage extends Page implements PermissionProvider
 
     public function getCMSValidator()
     {
-        return new RequiredFields(array('CategoryID', 'Price', 'Weight', 'Code'));
+        return new RequiredFields(['CategoryID', 'Price', 'Code']);
     }
 
-    public static function getGeneratedValue(
-        $productCode = null,
-        $optionName = null,
-        $optionValue = null,
-        $method = 'name',
-        $output = false,
-        $urlEncode = false
-    ) {
+    public static function getGeneratedValue($productCode = null, $optionName = null, $optionValue = null, $method = 'name', $output = false, $urlEncode = false)
+    {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
         return (SiteConfig::current_site_config()->CartValidation)
             ? FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode) :
             $optionValue;
     }
 
-    // get FoxyCart Store Name for JS call
+    /**
+     * @return HTMLText
+     */
     public function getCartScript()
     {
-        return '<script src="https://cdn.foxycart.com/' . FoxyCart::getFoxyCartStoreName() . '/loader.js" async defer></script>';
+        return $this->customise(['StoreName' => FoxyCart::get_foxy_cart_store_name()])->renderWith('FoxyCartScript');
     }
 
     public function getDiscountFieldValue()
@@ -354,71 +371,19 @@ class ProductPage extends Page implements PermissionProvider
     }
 
     /**
-     * @param Member $member
-     * @return boolean
-     */
-    public function canEdit($member = null)
-    {
-        return Permission::check('Product_CANCRUD');
-    }
-
-    public function canDelete($member = null)
-    {
-        return Permission::check('Product_CANCRUD');
-    }
-
-    public function canCreate($member = null)
-    {
-        return Permission::check('Product_CANCRUD');
-    }
-
-    public function canPublish($member = null)
-    {
-        return Permission::check('Product_CANCRUD');
-    }
-
-    public function providePermissions()
-    {
-        return array(
-            'Product_CANCRUD' => 'Allow user to manage Products and related objects'
-        );
-    }
-
-}
-
-class ProductPage_Controller extends Page_Controller
-{
-
-    private static $allowed_actions = array(
-        'PurchaseForm'
-    );
-
-    public function init()
-    {
-        parent::init();
-        Requirements::javascript("framework/thirdparty/jquery/jquery.js");
-        if ($this->data()->Available && $this->ProductOptions()->exists()) {
-            Requirements::javascript("foxystripe/javascript/outOfStock.min.js");
-            Requirements::javascript("foxystripe/javascript/ProductOptions.min.js");
-        }
-
-        Requirements::customScript(<<<JS
-		var productID = {$this->data()->ID};
-JS
-        );
-    }
-
-    /**
      * @return FoxyStripePurchaseForm
      */
-    public function PurchaseForm()
+    public function getPurchaseForm()
     {
 
-        $form = FoxyStripePurchaseForm::create($this, __FUNCTION__, null, null, null, $this->data());
+        $product = $this;
+
+        $form = FoxyStripePurchaseForm::create(Controller::curr(), __FUNCTION__, null, null, null, $product);
 
         $this->extend('updateFoxyStripePurchaseForm', $form);
 
         return $form;
 
     }
+
 }

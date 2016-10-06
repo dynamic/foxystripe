@@ -10,3 +10,7 @@ Member:
 DateField:
   default_config:
     showcalendar: true
+FoxyStripeProduct:
+  extensions:
+    - VersionedDataObject
+    - DataObjectPagifyDataExtension

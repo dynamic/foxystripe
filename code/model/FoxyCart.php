@@ -1,62 +1,89 @@
 <?php
+
 /**
- *
+ * Class FoxyCart
  * @package FoxyStripe
- *
  */
+class FoxyCart extends Object
+{
 
-class FoxyCart extends Object {
+    /**
+     * @var string
+     */
+    private static $keyPrefix = 'dYnm1c';
 
-	private static $keyPrefix = 'dYnm1c';
+    /**
+     * @param int $length
+     * @param int $count
+     * @return string
+     */
+    public static function setStoreKey($length = 54, $count = 0)
+    {
+        $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' . strtotime('now');
+        $strLength = strlen($charset);
+        $str = '';
+        while ($count < $length) {
+            $str .= $charset[mt_rand(0, $strLength - 1)];
+            $count++;
+        }
+        return static::get_key_prefix() . substr(base64_encode($str), 0, $length);
+    }
 
-	public static function setStoreKey($length = 54, $count = 0){
-		$charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.strtotime('now');
-		$strLength = strlen($charset);
-		$str = '';
-		while($count < $length){
-			$str .= $charset[mt_rand(0, $strLength-1)];
-			$count++;
-		}
-		return self::getKeyPrefix().substr(base64_encode($str),0,$length);
-	}
+    /**
+     * @return string|null
+     */
+    public static function get_store_key()
+    {
+        $config = SiteConfig::current_site_config();
+        if ($config->StoreKey) {
+            return $config->StoreKey;
+        }
+        return null;
+    }
 
-	public static function getStoreKey(){
-		$config = SiteConfig::current_site_config();
-		if($config->StoreKey){
-			return $config->StoreKey;
-		}
-		return null;
-	}
+    /**
+     * @return null|string
+     */
+    public static function store_name_warning()
+    {
+        $warning = null;
+        if (static::get_foxy_cart_store_name() === null) {
+            $warning = 'Must define FoxyCart Store Name in your site settings in the cms';
+        }
+        return $warning;
+    }
 
-	public static function store_name_warning(){
-		$warning = null;
-		if(self::getFoxyCartStoreName()===null){
-			$warning = 'Must define FoxyCart Store Name in your site settings in the cms';
-		}
-		return $warning;
-	}
+    /**
+     * @return string|null
+     */
+    public static function get_foxy_cart_store_name()
+    {
+        $config = SiteConfig::current_site_config();
+        if ($config->StoreName) {
+            return $config->StoreName;
+        }
+        return null;
+    }
 
-	public static function getFoxyCartStoreName(){
-		$config = SiteConfig::current_site_config();
-		if($config->StoreName){
-			return $config->StoreName;
-		}
-		return null;
-	}
-
-	public static function FormActionURL() {
-		return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName() );
-	}
+    /**
+     * @return string
+     */
+    public static function FormActionURL()
+    {
+        return sprintf('https://%s.foxycart.com/cart', static::get_foxy_cart_store_name());
+    }
 
     /**
      * FoxyCart API v1.1 functions
+     *
+     * @param array $foxyData
+     * @return string
      */
+    private static function getAPIRequest($foxyData = array())
+    {
 
-    // FoxyCart API Request
-    private static function getAPIRequest($foxyData = array()) {
-
-        $foxy_domain = FoxyCart::getFoxyCartStoreName().'.foxycart.com';
-        $foxyData["api_token"] = FoxyCart::getStoreKey();
+        $foxy_domain = static::get_foxy_cart_store_name() . '.foxycart.com';
+        $foxyData["api_token"] = FoxyCart::get_store_key();
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://" . $foxy_domain . "/api");
@@ -64,13 +91,10 @@ class FoxyCart extends Object {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-        // If you get SSL errors, you can uncomment the following, or ask your host to add the appropriate CA bundle
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         $response = trim(curl_exec($ch));
 
         // The following if block will print any CURL errors you might have
         if ($response == false) {
-            //trigger_error("Could not connect to FoxyCart API", E_USER_ERROR);
             SS_Log::log("Could not connect to FoxyCart API: " . $response, SS_Log::ERR);
         }
         curl_close($ch);
@@ -78,7 +102,12 @@ class FoxyCart extends Object {
         return $response;
     }
 
-    public static function getCustomer($Member = null) {
+    /**
+     * @param Member|null $Member
+     * @return string
+     */
+    public static function getCustomer(Member $Member = null)
+    {
 
         // throw error if no $Member Object
         if (!isset($Member)) trigger_error('No Member set', E_USER_ERROR);
@@ -94,7 +123,12 @@ class FoxyCart extends Object {
 
     }
 
-    public static function putCustomer($Member = null) {
+    /**
+     * @param Member|null $Member
+     * @return string
+     */
+    public static function putCustomer(Member $Member = null)
+    {
         // throw error if no $Member Object
         if (!isset($Member)) ;//trigger_error('No Member set', E_USER_ERROR);
 
@@ -112,8 +146,12 @@ class FoxyCart extends Object {
         return self::getAPIRequest($foxyData);
     }
 
-	public static function getKeyPrefix(){
-		return self::$keyPrefix;
-	}
+    /**
+     * @return string
+     */
+    protected static function get_key_prefix()
+    {
+        return self::$keyPrefix;
+    }
 
 }

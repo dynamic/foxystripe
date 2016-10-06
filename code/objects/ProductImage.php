@@ -14,7 +14,7 @@ class ProductImage extends DataObject{
 
 	private static $has_one = array(
 		'Image' => 'Image',
-		'Parent' => 'SiteTree'
+		'Product' => 'FoxyStripeProduct'
 	);
 
 	private static $default_sort = 'SortOrder';

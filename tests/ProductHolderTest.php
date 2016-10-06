@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class ProductHolderTest
+ */
 class ProductHolderTest extends SapphireTest
 {
     /**
@@ -24,10 +27,10 @@ class ProductHolderTest extends SapphireTest
     /**
      *
      */
-    public function testProducts()
+    public function testPaginatedProducts()
     {
-        $object = $this->objFromFixture('ProductHolder', 'default');
-        $this->assertInstanceOf('SS_List', $object->Products());
-        $this->assertEquals($object->Products(), $object->getManyManyComponents('Products')->sort('SortOrder'));
+        $holder = $this->objFromFixture('ProductHolder', 'two');
+        $paginatedProducts = $holder->getPaginatedProducts();
+        $this->assertInstanceOf('PaginatedList', $paginatedProducts);
     }
 }

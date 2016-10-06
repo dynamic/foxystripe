@@ -1,0 +1,1 @@
+<script src="https://cdn.foxycart.com/{$StoreName}/loader.js" async defer></script>

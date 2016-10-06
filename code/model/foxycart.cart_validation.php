@@ -39,12 +39,12 @@ class FoxyCart_Helper {
 	}
 
 	public function __construct(){
-		self::setCartURL(FoxyCart::getFoxyCartStoreName());
-		self::setSecret(FoxyCart::getStoreKey());
+		static::setCartURL(FoxyCart::get_foxy_cart_store_name());
+		static::setSecret(FoxyCart::get_store_key());
 	}
 
 	public static function getSecret(){
-		return FoxyCart::getStoreKey();
+		return FoxyCart::get_store_key();
 	}
 
 

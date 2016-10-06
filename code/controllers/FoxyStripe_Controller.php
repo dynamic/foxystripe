@@ -19,7 +19,7 @@ class FoxyStripe_Controller extends Page_Controller {
 			$FoxyData_encrypted = (isset($_POST["FoxyData"])) ?
                 urldecode($_POST["FoxyData"]) :
                 urldecode($_POST["FoxySubscriptionData"]);
-			$FoxyData_decrypted = rc4crypt::decrypt(FoxyCart::getStoreKey(),$FoxyData_encrypted);
+			$FoxyData_decrypted = rc4crypt::decrypt(FoxyCart::get_store_key(),$FoxyData_encrypted);
 			self::handleDataFeed($FoxyData_encrypted, $FoxyData_decrypted);
 			
 			// extend to allow for additional integrations with Datafeed
@@ -220,9 +220,9 @@ class FoxyStripe_Controller extends Page_Controller {
             $Member->Customer_ID = 0;
         }
 
-        $auth_token = sha1($Member->Customer_ID . '|' . $timestampNew . '|' . FoxyCart::getStoreKey());
+        $auth_token = sha1($Member->Customer_ID . '|' . $timestampNew . '|' . FoxyCart::get_store_key());
 
-        $redirect_complete = 'https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/checkout?fc_auth_token=' . $auth_token .
+        $redirect_complete = 'https://' . FoxyCart::get_foxy_cart_store_name() . '.foxycart.com/checkout?fc_auth_token=' . $auth_token .
             '&fcsid=' . $fcsid . '&fc_customer_id=' . $Member->Customer_ID . '&timestamp=' . $timestampNew;
 	
 	    $this->redirect($redirect_complete);

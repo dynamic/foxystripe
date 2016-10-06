@@ -1,9 +1,4 @@
-ProductHolder:
-  default:
-    Title: "Products"
-  two:
-    Title: "Misc"
-ProductPage:
+ShippableProduct:
   product1:
     Title: Product 1
     URLSegment: product-1
@@ -14,8 +9,6 @@ ProductPage:
     Featured: 0
     Available: 1
     CategoryID: 1
-    ParentID: =>ProductHolder.default
-    ProductHolders: =>ProductHolder.two
   product2:
     Title: Product 2
     URLSegment: product-2
@@ -26,8 +19,6 @@ ProductPage:
     Featured: 1
     Available: 1
     CategoryID: 1
-    ParentID: =>ProductHolder.default
-    ProductHolders: =>ProductHolder.two
   product3:
     Title: Product 3
     URLSegment: product-3
@@ -38,13 +29,14 @@ ProductPage:
     Featured: 1
     Available: 0
     CategoryID: 1
-    ParentID: =>ProductHolder.default
-OptionGroup:
-  og1:
-    Title: Size
-  og2:
-    Title: Color
-ProductCategory:
+ProductHolder:
+  default:
+    Title: "Products"
+    Products: =>ShippableProduct.product1,=>ShippableProduct.product3
+  two:
+    Title: "Misc"
+    Products: =>ShippableProduct.product2
+FoxyCartProductCategory:
   default:
     Title: Default
     Code: DEFAULT
@@ -87,12 +79,12 @@ OrderDetail:
   one:
     Quantity: 2
     Price: "$10.00"
-    ProductID: =>ProductPage.product1
+    ProductID: =>ShippableProduct.product1
     OrderID: =>Order.one
   two:
     Quantity: 1
     Price: "$14.00"
-    ProductID: =>ProductPage.product2
+    ProductID: =>ShippableProduct.product2
     OrderID: =>Order.one
 # ------------------------------------------
 # Groups

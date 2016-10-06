@@ -11,7 +11,7 @@ class ProductDiscountTierTest extends FS_Test{
 		$productHolder->Title = 'Product Holder';
 		$productHolder->write();
 
-		$product = $this->objFromFixture('ProductPage', 'product1');
+		$product = $this->objFromFixture('ShippableProduct', 'product1');
 		$product->ParentID = $productHolder->ID;
 		$product->write();
 	}
@@ -19,10 +19,10 @@ class ProductDiscountTierTest extends FS_Test{
 	public function testProductDiscountTierCreation(){
 		$this->logInWithPermission('Product_CANCRUD');
 
-		$discount = ProductPage::get()->first();
+		$discount = ShippableProduct::get()->first();
 
 		$tier = $this->objFromFixture('ProductDiscountTier', 'fiveforten');
-		$tier->ProductPageID = $discount->ID;
+		$tier->ShippableProductID = $discount->ID;
 		$tier->write();
 		$tierID = $tier->ID;
 
@@ -37,10 +37,10 @@ class ProductDiscountTierTest extends FS_Test{
 	public function testProductDiscountTierEdit(){
 		$this->logInWithPermission('ADMIN');
 
-		$discount = ProductPage::get()->first();
+		$discount = ShippableProduct::get()->first();
 
 		$tier = $this->objFromFixture('ProductDiscountTier', 'fiveforten');
-		$tier->ProductPageID = $discount->ID;
+		$tier->ShippableProductID = $discount->ID;
 		$tier->write();
 		$tierID = $tier->ID;
 		$this->logInWithPermission('Product_CANCRUD');
@@ -60,10 +60,10 @@ class ProductDiscountTierTest extends FS_Test{
 	public function testProductDiscountTierDeletion(){
 		$this->logInWithPermission('ADMIN');
 
-		$discount = ProductPage::get()->first();
+		$discount = ShippableProduct::get()->first();
 
 		$tier = $this->objFromFixture('ProductDiscountTier', 'fiveforten');
-		$tier->ProductPageID = $discount->ID;
+		$tier->ShippableProductID = $discount->ID;
 		$tier->write();
 		$tierID = $tier->ID;
 
