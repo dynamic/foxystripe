@@ -12,6 +12,9 @@ class ProductPage extends Page implements PermissionProvider
     private static $default_parent = 'ProductHolder';
     private static $can_be_root = false;
 
+    /**
+     * @var array
+     */
     private static $db = array(
         'Price' => 'Currency',
         'Weight' => 'Decimal',
@@ -19,9 +22,11 @@ class ProductPage extends Page implements PermissionProvider
         'ReceiptTitle' => 'HTMLVarchar(255)',
         'Featured' => 'Boolean',
         'Available' => 'Boolean',
-        'DiscountTitle' => 'Varchar(50)'
     );
 
+    /**
+     * @var array
+     */
     private static $has_one = array(
         'PreviewImage' => 'Image',
         'Category' => 'ProductCategory'
@@ -31,7 +36,6 @@ class ProductPage extends Page implements PermissionProvider
         'ProductImages' => 'ProductImage',
         'ProductOptions' => 'OptionItem',
         'OrderDetails' => 'OrderDetail',
-        'ProductDiscountTiers' => 'ProductDiscountTier'
     );
 
     private static $belongs_many_many = array(
@@ -98,7 +102,7 @@ class ProductPage extends Page implements PermissionProvider
             ->setEmptyString('')
             ->setDescription(_t(
                 'ProductPage.CategoryDescription',
-                'Required, must also exist in
+                'Required, must also exist in 
                     <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
                         FoxyCart Categories
                     </a>.
@@ -209,21 +213,6 @@ class ProductPage extends Page implements PermissionProvider
             )),
             $prodOptField
         ));
-
-        if (!$this->DiscountTitle && $this->ProductDiscountTiers()->exists()) {
-            $fields->addFieldTotab('Root.Discounts', new LiteralField("ProductDiscountHeaderWarning",
-                "<p class=\"message warning\">A discount title is required for FoxyCart to properly parse the value. The discounts will not be applied until a title is entered.</p>"));
-        }
-
-        $fields->addFieldToTab('Root.Discounts',
-            TextField::create('DiscountTitle')->setTitle(_t('Product.DiscountTitle', 'Discount Title')));
-        $discountsConfig = GridFieldConfig_RelationEditor::create();
-        $discountsConfig->removeComponentsByType('GridFieldAddExistingAutocompleter');
-        $discountsConfig->removeComponentsByType('GridFieldDeleteAction');
-        $discountsConfig->addComponent(new GridFieldDeleteAction(false));
-        $discountGrid = GridField::create('ProductDiscountTiers', 'Product Discounts', $this->ProductDiscountTiers(),
-            $discountsConfig);
-        $fields->addFieldToTab('Root.Discounts', $discountGrid);
 
         if (FoxyCart::store_name_warning() !== null) {
             $fields->addFieldToTab('Root.Main', LiteralField::create("StoreSubDomainHeaderWarning", _t(
@@ -341,16 +330,6 @@ class ProductPage extends Page implements PermissionProvider
     public function getCartScript()
     {
         return '<script src="https://cdn.foxycart.com/' . FoxyCart::getFoxyCartStoreName() . '/loader.js" async defer></script>';
-    }
-
-    public function getDiscountFieldValue()
-    {
-        $tiers = $this->ProductDiscountTiers();
-        $bulkString = '';
-        foreach ($tiers as $tier) {
-            $bulkString .= "|{$tier->Quantity}-{$tier->Percentage}";
-        }
-        return "{$this->Title}{allunits{$bulkString}}";
     }
 
     /**
