@@ -75,10 +75,6 @@ OptionItem:
     CodeModifieraction: Subtract
     PriceModifierAction: Add
     Available: false
-ProductDiscountTier:
-  fiveforten:
-    Quantity: 5
-    Percentage: 10
 Order:
   one:
     ProductTotal: "$100.00"

@@ -123,10 +123,7 @@ class FoxyStripePurchaseForm extends Form
                 $this->product->Price))->setValue($this->product->Price));//can't override id
             $fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'weight',
                 $this->product->Weight))->setValue($this->product->Weight));
-            if ($this->DiscountTitle && $this->ProductDiscountTiers()->exists()) {
-                $fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'discount_quantity_percentage',
-                    $this->product->getDiscountFieldValue()))->setValue($this->product->getDiscountFieldValue()));
-            }
+
 
 
             if ($this->product->PreviewImage()->exists()) {
@@ -152,7 +149,6 @@ class FoxyStripePurchaseForm extends Form
             $fields->push(DropdownField::create('quantity', 'Quantity', $quantity));
 
             $fields->push(HeaderField::create('submitPrice', '$' . $this->product->Price, 4));
-
 
             $this->extend('updatePurchaseFormFields', $fields);
         } else {
