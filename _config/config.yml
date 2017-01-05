@@ -10,3 +10,6 @@ Member:
 DateField:
   default_config:
     showcalendar: true
+FormField:
+  extensions:
+    - FoxyStripeProductFormFieldExtension
