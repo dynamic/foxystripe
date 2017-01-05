@@ -18,6 +18,11 @@ class DonationProduct extends ProductPage
     private static $allowed_children = [];
 
     /**
+     * @var bool
+     */
+    private static $can_be_root = true;
+
+    /**
      * @return FieldList
      */
     public function getCMSFields()
