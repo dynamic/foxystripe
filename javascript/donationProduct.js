@@ -1,19 +1,45 @@
 /**
  * Created by jsirish on 1/3/17.
  */
-jQuery(function(){
+;(function ($) {
 
-    var trigger = '#FoxyStripePurchaseForm_PurchaseForm #price',
+    var form = '#FoxyStripePurchaseForm_PurchaseForm',
+        trigger = $('#$Trigger'),
         shownPrice = '#FoxyStripePurchaseForm_PurchaseForm_submitPrice';
 
-    jQuery(trigger).change(function(){
+    $(trigger).change(function () {
         refreshAddToCartPrice();
     });
 
-    function refreshAddToCartPrice(){
-        var amount = jQuery(trigger).val().replace('$','');
-        jQuery(shownPrice).html('$'+parseFloat(amount).toFixed(2));
+    function refreshAddToCartPrice() {
+        var amount = $(trigger).val().replace('$', '');
+        $(shownPrice).html('$' + parseFloat(amount).toFixed(2));
     }
 
-    if(jQuery(trigger).length > 0) refreshAddToCartPrice();
-});
+    if ($(trigger).length > 0) refreshAddToCartPrice();
+
+    $(form).validate({
+        rules: {
+            price: {
+                required: true
+            }
+        },
+        submitHandler: function (form) {
+            $.ajax({
+                type: 'GET',
+                data: 'Price=' + $(trigger).val(),
+                url: "$UpdateURL",
+                success: function (options) {
+                    trigger.attr('name', options.Price);
+                },
+                complete: function () {
+                    form.submit();
+                },
+                error: function (er) {
+                    console.log(er.responseText);
+                }
+            });
+        }
+    });
+
+})(jQuery);
