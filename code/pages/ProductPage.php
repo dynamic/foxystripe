@@ -377,8 +377,21 @@ class ProductPage_Controller extends Page_Controller
         parent::init();
         Requirements::javascript("framework/thirdparty/jquery/jquery.js");
         if ($this->data()->Available && $this->ProductOptions()->exists()) {
-            Requirements::javascript("foxystripe/javascript/outOfStock.min.js");
-            Requirements::javascript("foxystripe/javascript/ProductOptions.min.js");
+            $formName = $this->PurchaseForm()->FormName();
+            Requirements::javascriptTemplate(
+                "foxystripe/javascript/out_of_stock.js",
+                [
+                    'FormName' => $formName,
+                ],
+                'foxystripe.out_of_stock'
+            );
+            Requirements::javascriptTemplate(
+                'foxystripe/javascript/product_options.js',
+                [
+                    'FormName' => $formName,
+                ],
+                'foxystripe.product_options'
+            );
         }
 
         Requirements::customScript(<<<JS
