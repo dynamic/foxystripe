@@ -148,7 +148,8 @@ class FoxyStripePurchaseForm extends Form
 
             $fields->push(DropdownField::create('quantity', 'Quantity', $quantity));
 
-            $fields->push(HeaderField::create('submitPrice', '$' . $this->product->Price, 4));
+            $fields->push(HeaderField::create('submitPrice', '$' . $this->product->Price, 4)->addExtraClass('submit-price'));
+            $fields->push(HeaderField::create('unavailableText', 'Selection unavailable', 4)->addExtraClass('hidden unavailable-text'));
 
             $this->extend('updatePurchaseFormFields', $fields);
         } else {
