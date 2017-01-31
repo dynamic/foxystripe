@@ -107,6 +107,15 @@ class FoxyStripe_Controller extends Page_Controller {
 
                     $customer = Member::get()->filter('Email', $order->customer_email)->First();
 
+                    /* todo: make sure local password is updated if changed on FoxyCart
+                    $customer->Password = (string)$order->customer_password;
+                    $customer->write();
+
+                    $customer->Password = (string)$order->customer_password;
+                    $customer->Salt = (string)$order->customer_password_salt;
+                    $customer->write();
+                    */
+
                 } else {
 
                     // set PasswordEncryption to 'none' so imported, encrypted password is not encrypted again
@@ -119,11 +128,16 @@ class FoxyStripe_Controller extends Page_Controller {
                     $customer->Surname = (string)$order->customer_last_name;
                     $customer->Email = (string)$order->customer_email;
                     $customer->Password = (string)$order->customer_password;
-                    $customer->Salt = (string)$order->customer_password_salt;
                     $customer->PasswordEncryption = 'none';
 
                     // record member record
                     $customer->write();
+
+                    $customer->Password = (string)$order->customer_password;
+                    $customer->Salt = (string)$order->customer_password_salt;
+
+                    $customer->write();
+
                 }
 
                 // set Order MemberID
