@@ -3,8 +3,9 @@
     "description": "FoxyStripe is a SilverStripe ecommerce module that integrates with FoxyCart for order processing.",
     "authors": [
         {
-            "name": "Dynamic, Inc",
-            "email": "dev@dy.ag"
+            "name": "Dynamic",
+            "email": "dev@dynamicagency.com",
+            "homepage": "http://www.dynamicagency.com"
         }
     ],
     "keywords": [
