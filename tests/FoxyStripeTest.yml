@@ -52,10 +52,12 @@ ProductCategory:
     Title: Apparel
     Code: APPAREL
 OptionGroup:
+  default:
+    Title: "Options"
   size:
-    Title: Size
+    Title: "Size"
   color:
-    Title: Color
+    Title: "Color"
 OptionItem:
   large:
     Title: Large
@@ -66,6 +68,7 @@ OptionItem:
     CodeModifieraction: Add
     PriceModifierAction: Subtract
     Available: true
+    ProductOptionGroupID: =>OptionGroup.size
   small:
     Title: Small
     WeightModifier: 2
@@ -75,6 +78,7 @@ OptionItem:
     CodeModifieraction: Subtract
     PriceModifierAction: Add
     Available: false
+    ProductOptionGroupID: =>OptionGroup.size
 Order:
   one:
     ProductTotal: "$100.00"
@@ -90,6 +94,7 @@ OrderDetail:
     Price: "$14.00"
     ProductID: =>ProductPage.product2
     OrderID: =>Order.one
+
 # ------------------------------------------
 # Groups
 # ------------------------------------------
