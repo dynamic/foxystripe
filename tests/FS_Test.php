@@ -1,6 +1,6 @@
 <?php
 
-class FS_Test extends FunctionalTest{
+class FS_Test extends FunctionalTest {
 
     protected static $fixture_file = 'foxystripe/tests/FoxyStripeTest.yml';
     protected static $disable_themes = true;
