@@ -1,6 +1,6 @@
 <?php
 
-class CustomerExtension extends DataExtension{
+class FoxyStripeCustomerExtension extends DataExtension{
 
     private static $db = array(
         'Customer_ID' => 'Int'
