@@ -13,5 +13,9 @@
             <group>sanitychecks</group>
         </exclude>
     </groups>
-
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">code</directory>
+        </whitelist>
+    </filter>
 </phpunit>
