@@ -20,11 +20,8 @@ class ProductPageTest extends FS_Test{
 
 		$this->logInWithPermission('Product_CANCRUD');
 		$default = $this->objFromFixture('ProductCategory', 'default');
-		$default->write();
-		$holder = $this->objFromFixture('ProductHolder', 'holder');
-		$holder->doPublish();
+		$holder = $this->objFromFixture('ProductHolder', 'default');
 		$product1 = $this->objFromFixture('ProductPage', 'product1');
-		//$product1->ParentID = ProductHolder::get()->first()->ID;
 
 		$product1->doPublish();
 		$this->assertTrue($product1->isPublished());
@@ -34,7 +31,7 @@ class ProductPageTest extends FS_Test{
 	function testProductDeletion(){
 
 		$this->logInWithPermission('Product_CANCRUD');
-		$holder = $this->objFromFixture('ProductHolder', 'holder');
+		$holder = $this->objFromFixture('ProductHolder', 'default');
 		$holder->doPublish();
 		$product2 = $this->objFromFixture('ProductPage', 'product2');
 		$productID = $product2->ID;
@@ -61,7 +58,7 @@ class ProductPageTest extends FS_Test{
 
 		$this->logInWithPermission('ADMIN');
 
-		$holder = $this->objFromFixture('ProductHolder', 'holder');
+		$holder = $this->objFromFixture('ProductHolder', 'default');
 		$holder->doPublish();
 
 		$product = $this->objFromFixture('ProductPage', 'product1');
@@ -76,7 +73,7 @@ class ProductPageTest extends FS_Test{
 
 		$this->logInWithPermission('ADMIN');
 
-		$holder = $this->objFromFixture('ProductHolder', 'holder');
+		$holder = $this->objFromFixture('ProductHolder', 'default');
 		$holder->doPublish();
 
 		$product = $this->objFromFixture('ProductPage', 'product1');
@@ -209,7 +206,7 @@ class ProductPageTest extends FS_Test{
 
 		$this->logInWithPermission('ADMIN');
 
-		$holder = $this->objFromFixture('ProductHolder', 'holder');//build holder page, ProductPage can't be on root level
+		$holder = $this->objFromFixture('ProductHolder', 'default');//build holder page, ProductPage can't be on root level
 		$holder->doPublish();
 
 		$product = $this->objFromFixture('ProductPage', 'product1');//build product page
@@ -231,7 +228,7 @@ class ProductPageTest extends FS_Test{
 
 		$this->assertTrue($product->isPublished());//check product is still published
 
-		$testOption = OptionItem::get()->filter(array('Title' => 'Large', 'ProductID' => $productID))->first();
+		$testOption = $this->objFromFixture('OptionItem', 'large');
 
 		$this->assertThat($testOption->ID, $this->logicalNot($this->equalTo(0)));//make sure the first option still exists
 
@@ -242,7 +239,5 @@ class ProductPageTest extends FS_Test{
 		$checkDeleted = OptionItem::get()->filter(array('Title' => 'Large', 'ProductID' => $productID))->first();//query same option as above
 
 		$this->assertEquals($checkDeleted->ID, 0);//check that the ID is 0 (empty object/non-existent)
-
 	}
-
 }
