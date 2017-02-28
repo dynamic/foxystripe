@@ -221,9 +221,6 @@ class ProductPage extends Page implements PermissionProvider
             )), 'Title');
         }
 
-        // allows CMS fields to be extended
-        $this->extend('updateCMSFields', $fields);
-
         return $fields;
     }
 
