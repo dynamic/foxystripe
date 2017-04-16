@@ -28,6 +28,7 @@
                     <div class="unit size3of4 productSummaryText">
                         <h3><a href="{$Link}" title="<% if $ReceiptTitle %>{$ReceiptTitle}<% else %>{$Title}<% end_if %>"><% if $ReceiptTitle %>{$ReceiptTitle.LimitCharacters(48)}<% else %>{$Title.LimitCharacters(48)}<% end_if %></a></h3>
                         <b>$Price.Nice</b>
+                        <br>$ProductRating
                         <div class="content"><p>{$Content.Summary}</p></div>
                         <p><a class="productLearnMore" href="$Link" alt="Learn More">Click here for more information</a></p>
                     </div>

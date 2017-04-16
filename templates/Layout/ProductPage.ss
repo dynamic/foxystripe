@@ -7,7 +7,7 @@
 <% require css('foxystripe/thirdparty/shadowbox/shadowbox.css') %>
 <% require css('foxystripe/css/foxycart.css') %>
 
-<div class="ProductPage">
+<div class="ProductPage line">
     <p>$Breadcrumbs</p>
 
     <div class="content-container unit size3of4">
@@ -22,18 +22,23 @@
                     <p>
                         <strong>Base Price:</strong> $Price.Nice<br>
                         <strong>Weight:</strong> $Weight lbs<br>
-                        <strong>Code:</strong> $Code
+                        <strong>Code:</strong> $Code<br>
+                        $ProductRating
                     </p>
                     <div class="content">$Content</div>
 
-
             </article>
-            $PageComments
         </div>
     </div>
 
     <div class="sidebar unit size1of4">
         $PurchaseForm
+    </div>
+
+</div>
+<div class="line">
+    <div class="unit size3of4">
+        $ProductReviews
     </div>
 </div>
 
