@@ -15,36 +15,54 @@
         <% if $Orders %>
             <% loop $Orders %>
                 <div class="historySummary line">
-                    <div class="sidebar size1of4 unit">
-                        <h3>$TransactionDate.NiceUS</h3>
+                    <div class="size1of4 unit">
+                        <h3>Order #{$Order_ID}</h3>
                         <p>
-	                        <a href="$ReceiptURL" target="_blank">View Invoice</a><br>
-	                        Order #{$Order_ID}<br>
-	                        Total $OrderTotal.Nice
-	                    </p>
+                            $TransactionDate.NiceUS | <a href="$ReceiptURL" target="_blank">View Invoice</a>
+                        </p>
+
+                        <table width="100%">
+                            <tr>
+                                <td><b>Sub Total</b></td>
+                                <td align="right" width="50%">$ProductTotal.Nice</td>
+                            </tr>
+                            <tr>
+                                <td><b>Shipping</b></td>
+                                <td align="right" width="50%">$ShippingTotal.Nice</td>
+                            </tr>
+                            <tr>
+                                <td><b>Tax</b></td>
+                                <td align="right" width="50%">$TaxTotal.Nice</td>
+                            </tr>
+                            <tr>
+                                <td><b>Total</b></td>
+                                <td align="right" width="50%"><b>$OrderTotal.Nice</b></td>
+                            </tr>
+                        </table>
                     </div>
                     <div class="size3of4 lastUnit">
+                        <h3>Your Items</h3>
 	                    <% loop $Details %>
-                            <div class="unit size2of5 productSummaryImage">
-                                <% with Product %>
-                                	<a href="{$Link}" title="{$Title}" class="anchor-fix product-image">
-										$PreviewImage.PaddedImage(250, 250)
-                                	</a>
-                                <% end_with %>
+                            <div class="unit size1of5 productSummaryImage">
+                                <% if $Product %>
+                                	<a href="{$Product.Link}" title="{$Product.Title}" class="anchor-fix product-image">
+                                <% end_if %>
+                                <img src="$ProductImage">
+                                <% if $Product %></a><% end_if %>
                             </div>
-                            <div class="unit size3of5 productSummaryText">
-                                <% with Product %>
-                                    <h3><a href="{$Link}" title="{$Title.XML}">$Title</a></h3>
-                                <% end_with %>
+                            <div class="unit size4of5 productSummaryText">
+                                <h3>
+                                    <% if $Product %><a href="{$Product.Link}" title="{$ProductName.XML}"><% end_if %>
+                                        $ProductName
+                                    <% if $Product %></a><% end_if %>
+                                </h3>
                                 <p>
-                                    <b>Quantity</b>: $Quantity
-                                    <% if $Options %>
-                                        <br>
-                                        <% loop $Options %>
-                                            <b>{$ProductOptionGroup.Title}</b>: $Title<% if Last %><% else %><br><% end_if %>
+                                    <% if $OrderOptions %>
+                                        <% loop $OrderOptions %>
+                                            <b>$Name</b>: $Value<br>
                                         <% end_loop %>
                                     <% end_if %>
-                                    <br>
+                                    <b>Quantity</b>: $Quantity<br>
                                     <b>Price:</b> $Price.Nice
                                 </p>
                             </div>

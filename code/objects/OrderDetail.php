@@ -22,7 +22,11 @@ class OrderDetail extends DataObject
      */
     private static $db = array(
         'Quantity' => 'Int',
-        'Price' => 'Currency'
+        'Price' => 'Currency',
+        'ProductName' => 'Varchar(255)',
+        'ProductCode' => 'Varchar(100)',
+        'ProductImage' => 'Text',
+        'ProductCategory' => 'Varchar(100)'
     );
 
     /**
@@ -33,11 +37,8 @@ class OrderDetail extends DataObject
         'Order' => 'Order'
     );
 
-    /**
-     * @var array
-     */
-    private static $many_many = array(
-        'Options' => 'OptionItem'
+    private static $has_many = array(
+        'OrderOptions' => 'OrderOption'
     );
 
     /**
@@ -99,5 +100,15 @@ class OrderDetail extends DataObject
     public function canCreate($member = null)
     {
         return false;
-    }
+        //return Permission::check('Product_ORDERS');
+	}
+
+	public function canDelete($member = null) {
+		return Permission::check('Product_ORDERS');
+	}
+
+	public function canCreate($member = null) {
+		return false;
+	}
+
 }
