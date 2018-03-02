@@ -2,6 +2,7 @@
 
 namespace Dynamic\FoxyStripe\ORM;
 
+use Dynamic\FoxyStripe\Model\FoxyCart;
 use SilverStripe\ORM\DataExtension;
 
 class FoxyStripePageExtension extends DataExtension

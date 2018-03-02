@@ -3,11 +3,15 @@
 namespace Dynamic\FoxyStripe\Model;
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBHTMLVarchar;
+use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 
 class Order extends DataObject implements PermissionProvider
 {
-
+    /**
+     * @var array
+     */
     private static $db = array(
         'Order_ID' => 'Int',
         'TransactionDate' => 'Datetime',
@@ -20,19 +24,43 @@ class Order extends DataObject implements PermissionProvider
         'Response' => 'Text'
     );
 
+    /**
+     * @var array
+     */
     private static $has_one = array(
         'Member' => 'Member'
     );
 
+    /**
+     * @var array
+     */
     private static $has_many = array(
         'Details' => 'OrderDetail'
     );
 
+    /**
+     * @var string
+     */
     private static $singular_name = 'Order';
+
+    /**
+     * @var string
+     */
     private static $plural_name = 'Orders';
+
+    /**
+     * @var string
+     */
     private static $description = 'Orders from FoxyCart Datafeed';
+
+    /**
+     * @var string
+     */
     private static $default_sort = 'TransactionDate DESC, ID DESC';
 
+    /**
+     * @var array
+     */
     private static $summary_fields = array(
         'Order_ID',
         'TransactionDate.NiceUS',
@@ -44,6 +72,9 @@ class Order extends DataObject implements PermissionProvider
         'ReceiptLink'
     );
 
+    /**
+     * @var array
+     */
     private static $searchable_fields = array(
         'Order_ID',
         'TransactionDate' => array(
@@ -55,14 +86,29 @@ class Order extends DataObject implements PermissionProvider
         'Details.ProductID'
     );
 
+    /**
+     * @var array
+     */
     private static $casting = array(
         'ReceiptLink' => 'HTMLVarchar'
     );
-    
+
+    /**
+     * @var array
+     */
     private static $indexes = array(
         'Order_ID' => true // make unique
     );
 
+    /**
+     * @var string
+     */
+    private static $table_name = 'FS_Order';
+
+    /**
+     * @param bool $includerelations
+     * @return array|string
+     */
     public function fieldLabels($includerelations = true)
     {
         $labels = parent::fieldLabels();
@@ -83,29 +129,45 @@ class Order extends DataObject implements PermissionProvider
         return $labels;
     }
 
+    /**
+     * @return mixed
+     */
     public function ReceiptLink()
     {
         return $this->getReceiptLink();
     }
 
+    /**
+     * @return mixed
+     */
     public function getReceiptLink()
     {
-        $obj= HTMLVarchar::create();
+        $obj= DBHTMLVarchar::create();
         $obj->setValue('<a href="' . $this->ReceiptURL . '" target="_blank" class="cms-panel-link action external-link">view</a>');
         return $obj;
     }
 
+    /**
+     * @return mixed
+     */
     public function getDecryptedResponse() {
         $decrypted = urldecode($this->Response);
         return rc4crypt::decrypt(FoxyCart::getStoreKey(), $decrypted);
     }
 
+    /**
+     * @throws \SilverStripe\ORM\ValidationException
+     */
     public function onBeforeWrite() {
 
         $this->parseOrder();
         parent::onBeforeWrite();
     }
 
+    /**
+     * @return bool
+     * @throws \SilverStripe\ORM\ValidationException
+     */
     public function parseOrder() {
 
         if ($this->getDecryptedResponse()) {
@@ -125,6 +187,9 @@ class Order extends DataObject implements PermissionProvider
         }
     }
 
+    /**
+     * @param $response
+     */
     public function parseOrderInfo($response) {
 
         foreach ($response->transactions->transaction as $transaction) {
@@ -143,6 +208,9 @@ class Order extends DataObject implements PermissionProvider
         }
     }
 
+    /**
+     * @param $response
+     */
     public function parseOrderCustomer($response) {
 
         foreach ($response->transactions->transaction as $transaction) {
@@ -184,6 +252,10 @@ class Order extends DataObject implements PermissionProvider
         }
     }
 
+    /**
+     * @param $response
+     * @throws \SilverStripe\ORM\ValidationException
+     */
     public function parseOrderDetails($response) {
 
         // remove previous OrderDetails and OrderOptions so we don't end up with duplicates
@@ -245,27 +317,46 @@ class Order extends DataObject implements PermissionProvider
         }
     }
 
-
+    /**
+     * @param bool $member
+     * @return bool|int
+     */
 	public function canView($member = false) {
 		return Permission::check('Product_ORDERS');
 	}
 
+    /**
+     * @param null $member
+     * @return bool
+     */
 	public function canEdit($member = null) {
         return false;
         //return Permission::check('Product_ORDERS');
 	}
 
+    /**
+     * @param null $member
+     * @return bool
+     */
     public function canDelete($member = null)
     {
         return false;
         //return Permission::check('Product_ORDERS');
     }
 
+    /**
+     * @param null $member
+     * @param array $context
+     * @return bool
+     */
     public function canCreate($member = null, $context = [])
     {
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function providePermissions()
     {
         return array(

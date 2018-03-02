@@ -3,6 +3,11 @@
 namespace Dynamic\FoxyStripe\Model;
 
 use Dynamic\FoxyStripe\Model\FoxyStripeClient;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataObject;
 
 class ProductCategory extends DataObject
@@ -60,6 +65,11 @@ class ProductCategory extends DataObject
     private static $indexes = array(
         'Code' => true
     );
+
+    /**
+     * @var string
+     */
+    private static $table_name = 'FS_ProductCategory';
 
     /**
      * @return FieldList
@@ -187,7 +197,7 @@ class ProductCategory extends DataObject
     public function requireDefaultRecords()
     {
         parent::requireDefaultRecords();
-        $allCats = DataObject::get('ProductCategory');
+        $allCats = ProductCategory::get();
         if (!$allCats->count()) {
             $cat = new ProductCategory();
             $cat->Title = 'Default';

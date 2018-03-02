@@ -2,6 +2,16 @@
 
 namespace Dynamic\FoxyStripe\Page;
 
+use SilverStripe\Control\Controller;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\PaginatedList;
+use SilverStripe\SiteConfig\SiteConfig;
+use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
+
 class ProductHolder extends \Page
 {
     /**
@@ -23,7 +33,7 @@ class ProductHolder extends \Page
      * @var array
      */
     private static $many_many = array(
-        'Products' => 'ProductPage'
+        'Products' => ProductPage::class,
     );
 
     /**
@@ -41,6 +51,11 @@ class ProductHolder extends \Page
     private static $allowed_children = array('ProductHolder', 'ProductPage');
 
     /**
+     * @var string
+     */
+    private static $table_name = 'FS_ProductHolder';
+
+    /**
      * @return FieldList
      */
     public function getCMSFields()
@@ -49,13 +64,10 @@ class ProductHolder extends \Page
 
         if (SiteConfig::current_site_config()->MultiGroup) {
             $config = GridFieldConfig_RelationEditor::create();
-            if (class_exists('GridFieldSortableRows')) {
-                $config->addComponent(new GridFieldSortableRows('SortOrder'));
-            }
-            if (class_exists('GridFieldManyRelationHandler')) {
-                $config->removeComponentsByType('GridFieldAddExistingAutocompleter');
-                $config->addComponent(new GridFieldManyRelationHandler());
-            }
+            $config->addComponent(new GridFieldOrderableRows('SortOrder'));
+            $config->removeComponentsByType('GridFieldAddExistingAutocompleter');
+            $config->addComponent(new GridFieldAddExistingSearchButton());
+
             $fields->addFieldToTab(
                 'Root.Products',
                 GridField::create(
@@ -66,8 +78,6 @@ class ProductHolder extends \Page
                 )
             );
         }
-
-        $this->extend('updateCMSFields', $fields);
 
         return $fields;
     }
@@ -115,12 +125,11 @@ class ProductHolder extends \Page
         $this->loadDescendantProductGroupIDListInto($holderIDs);
         return $holderIDs;
     }
-    
+
     /**
-     * Products function.
-     * 
-     * @access public
-     * @return array
+     * @param int $limit
+     * @return PaginatedList
+     * @throws \Exception
      */
     public function ProductList($limit = 10)
     {
@@ -157,8 +166,4 @@ class ProductHolder extends \Page
         $list->setPageLength($limit);
         return $list;
     }
-}
-
-class ProductHolder_Controller extends \PageController
-{
 }

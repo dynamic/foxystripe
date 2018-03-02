@@ -1,22 +1,22 @@
 ---
 Name: foxystripeconfig
 ---
-SiteConfig:
+SilverStripe\SiteConfig\SiteConfig:
   extensions:
-    - FoxyStripeSiteConfig
-Member:
+    - Dynamic\FoxyStripe\ORM\FoxyStripeSiteConfig
+SilverStripe\Security\Member:
   extensions:
-    - CustomerExtension
+    - Dynamic\FoxyStripe\ORM\CustomerExtension
 Page:
   extensions:
-    - FoxyStripePageExtension
-DateField:
+    - Dynamic\FoxyStripe\ORM\FoxyStripePageExtension
+SilverStripe\Forms\DateField:
   default_config:
     showcalendar: true
-FormField:
+FSilverStripe\Forms\ormField:
   extensions:
-    - FoxyStripeProductFormFieldExtension
-Injector:
+    - Dynamic\FoxyStripe\ORM\FoxyStripeProductFormFieldExtension
+SilverStripe\Core\Injector\Injector:
   TimeZoneData:
     properties:
       format: '%Region/%Name'

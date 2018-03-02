@@ -12,6 +12,11 @@ use SilverStripe\SiteConfig\SiteConfig;
 class FoxyStripeClient extends DataObject
 {
     /**
+     * @var string
+     */
+    private static $table_name = 'FS_FoxyStripeClient';
+
+    /**
      * @var
      */
     private $client;
@@ -40,13 +45,14 @@ class FoxyStripeClient extends DataObject
             'use_sandbox' => false
         );
 
-        $site_config = SiteConfig::current_site_config();
-        if ($site_config) {
+        /*
+        if ($site_config = SiteConfig::current_site_config()) {
             $config['client_id'] = $site_config->client_id;
             $config['client_secret'] = $site_config->client_secret;
             $config['refresh_token'] = $site_config->refresh_token;
             $config['access_token'] = $site_config->access_token;
         }
+        */
 
         $guzzle_config = array(
             'defaults' => array(
@@ -69,9 +75,9 @@ class FoxyStripeClient extends DataObject
         //$fc = new FoxyClient($guzzle, $config);
 
         //$this->setClient($fc);
-        $this->setCurrentStore();
-        $this->setItemCategoriesURL();
-        $this->setItemCategories();
+        //$this->setCurrentStore();
+        //$this->setItemCategoriesURL();
+        //$this->setItemCategories();
     }
 
     /**
@@ -243,14 +249,16 @@ class FoxyStripeClient extends DataObject
         $client = $this->getClient();
         $errors = [];
 
-        if ($category = $this->getCategory($data['code'])) {
-            $result = $client->patch($category, $data);
-        } else {
-            $result = $client->post($this->getItemCategoriesURL(), $data);
-        }
-        $errors = array_merge($errors, $client->getErrors($result));
-        if (count($errors)) {
-            \SS_Log::log('putCategory errors - ' . json_encode($errors), \SS_Log::WARN);
+        if ($client) {
+            if ($category = $this->getCategory($data['code'])) {
+                $result = $client->patch($category, $data);
+            } else {
+                $result = $client->post($this->getItemCategoriesURL(), $data);
+            }
+            $errors = array_merge($errors, $client->getErrors($result));
+            if (count($errors)) {
+                \SS_Log::log('putCategory errors - ' . json_encode($errors), \SS_Log::WARN);
+            }
         }
     }
 

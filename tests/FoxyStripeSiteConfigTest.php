@@ -1,18 +1,21 @@
 <?php
 
+use SilverStripe\Dev\SapphireTest;
+use SilverStripe\SiteConfig\SiteConfig;
+
 class FoxyStripeSiteConfigTest extends SapphireTest
 {
     /**
      * @var string
      */
-    protected static $fixture_file = 'foxystripe/tests/FoxyStripeTest.yml';
+    protected static $fixture_file = 'FoxyStripeTest.yml';
 
     /**
      *
      */
     public function testGetCMSFields()
     {
-        $object = singleton('SiteConfig');
+        $object = singleton(SiteConfig::class);
         $fields = $object->getCMSFields();
         $this->assertInstanceOf('FieldList', $fields);
     }
@@ -22,7 +25,7 @@ class FoxyStripeSiteConfigTest extends SapphireTest
      */
     public function testGetDataMap()
     {
-        $object = singleton('SiteConfig');
+        $object = singleton(SiteConfig::class);
         $this->assertTrue(is_array($object->getDataMap()));
     }
 }

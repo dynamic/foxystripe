@@ -30,6 +30,11 @@ class ProductImage extends DataObject
 		'Title' => 'Caption'
 	);
 
+    /**
+     * @var string
+     */
+    private static $table_name = 'FS_ProductImage';
+
 	public function getCMSFields(){
 		$fields = FieldList::create(
             TextField::create('Title')

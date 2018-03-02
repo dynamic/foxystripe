@@ -2,7 +2,10 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
+use Psr\Log\LoggerInterface;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\SiteConfig\SiteConfig;
 
 /**
  *
@@ -12,9 +15,21 @@ use SilverStripe\ORM\DataObject;
 
 class FoxyCart extends DataObject
 {
+    /**
+     * @var string
+     */
+    private static $table_name = 'FS_FoxyCart';
 
+    /**
+     * @var string
+     */
 	private static $keyPrefix = 'dYnm1c';
 
+    /**
+     * @param int $length
+     * @param int $count
+     * @return string
+     */
 	public static function setStoreKey($length = 54, $count = 0){
 		$charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.strtotime('now');
 		$strLength = strlen($charset);
@@ -26,6 +41,9 @@ class FoxyCart extends DataObject
 		return self::getKeyPrefix().substr(base64_encode($str),0,$length);
 	}
 
+    /**
+     * @return mixed|null
+     */
 	public static function getStoreKey(){
 		$config = SiteConfig::current_site_config();
 		if($config->StoreKey){
@@ -34,6 +52,9 @@ class FoxyCart extends DataObject
 		return null;
 	}
 
+    /**
+     * @return null|string
+     */
 	public static function store_name_warning(){
 		$warning = null;
 		if(self::getFoxyCartStoreName()===null){
@@ -42,6 +63,9 @@ class FoxyCart extends DataObject
 		return $warning;
 	}
 
+    /**
+     * @return mixed|null
+     */
 	public static function getFoxyCartStoreName(){
 		$config = SiteConfig::current_site_config();
 		if($config->StoreName){
@@ -50,6 +74,9 @@ class FoxyCart extends DataObject
 		return null;
 	}
 
+    /**
+     * @return string
+     */
 	public static function FormActionURL() {
 		return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName() );
 	}
@@ -58,7 +85,11 @@ class FoxyCart extends DataObject
      * FoxyCart API v1.1 functions
      */
 
-    // FoxyCart API Request
+    /**
+     * @param array $foxyData
+     * @return string
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     private static function getAPIRequest($foxyData = array()) {
 
         $foxy_domain = FoxyCart::getFoxyCartStoreName().'.foxycart.com';
@@ -77,13 +108,18 @@ class FoxyCart extends DataObject
         // The following if block will print any CURL errors you might have
         if ($response == false) {
             //trigger_error("Could not connect to FoxyCart API", E_USER_ERROR);
-            SS_Log::log("Could not connect to FoxyCart API: " . $response, SS_Log::ERR);
+            Injector::inst()->get(LoggerInterface::class)->error("Could not connect to FoxyCart API");
         }
         curl_close($ch);
 
         return $response;
     }
 
+    /**
+     * @param null $Member
+     * @return string
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     public static function getCustomer($Member = null) {
 
         // throw error if no $Member Object
@@ -100,6 +136,11 @@ class FoxyCart extends DataObject
 
     }
 
+    /**
+     * @param null $Member
+     * @return string
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     public static function putCustomer($Member = null) {
         // throw error if no $Member Object
         if (!isset($Member)) ;//trigger_error('No Member set', E_USER_ERROR);
@@ -118,6 +159,9 @@ class FoxyCart extends DataObject
         return self::getAPIRequest($foxyData);
     }
 
+    /**
+     * @return string
+     */
 	public static function getKeyPrefix(){
 		return self::$keyPrefix;
 	}

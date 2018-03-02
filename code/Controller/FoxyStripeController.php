@@ -2,7 +2,7 @@
 
 namespace Dynamic\FoxyStripe\Controller;
 
-class FoxyStripe_Controller extends \PageController {
+class FoxyStripeController extends \PageController {
 
     /**
      *

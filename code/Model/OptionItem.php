@@ -2,6 +2,8 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
+use Dynamic\FoxyStripe\Page\ProductPage;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
 
 /**
@@ -28,15 +30,15 @@ class OptionItem extends DataObject
      * @var array
      */
     private static $has_one = array(
-        'Product' => 'ProductPage',
-        'ProductOptionGroup' => 'OptionGroup',
+        'Product' => ProductPage::class,
+        'ProductOptionGroup' => OptionGroup::class,
     );
 
     /**
      * @var array
      */
     private static $belongs_many_many = array(
-        'OrderDetails' => 'OrderDetail'
+        'OrderDetails' => OrderDetail::class
     );
 
     /**
@@ -71,6 +73,11 @@ class OptionItem extends DataObject
      * @var string
      */
     private static $default_sort = 'SortOrder';
+
+    /**
+     * @var string
+     */
+    private static $table_name = 'FS_OptionItem';
 
     /**
      * @return FieldList

@@ -2,7 +2,11 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordViewer;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
 
 class OrderDetail extends DataObject
 {
@@ -53,6 +57,11 @@ class OrderDetail extends DataObject
         'Quantity',
         'Price.Nice'
     );
+
+    /**
+     * @var string
+     */
+    private static $table_name = 'FS_OrderDetail';
 
     /**
      * @return FieldList

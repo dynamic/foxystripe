@@ -2,13 +2,43 @@
 
 namespace Dynamic\FoxyStripe\Page;
 
+use Dynamic\FoxyStripe\Model\FoxyCart;
+use Dynamic\FoxyStripe\Model\OptionItem;
+use Dynamic\FoxyStripe\Model\OrderDetail;
+use Dynamic\FoxyStripe\Model\ProductCategory;
+use Dynamic\FoxyStripe\Model\ProductImage;
+use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\Assets\Image;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\CurrencyField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
+use SilverStripe\SiteConfig\SiteConfig;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 class ProductPage extends \Page implements PermissionProvider
 {
-
+    /**
+     * @var string
+     */
     private static $allowed_children = 'none';
+
+    /**
+     * @var string
+     */
     private static $default_parent = 'ProductHolder';
+
+    /**
+     * @var bool
+     */
     private static $can_be_root = false;
 
     /**
@@ -27,34 +57,60 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $has_one = array(
-        'PreviewImage' => 'Image',
-        'Category' => 'ProductCategory'
+        'PreviewImage' => Image::class,
+        'Category' => ProductCategory::class
     );
 
+    /**
+     * @var array
+     */
     private static $has_many = array(
-        'ProductImages' => 'ProductImage',
-        'ProductOptions' => 'OptionItem',
-        'OrderDetails' => 'OrderDetail',
+        'ProductImages' => ProductImage::class,
+        'ProductOptions' => OptionItem::class,
+        'OrderDetails' => OrderDetail::class,
     );
 
+    /**
+     * @var array
+     */
     private static $belongs_many_many = array(
-        'ProductHolders' => 'ProductHolder'
+        'ProductHolders' => ProductHolder::class
     );
 
+    /**
+     * @var string
+     */
     private static $singular_name = 'Product';
+
+    /**
+     * @var string
+     */
     private static $plural_name = 'Products';
+
+    /**
+     * @var string
+     */
     private static $description = 'A product that can be added to the shopping cart';
 
+    /**
+     * @var array
+     */
     private static $indexes = array(
         'Code' => true // make unique
     );
 
+    /**
+     * @var array
+     */
     private static $defaults = array(
         'ShowInMenus' => false,
         'Available' => true,
         'Weight' => '1.0'
     );
 
+    /**
+     * @var array
+     */
     private static $summary_fields = array(
         'Title',
         'Code',
@@ -62,6 +118,9 @@ class ProductPage extends \Page implements PermissionProvider
         'Category.Title'
     );
 
+    /**
+     * @var array
+     */
     private static $searchable_fields = array(
         'Title',
         'Code',
@@ -70,6 +129,15 @@ class ProductPage extends \Page implements PermissionProvider
         'Category.ID'
     );
 
+    /**
+     * @var string
+     */
+    private static $table_name = 'FS_ProductPage';
+
+    /**
+     * @param bool $includerelations
+     * @return array
+     */
     function fieldLabels($includerelations = true)
     {
         $labels = parent::fieldLabels();
@@ -85,6 +153,9 @@ class ProductPage extends \Page implements PermissionProvider
         return $labels;
     }
 
+    /**
+     * @return \SilverStripe\Forms\FieldList
+     */
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
@@ -116,13 +187,7 @@ class ProductPage extends \Page implements PermissionProvider
 
         // Product Images gridfield
         $config = GridFieldConfig_RelationEditor::create();
-        if (class_exists('GridFieldSortableRows')) {
-            $config->addComponent(new GridFieldSortableRows('SortOrder'));
-        }
-        if (class_exists('GridFieldBulkImageUpload')) {
-            $config->addComponent(new GridFieldBulkUpload());
-            $config->getComponentByType('GridFieldBulkUpload')->setUfConfig('folderName', 'Uploads/ProductImages');
-        }
+        $config->addComponent(new GridFieldOrderableRows('SortOrder'));
         $prodImagesField = GridField::create(
             'ProductImages',
             _t('ProductPage.ProductImages', 'Images'),
@@ -132,15 +197,8 @@ class ProductPage extends \Page implements PermissionProvider
 
         // Product Options field
         $config = GridFieldConfig_RelationEditor::create();
-        if (class_exists('GridFieldBulkManager')) {
-            $config->addComponent(new GridFieldBulkManager());
-        }
-        if (class_exists('GridFieldSortableRows')) {
-            $config->addComponent(new GridFieldSortableRows('SortOrder'));
-            $products = $this->ProductOptions()->sort('SortOrder');
-        } else {
-            $products = $this->ProductOptions();
-        }
+        $config->addComponent(new GridFieldOrderableRows('SortOrder'));
+        $products = $this->ProductOptions()->sort('SortOrder');
         $config->removeComponentsByType('GridFieldAddExistingAutocompleter');
         $prodOptField = GridField::create(
             'ProductOptions',
@@ -359,54 +417,4 @@ class ProductPage extends \Page implements PermissionProvider
         );
     }
 
-}
-
-class ProductPage_Controller extends \PageController
-{
-
-    private static $allowed_actions = array(
-        'PurchaseForm'
-    );
-
-    public function init()
-    {
-        parent::init();
-        Requirements::javascript("framework/thirdparty/jquery/jquery.js");
-        if ($this->data()->Available && $this->ProductOptions()->exists()) {
-            $formName = $this->PurchaseForm()->FormName();
-            Requirements::javascriptTemplate(
-                "foxystripe/javascript/out_of_stock.js",
-                [
-                    'FormName' => $formName,
-                ],
-                'foxystripe.out_of_stock'
-            );
-            Requirements::javascriptTemplate(
-                'foxystripe/javascript/product_options.js',
-                [
-                    'FormName' => $formName,
-                ],
-                'foxystripe.product_options'
-            );
-        }
-
-        Requirements::customScript(<<<JS
-		var productID = {$this->data()->ID};
-JS
-        );
-    }
-
-    /**
-     * @return FoxyStripePurchaseForm
-     */
-    public function PurchaseForm()
-    {
-
-        $form = FoxyStripePurchaseForm::create($this, __FUNCTION__, null, null, null, $this->data());
-
-        $this->extend('updateFoxyStripePurchaseForm', $form);
-
-        return $form;
-
-    }
 }

@@ -42,6 +42,11 @@ class OptionGroup extends DataObject
     private static $description = 'Groups of product options, e.g. size, color, etc';
 
     /**
+     * @var string
+     */
+    private static $table_name = 'FS_OptionGroup';
+
+    /**
      *
      */
     public function requireDefaultRecords()
