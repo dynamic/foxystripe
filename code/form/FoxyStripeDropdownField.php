@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\Forms\DropdownField;
+
 /**
  * Dropdown field, created from a <select> tag. This field handles cart encryption based on store settings.
  **
@@ -48,7 +51,8 @@
  * @package forms
  * @subpackage fields-basic
  */
-class FoxyStripeDropdownField extends DropdownField{
+class FoxyStripeDropdownField extends DropdownField
+{
 
 	/**
 	 * Mark certain elements as disabled,

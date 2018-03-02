@@ -1,7 +1,9 @@
 <?php
 
-class CustomerExtension extends DataExtension{
+use SilverStripe\ORM\DataExtension;
 
+class CustomerExtension extends DataExtension
+{
     private static $db = array(
         'Customer_ID' => 'Int'
     );

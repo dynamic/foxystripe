@@ -1,16 +1,35 @@
 <?php
 
-class OrderAdmin extends ModelAdmin {
+namespace Dynamic\FoxyStripe\Admin;
 
-	public static $managed_models = array(
-		'Order'
-	);
-	
-	static $url_segment = 'orders';
-	
-	static $menu_title = 'Orders';
+use SilverStripe\Admin\ModelAdmin;
 
-    public function getEditForm($id = null, $fields = null) {
+class OrderAdmin extends ModelAdmin
+{
+    /**
+     * @var array
+     */
+    private static $managed_models = array(
+        'Order'
+    );
+
+    /**
+     * @var string
+     */
+    private static $url_segment = 'orders';
+
+    /**
+     * @var string
+     */
+    private static $menu_title = 'Orders';
+
+    /**
+     * @param null $id
+     * @param null $fields
+     * @return \SilverStripe\Forms\Form
+     */
+    public function getEditForm($id = null, $fields = null)
+    {
         $form = parent::getEditForm($id, $fields);
 
         $gridFieldName = $this->sanitiseClassName($this->modelClass);
@@ -24,5 +43,4 @@ class OrderAdmin extends ModelAdmin {
 
         return $form;
     }
-	
 }

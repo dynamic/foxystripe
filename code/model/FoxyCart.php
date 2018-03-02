@@ -1,11 +1,15 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
+
 /**
  *
  * @package FoxyStripe
  *
  */
 
-class FoxyCart extends Object {
+class FoxyCart extends DataObject
+{
 
 	private static $keyPrefix = 'dYnm1c';
 

@@ -1,8 +1,11 @@
 <?php
 
 use Dynamic\FoxyStripe\Model\FoxyStripeClient;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\ORM\DataExtension;
 
-class FoxyStripeSiteConfig extends DataExtension{
+class FoxyStripeSiteConfig extends DataExtension
+{
 
 	private static $db = array(
 	    'StoreTitle' => 'Varchar(255)',

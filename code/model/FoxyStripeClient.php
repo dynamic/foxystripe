@@ -5,8 +5,11 @@ namespace Dynamic\FoxyStripe\Model;
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Cache\CacheSubscriber;
 use Foxy\FoxyClient\FoxyClient;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\Tests\MySQLDatabaseTest\Data;
+use SilverStripe\SiteConfig\SiteConfig;
 
-class FoxyStripeClient extends \Object
+class FoxyStripeClient extends DataObject
 {
     /**
      * @var
@@ -37,7 +40,7 @@ class FoxyStripeClient extends \Object
             'use_sandbox' => false
         );
 
-        $site_config = \SiteConfig::current_site_config();
+        $site_config = SiteConfig::current_site_config();
         if ($site_config) {
             $config['client_id'] = $site_config->client_id;
             $config['client_secret'] = $site_config->client_secret;
@@ -52,18 +55,20 @@ class FoxyStripeClient extends \Object
             )
         );
 
+        // todo - fix Guzzle client integration
+
         /**
          * Set up our Guzzle Client
          */
-        $guzzle = new Client($guzzle_config);
-        CacheSubscriber::attach($guzzle);
+        //$guzzle = new Client($guzzle_config);
+        //CacheSubscriber::attach($guzzle);
 
         /**
          * Get our FoxyClient
          */
-        $fc = new FoxyClient($guzzle, $config);
+        //$fc = new FoxyClient($guzzle, $config);
 
-        $this->setClient($fc);
+        //$this->setClient($fc);
         $this->setCurrentStore();
         $this->setItemCategoriesURL();
         $this->setItemCategories();
@@ -101,14 +106,14 @@ class FoxyStripeClient extends \Object
     public function setCurrentStore()
     {
         $client = $this->getClient();
-        $config = \SiteConfig::current_site_config();
+        $config = SiteConfig::current_site_config();
 
         $errors = array();
         $data = array(
             'store_domain' => $config->StoreName,
         );
 
-        if ($result = $client->get()) {
+        if ($client && $result = $client->get()) {
             $errors = array_merge($errors, $client->getErrors($result));
             if ($reporting_uri = $client->getLink('fx:reporting')) {
                 $errors = array_merge($errors, $client->getErrors($reporting_uri));
@@ -161,15 +166,18 @@ class FoxyStripeClient extends \Object
     {
         $client = $this->getClient();
         $errors = [];
-        $result = $client->get($this->getCurrentStore());
 
-        if (isset($result['_links']['fx:item_categories']['href'])) {
-            $this->item_categories_url = $result['_links']['fx:item_categories']['href'];
-        }
+        if ($client) {
+            $result = $client->get($this->getCurrentStore());
 
-        $errors = array_merge($errors, $client->getErrors($result));
-        if (count($errors)) {
-            \SS_Log::log('setItemCategoriesURL errors - ' . json_encode($errors), \SS_Log::WARN);
+            if (isset($result['_links']['fx:item_categories']['href'])) {
+                $this->item_categories_url = $result['_links']['fx:item_categories']['href'];
+            }
+
+            $errors = array_merge($errors, $client->getErrors($result));
+            if (count($errors)) {
+                \SS_Log::log('setItemCategoriesURL errors - ' . json_encode($errors), \SS_Log::WARN);
+            }
         }
     }
 
@@ -188,13 +196,16 @@ class FoxyStripeClient extends \Object
     {
         $client = $this->getClient();
         $errors = [];
-        $result = $client->get($this->getItemCategoriesURL());
 
-        $this->item_categories = $result;
+        if ($client) {
+            $result = $client->get($this->getItemCategoriesURL());
 
-        $errors = array_merge($errors, $client->getErrors($result));
-        if (count($errors)) {
-            \SS_Log::log('setItemCategories errors - ' . json_encode($errors), \SS_Log::WARN);
+            $this->item_categories = $result;
+
+            $errors = array_merge($errors, $client->getErrors($result));
+            if (count($errors)) {
+                \SS_Log::log('setItemCategories errors - ' . json_encode($errors), \SS_Log::WARN);
+            }
         }
     }
 

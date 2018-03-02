@@ -1,11 +1,13 @@
 <?php
 
+use SilverStripe\Security\PermissionProvider;
+
 /**
  *
  * @package FoxyStripe
  *
  */
-class ProductPage extends Page implements PermissionProvider
+class ProductPage extends \Page implements PermissionProvider
 {
 
     private static $allowed_children = 'none';
@@ -343,7 +345,7 @@ class ProductPage extends Page implements PermissionProvider
         return Permission::check('Product_CANCRUD');
     }
 
-    public function canCreate($member = null)
+    public function canCreate($member = null, $context = [])
     {
         return Permission::check('Product_CANCRUD');
     }
@@ -362,7 +364,7 @@ class ProductPage extends Page implements PermissionProvider
 
 }
 
-class ProductPage_Controller extends Page_Controller
+class ProductPage_Controller extends \PageController
 {
 
     private static $allowed_actions = array(

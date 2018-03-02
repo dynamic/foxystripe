@@ -5,7 +5,7 @@
  *
  */
 
-class OrderHistoryPage extends Page {
+class OrderHistoryPage extends \Page {
 
     private static $singular_name = 'Order History Page';
     private static $plural_name = 'Order History Pages';
@@ -34,7 +34,7 @@ class OrderHistoryPage extends Page {
 
 }
 
-class OrderHistoryPage_Controller extends Page_Controller {
+class OrderHistoryPage_Controller extends \PageController {
 	
 	private static $allowed_actions = array(
         'index'

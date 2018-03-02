@@ -1,6 +1,9 @@
 <?php
 
-class FoxyStripePageExtension extends DataExtension {
+use SilverStripe\ORM\DataExtension;
+
+class FoxyStripePageExtension extends DataExtension
+{
 
     // get FoxyCart Store Name for JS call
     public function getCartScript() {

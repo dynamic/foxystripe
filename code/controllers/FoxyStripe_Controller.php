@@ -1,18 +1,32 @@
 <?php
 
-class FoxyStripe_Controller extends Page_Controller {
-	
+namespace Dynamic\FoxyStripe\Controller;
+
+class FoxyStripe_Controller extends \PageController {
+
+    /**
+     *
+     */
 	const URLSegment = 'foxystripe';
 
+    /**
+     * @return string
+     */
 	public function getURLSegment() {
 		return self::URLSegment;
 	}
-	
-	static $allowed_actions = array(
+
+    /**
+     * @var array
+     */
+	private static $allowed_actions = array(
 		'index',
         'sso'
 	);
-	
+
+    /**
+     * @return string
+     */
 	public function index() {
 
 	    // handle POST from FoxyCart API transaction
@@ -38,6 +52,10 @@ class FoxyStripe_Controller extends Page_Controller {
 		}
 	}
 
+    /**
+     * @param $encrypted
+     * @param $decrypted
+     */
     public function handleDataFeed($encrypted, $decrypted){
 
         $orders = new SimpleXMLElement($decrypted);

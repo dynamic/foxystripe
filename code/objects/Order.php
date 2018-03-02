@@ -1,11 +1,14 @@
 <?php
 
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\PermissionProvider;
+
 class Order extends DataObject implements PermissionProvider
 {
 
     private static $db = array(
         'Order_ID' => 'Int',
-        'TransactionDate' => 'SS_Datetime',
+        'TransactionDate' => 'Datetime',
         'ProductTotal' => 'Currency',
         'TaxTotal' => 'Currency',
         'ShippingTotal' => 'Currency',
@@ -256,7 +259,7 @@ class Order extends DataObject implements PermissionProvider
         //return Permission::check('Product_ORDERS');
     }
 
-    public function canCreate($member = null)
+    public function canCreate($member = null, $context = [])
     {
         return false;
     }

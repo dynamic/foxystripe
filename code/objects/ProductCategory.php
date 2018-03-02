@@ -1,6 +1,7 @@
 <?php
 
 use Dynamic\FoxyStripe\Model\FoxyStripeClient;
+use SilverStripe\ORM\DataObject;
 
 class ProductCategory extends DataObject
 {
@@ -226,7 +227,7 @@ class ProductCategory extends DataObject
      * @param null $member
      * @return bool|int
      */
-    public function canCreate($member = null)
+    public function canCreate($member = null, $context = [])
     {
         return Permission::check('Product_CANCRUD', 'any', $member);
     }

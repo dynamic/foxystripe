@@ -1,11 +1,15 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
+
 /**
  *
  * @package FoxyStripe
  *
  */
 
-class ProductImage extends DataObject{
+class ProductImage extends DataObject
+{
 
 	private static $db = array(
 		'Title' => 'Text',
@@ -51,7 +55,7 @@ class ProductImage extends DataObject{
 		return Permission::check('Product_CANCRUD');
 	}
 
-	public function canCreate($member = null) {
+	public function canCreate($member = null, $context = []) {
 		return Permission::check('Product_CANCRUD');
 	}
 

@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
+
 /**
  *
  * @package FoxyStripe
@@ -149,7 +152,7 @@ class OptionGroup extends DataObject
      * @param null $member
      * @return bool|int
      */
-    public function canCreate($member = null)
+    public function canCreate($member = null, $context = [])
     {
         return Permission::check('Product_CANCRUD', 'any', $member);
     }

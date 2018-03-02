@@ -1,5 +1,7 @@
 <?php
 
+use SilverStripe\Dev\BuildTask;
+
 class EncryptResponsesTask extends BuildTask {
 
     protected $title = 'FoxyStripe Orders: Encrypt Responses Task';

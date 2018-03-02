@@ -1,6 +1,9 @@
 <?php
 
-class OrderOption extends DataObject {
+use SilverStripe\ORM\DataObject;
+
+class OrderOption extends DataObject
+{
 
     private static $db = array(
         'Name' => 'Varchar(200)',

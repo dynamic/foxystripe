@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\Dev\BuildTask;
+
 class ParseOrdersTask extends BuildTask
 {
     protected $title = 'FoxyStripe Orders: Parse all Orders';

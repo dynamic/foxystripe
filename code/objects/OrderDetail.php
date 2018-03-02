@@ -1,5 +1,7 @@
 <?php
 
+use SilverStripe\ORM\DataObject;
+
 class OrderDetail extends DataObject
 {
     /**
@@ -86,18 +88,9 @@ class OrderDetail extends DataObject
 
     /**
      * @param null $member
-     * @return bool|int
-     */
-    public function canDelete($member = null)
-    {
-        return false;
-    }
-
-    /**
-     * @param null $member
      * @return bool
      */
-    public function canCreate($member = null)
+    public function canCreate($member = null, $context = [])
     {
         return false;
         //return Permission::check('Product_ORDERS');
@@ -105,10 +98,6 @@ class OrderDetail extends DataObject
 
 	public function canDelete($member = null) {
 		return Permission::check('Product_ORDERS');
-	}
-
-	public function canCreate($member = null) {
-		return false;
 	}
 
 }

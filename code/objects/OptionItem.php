@@ -1,5 +1,7 @@
 <?php
 
+use SilverStripe\ORM\DataObject;
+
 /**
  * Class OptionItem
  */
@@ -349,7 +351,7 @@ class OptionItem extends DataObject
      * @param null $member
      * @return bool|int
      */
-    public function canCreate($member = null)
+    public function canCreate($member = null, $context = [])
     {
         return Permission::check('Product_CANCRUD');
     }
