@@ -16,3 +16,7 @@ DateField:
 FormField:
   extensions:
     - FoxyStripeProductFormFieldExtension
+Injector:
+  TimeZoneData:
+    properties:
+      format: '%Region/%Name'

@@ -1,14 +1,36 @@
 <?php
 
+use Dynamic\FoxyStripe\Model\FoxyStripeClient;
+
 class FoxyStripeSiteConfig extends DataExtension{
 
 	private static $db = array(
+	    'StoreTitle' => 'Varchar(255)',
 		'StoreName' => 'Varchar(255)',
-		'StoreKey' => 'Varchar(60)',
+        'StoreURL' => 'Varchar(255)',
+        'ReceiptURL' => 'Varchar(255)',
+        'StoreEmail' => 'Varchar(255)',
+        'FromEmail' => 'Varchar(255)',
+        'StorePostalCode' => 'Varchar(10)',
+        'StoreCountry' => 'Varchar(100)',
+        'StoreRegion' => 'Varchar(100)',
+        'StoreLocaleCode' => 'Varchar(10)',
+        'StoreLogoURL' => 'Varchar(255)',
+        'CheckoutType' => 'Varchar(50)',
+        'BccEmail' => 'Boolean',
+        'UseWebhook' => 'Boolean',
+        'StoreKey' => 'Varchar(60)',
+        'CartValidation' => 'Boolean',
+        'UseSingleSignOn' => 'Boolean',
+        'AllowMultiship' => 'Boolean',
+        'StoreTimezone' => 'Varchar(100)',
 		'MultiGroup' => 'Boolean',
 		'ProductLimit' => 'Int',
-		'CartValidation' => 'Boolean',
-		'MaxQuantity' => 'Int'
+		'MaxQuantity' => 'Int',
+        'client_id' => 'Varchar(255)',
+        'client_secret' => 'Varchar(255)',
+        'access_token' => 'Varchar(255)',
+        'refresh_token' => 'Varchar(255)',
 	);
 
     // Set Default values
@@ -29,11 +51,35 @@ class FoxyStripeSiteConfig extends DataExtension{
 				'FoxyStripeSiteConfig.DetailsIntro',
                 '<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditStore" target="_blank">FoxyCart store settings</a>.'
             )),
+            TextField::create('StoreTitle')
+                ->setTitle(_t('FoxyStripeSiteConfig.StoreTitle', 'Store Name'))
+                ->setDescription(_t('FoxyStripeSiteConfig.StoreTitleDescription', 'The name of your store as you\'d like it displayed to your customers')),
 			TextField::create('StoreName')
-				->setTitle(_t('FoxyStripeSiteConfig.StoreName', 'Store Sub Domain'))
-				->setDescription(_t('FoxyStripeSiteConfig.StoreNameDescription', 'the sub domain for your FoxyCart store')),
+				->setTitle(_t('FoxyStripeSiteConfig.StoreName', 'Store Domain'))
+				->setDescription(_t('FoxyStripeSiteConfig.StoreNameDescription', 'This is a unique FoxyCart subdomain for your cart, checkout, and receipt')),
+            TextField::create('StoreURL')
+                ->setTitle(_t('FoxyStripeSiteConfig.StoreURL', 'Store URL'))
+                ->setDescription(_t('FoxyStripeSiteConfig.StoreURLDescription', 'The URL of your online store')),
+            TextField::create('ReceiptURL')
+                ->setTitle(_t('FoxyStripeSiteConfig.ReceiptURL', 'Receipt URL'))
+                ->setDescription(_t('FoxyStripeSiteConfig.ReceiptURLDescription', 'By default, FoxyCart sends customers back to the page referrer after completing a purchase. Instead, you can set a specific URL here')),
+            TextField::create('StoreEmail')
+                ->setTitle(_t('FoxyStripeSiteConfig.StoreEmail', 'Store Email'))
+                ->setDescription(_t('FoxyStripeSiteConfig.StoreEmailDescription', 'This is the email address of your store. By default, this will be the from address for your store receipts. ')),
+            TextField::create('FromEmail')
+                ->setTitle(_t('FoxyStripeSiteConfig.FromEmail', 'From Email'))
+                ->setDescription(_t('FoxyStripeSiteConfig.FromEmailDescription', 'Used for when you want to specify a different from email than your store\'s email address')),
+            TextField::create('StorePostalCode', 'Postal Code'),
+            CountryDropdownField::create('StoreCountry', 'Country'),
+            TextField::create('StoreRegion', 'State/Region'),
+            TextField::create('StoreLocaleCode', 'Locale Code')
+                ->setDescription('example: en_US'),
+            TextField::create('StoreTimezone', 'Store timezone'),
+            TextField::create('StoreLogoURL', 'Logo URL')
+                ->setAttribute('placeholder', 'http://')
 
 			// Advanced Settings
+            /*
 			HeaderField::create('AdvanceHeader', _t('FoxyStripeSiteConfig.AdvancedHeader', 'Advanced Settings'), 3),
 			LiteralField::create('AdvancedIntro', _t(
                 'FoxyStripeSiteConfig.AdvancedIntro',
@@ -52,7 +98,28 @@ class FoxyStripeSiteConfig extends DataExtension{
 				->setDescription(_t('FoxyStripeSiteConfig.StoreKeyDescription', 'copy/paste to FoxyCart')),
 			ReadonlyField::create('SSOLink', _t('FoxyStripeSiteConfig.SSOLink', 'Single Sign On URL'), self::getSSOLink())
 				->setDescription(_t('FoxyStripeSiteConfig.SSOLinkDescription', 'copy/paste to FoxyCart'))
+            */
         ));
+
+        $fields->addFieldsToTab('Root.FoxyStripe.Advanced', [
+            HeaderField::create('AdvanceHeader', _t('FoxyStripeSiteConfig.AdvancedHeader', 'Advanced Settings'), 3),
+            LiteralField::create('AdvancedIntro', _t(
+                'FoxyStripeSiteConfig.AdvancedIntro',
+                '<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures" target="_blank">FoxyCart advanced store settings</a>.</p>'
+            )),
+            DropdownField::create('CheckoutType', 'Checkout Type', $this->getCheckoutTypes()),
+            CheckboxField::create('BccEmail', 'BCC Admin Email')
+                ->setDescription('bcc all receipts to store\'s email address'),
+            CheckboxField::create('UseWebhook', 'Use Webhook')
+                ->setDescription('record order history in CMS, allows customers to view their order history'),
+            ReadonlyField::create('WebhookURL', 'Webhook URL', self::getDataFeedLink()),
+            ReadonlyField::create('StoreKey', 'Webhook Key', self::getDataFeedLink()),
+            CheckboxField::create('CartValidation', 'Use cart validation'),
+            CheckboxField::create('UseSingleSignOn', 'Use single sign on')
+                ->setDescription('Sync user accounts between FoxyCart and your website'),
+            ReadonlyField::create('SingleSignOnURL', 'Single sign on URL', self::getSSOLink()),
+            CheckboxField::create('AllowMultiship', 'Allow multiple shipments per order')
+        ]);
 
         // configuration warning
 		if(FoxyCart::store_name_warning()!==null){
@@ -120,6 +187,15 @@ class FoxyStripeSiteConfig extends DataExtension{
             )
 		));
 
+		// api tab
+        $fields->addFieldsToTab('Root.FoxyStripe.API', [
+            HeaderField::create('APIHD', 'FoxyCart API Settings', 3),
+            TextField::create('client_id', 'FoxyCart Client ID'),
+            TextField::create('client_secret', 'FoxyCart Client Secret'),
+            TextField::create('access_token', 'FoxyCart Access Token'),
+            TextField::create('refresh_token', 'FoxyCart Refresh Token'),
+        ]);
+
 	}
 
     private static function getSSOLink() {
@@ -148,4 +224,84 @@ class FoxyStripeSiteConfig extends DataExtension{
         }
     }
 
+    public function getCheckoutTypes()
+    {
+        return [
+            "default_account" => "Allow guest and customer accounts, default to account",
+            "default_guest" => "Allow guest and customer accounts, default to guest",
+            "account_only" => "Allow customer accounts only",
+            "guest_only" => "Allow guests only",
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getDataMap()
+    {
+        return [
+            'store_name' => $this->owner->StoreTitle,
+            'store_domain' => $this->owner->StoreName,
+            'store_url' => $this->owner->StoreURL,
+            'receipt_continue_url' => $this->owner->ReceiptURL,
+            'store_email' => $this->owner->StoreEmail,
+            'from_email' => $this->owner->FromEmail,
+            'postal_code' => $this->owner->StorePostalCode,
+            'country' => $this->owner->StoreCountry,
+            'region' => $this->owner->StoreRegion,
+            'locale_code' => $this->owner->StoreLocaleCode,
+            'logo_url' => $this->owner->StoreLogoURL,
+            'checkout_type' => $this->owner->CheckoutType,
+            'bcc_on_receipt_email' => $this->owner->BccEmail,
+            'use_webhook' => $this->owner->UseWebhook,
+            'webhook_url' => $this->getDataFeedLink(),
+            'webhook_key' => $this->owner->StoreKey,
+            'use_cart_validation' => $this->owner->CartValidation,
+            'use_single_sign_on' => $this->owner->UseSingleSignOn,
+            'single_sign_on_url' => $this->getSSOLink(),
+            'customer_password_hash_type' => 'sha1_salted_suffix',
+            'customer_password_hash_config' => 40,
+            'features_multiship' => $this->owner->AllowMultiship,
+            'timezone' => $this->StoreTimezone,
+        ];
+    }
+
+    /**
+     * if StoreTitle is empty, grab values from FoxyCart
+     *
+     * example of 2 way sync for future reference
+     */
+    public function onBeforeWrite()
+    {
+        parent::onBeforeWrite();
+
+        if ($this->owner->ID && !$this->owner->StoreTitle && $this->owner->access_token) {
+            if ($fc = new FoxyStripeClient()) {
+                $client = $fc->getClient();
+                $errors = [];
+
+                $result = $client->get($fc->getCurrentStore());
+                $this->owner->StoreTitle = $result['store_name'];
+
+                $errors = array_merge($errors, $client->getErrors($result));
+                if (count($errors)) {
+                    \SS_Log::log('FoxyStripeSiteConfig::onBeforeWrite errors - ' . json_encode($errors), \SS_Log::WARN);
+                }
+            }
+        }
+    }
+
+    /**
+     * push updated data to FoxyCart
+     */
+    public function onAfterWrite()
+    {
+        parent::onAfterWrite();
+
+        if ($this->owner->isChanged() && $this->owner->access_token) {
+            if ($fc = new FoxyStripeClient()) {
+                $fc->updateStore($this->getDataMap());
+            }
+        }
+    }
 }
