@@ -1,5 +1,9 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Test;
+
+use SilverStripe\Dev\FunctionalTest;
+
 class FS_Test extends FunctionalTest {
 
     protected static $fixture_file = 'foxystripe/tests/FoxyStripeTest.yml';

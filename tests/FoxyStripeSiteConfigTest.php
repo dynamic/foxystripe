@@ -1,5 +1,7 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Test;
+
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\SiteConfig\SiteConfig;
 

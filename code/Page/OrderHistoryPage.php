@@ -2,6 +2,10 @@
 
 namespace Dynamic\FoxyStripe\Page;
 
+use SilverStripe\Control\Controller;
+use SilverStripe\ORM\PaginatedList;
+use SilverStripe\Security\Member;
+
 class OrderHistoryPage extends \Page {
 
     private static $singular_name = 'Order History Page';

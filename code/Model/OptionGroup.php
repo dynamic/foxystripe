@@ -23,7 +23,7 @@ class OptionGroup extends DataObject
      * @var array
      */
     private static $has_many = array(
-        'Options' => 'OptionItem',
+        'Options' => OptionItem::class,
     );
 
     /**

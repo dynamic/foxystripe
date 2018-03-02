@@ -1,5 +1,9 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Test;
+
+use SilverStripe\Dev\SapphireTest;
+
 class ProductHolderTest extends SapphireTest
 {
     /**

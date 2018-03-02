@@ -48,7 +48,10 @@ class ProductHolder extends \Page
     /**
      * @var array
      */
-    private static $allowed_children = array('ProductHolder', 'ProductPage');
+    private static $allowed_children = [
+        ProductHolder::class,
+        ProductPage::class,
+    ];
 
     /**
      * @var string

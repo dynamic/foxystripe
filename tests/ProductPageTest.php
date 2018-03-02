@@ -1,6 +1,11 @@
 <?php
 
-class ProductPageTest extends FS_Test{
+namespace Dynamic\FoxyStripe\Test;
+
+use Dynamic\FoxyStripe\Test\FS_Test;
+
+class ProductPageTest extends FS_Test
+{
 
 	protected static $use_draft_site = true;
 

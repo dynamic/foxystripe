@@ -1,9 +1,11 @@
-ProductHolder:
+SilverStripe\SiteConfig\SiteConfig:
+  StoreKey: '123456'
+Dynamic\FoxyStripe\Page\ProductHolder:
   default:
     Title: "Products"
   two:
     Title: "Misc"
-ProductPage:
+Dynamic\FoxyStripe\Page\ProductPage:
   product1:
     Title: Product 1
     URLSegment: product-1
@@ -14,8 +16,8 @@ ProductPage:
     Featured: 0
     Available: 1
     CategoryID: 1
-    ParentID: =>ProductHolder.default
-    ProductHolders: =>ProductHolder.two
+    ParentID: =>Dynamic\FoxyStripe\Page\ProductHolder.default
+    ProductHolders: =>Dynamic\FoxyStripe\Page\ProductHolder.two
   product2:
     Title: Product 2
     URLSegment: product-2
@@ -26,8 +28,8 @@ ProductPage:
     Featured: 1
     Available: 1
     CategoryID: 1
-    ParentID: =>ProductHolder.default
-    ProductHolders: =>ProductHolder.two
+    ParentID: =>Dynamic\FoxyStripe\Page\ProductHolder.default
+    ProductHolders: =>Dynamic\FoxyStripe\Page\ProductHolder.two
   product3:
     Title: Product 3
     URLSegment: product-3
@@ -38,27 +40,20 @@ ProductPage:
     Featured: 1
     Available: 0
     CategoryID: 1
-    ParentID: =>ProductHolder.default
-OptionGroup:
+    ParentID: =>Dynamic\FoxyStripe\Page\ProductHolder.default
+Dynamic\FoxyStripe\Model\OptionGroup:
   og1:
     Title: Size
   og2:
     Title: Color
-ProductCategory:
+Dynamic\FoxyStripe\Model\ProductCategory:
   default:
     Title: Default
     Code: DEFAULT
   apparel:
     Title: Apparel
     Code: APPAREL
-OptionGroup:
-  default:
-    Title: "Options"
-  size:
-    Title: "Size"
-  color:
-    Title: "Color"
-OptionItem:
+Dynamic\FoxyStripe\Model\OptionItem:
   large:
     Title: Large
     WeightModifier: 3
@@ -68,7 +63,6 @@ OptionItem:
     CodeModifieraction: Add
     PriceModifierAction: Subtract
     Available: true
-    ProductOptionGroupID: =>OptionGroup.size
   small:
     Title: Small
     WeightModifier: 2
@@ -78,27 +72,34 @@ OptionItem:
     CodeModifieraction: Subtract
     PriceModifierAction: Add
     Available: false
-    ProductOptionGroupID: =>OptionGroup.size
-Order:
+Dynamic\FoxyStripe\Model\OptionGroup:
+  default:
+    Title: "Options"
+  size:
+    Title: "Size"
+    Options: =>Dynamic\FoxyStripe\Model\OptionItem.large, =>Dynamic\FoxyStripe\Model\OptionItem.small
+  color:
+    Title: "Color"
+Dynamic\FoxyStripe\Model\Order:
   one:
     ProductTotal: "$100.00"
     ReceiptURL: "http://www.foxycart.com/receipt/123"
-OrderDetail:
+Dynamic\FoxyStripe\Model\OrderDetail:
   one:
     Quantity: 2
     Price: "$10.00"
-    ProductID: =>ProductPage.product1
+    ProductID: =>Dynamic\FoxyStripe\Page\ProductPage.product1
     OrderID: =>Order.one
   two:
     Quantity: 1
     Price: "$14.00"
-    ProductID: =>ProductPage.product2
+    ProductID: =>Dynamic\FoxyStripe\Page\ProductPage.product2
     OrderID: =>Order.one
 
 # ------------------------------------------
 # Groups
 # ------------------------------------------
-Group:
+SilverStripe\Security\Group:
   admin:
     Title: Administrators
   customers:
@@ -108,25 +109,25 @@ Group:
 # ------------------------------------------
 # Members
 # ------------------------------------------
-Member:
+SilverStripe\Security\Member:
   admin:
     FirstName: Admin
     Surname: Admin
     Email: admin@test.com
     Password: password
-    Groups: =>Group.admin
+    Groups: =>SilverStripe\Security\Group.admin
   customer:
     FirstName: "George"
     Surname: "Costanza"
     Email: "george@example.com"
-    Groups: =>Group.customers
+    Groups: =>SilverStripe\Security\Group.customers
 # ------------------------------------------
 # Permissions
 # ------------------------------------------
-Permission:
-   admin:
+SilverStripe\Security\Permission:
+  admin:
     Code: ADMIN
-    GroupID: =>Group.admin
+    GroupID: =>SilverStripe\Security\Group.admin
   viewOrder:
     Code: VIEW_ORDER
-    GroupID: =>Group.customers
+    GroupID: =>SilverStripe\Security\Group.customers

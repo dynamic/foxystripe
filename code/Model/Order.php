@@ -152,7 +152,7 @@ class Order extends DataObject implements PermissionProvider
      */
     public function getDecryptedResponse() {
         $decrypted = urldecode($this->Response);
-        return rc4crypt::decrypt(FoxyCart::getStoreKey(), $decrypted);
+        return \rc4crypt::decrypt(FoxyCart::getStoreKey(), $decrypted);
     }
 
     /**
@@ -172,7 +172,7 @@ class Order extends DataObject implements PermissionProvider
 
         if ($this->getDecryptedResponse()) {
 
-            $response = new SimpleXMLElement($this->getDecryptedResponse());
+            $response = new \SimpleXMLElement($this->getDecryptedResponse());
 
             $this->parseOrderInfo($response);
             $this->parseOrderCustomer($response);

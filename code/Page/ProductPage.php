@@ -29,12 +29,12 @@ class ProductPage extends \Page implements PermissionProvider
     /**
      * @var string
      */
-    private static $allowed_children = 'none';
+    private static $allowed_children = [];
 
     /**
      * @var string
      */
-    private static $default_parent = 'ProductHolder';
+    private static $default_parent = ProductHolder::class;
 
     /**
      * @var bool
