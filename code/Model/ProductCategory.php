@@ -1,5 +1,7 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Model;
+
 use Dynamic\FoxyStripe\Model\FoxyStripeClient;
 use SilverStripe\ORM\DataObject;
 

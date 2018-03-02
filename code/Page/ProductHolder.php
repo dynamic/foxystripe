@@ -1,9 +1,6 @@
 <?php
-/**
- *
- * @package FoxyStripe
- *
- */
+
+namespace Dynamic\FoxyStripe\Page;
 
 class ProductHolder extends \Page
 {

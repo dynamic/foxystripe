@@ -1,12 +1,9 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Page;
+
 use SilverStripe\Security\PermissionProvider;
 
-/**
- *
- * @package FoxyStripe
- *
- */
 class ProductPage extends \Page implements PermissionProvider
 {
 

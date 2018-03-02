@@ -1,5 +1,7 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Page;
+
 class DonationProduct extends ProductPage
 {
     /**

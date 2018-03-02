@@ -1,5 +1,7 @@
 <?php
 
+namespace Dynamic\FoxyStripe\ORM;
+
 use Dynamic\FoxyStripe\Model\FoxyStripeClient;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataExtension;

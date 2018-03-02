@@ -1,5 +1,7 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Model;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\PermissionProvider;
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace Dynamic\FoxyStripe\ORM;
+
 use SilverStripe\ORM\DataExtension;
 
 class FoxyStripePageExtension extends DataExtension

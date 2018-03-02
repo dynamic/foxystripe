@@ -1,5 +1,7 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Form;
+
 use SilverStripe\Forms\DropdownField;
 
 /**
