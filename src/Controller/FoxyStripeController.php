@@ -11,14 +11,14 @@ class FoxyStripeController extends \PageController
     /**
      *
      */
-    const URLSegment = 'foxystripe';
+    const URLSEGMENT = 'foxystripe';
 
     /**
      * @return string
      */
     public function getURLSegment()
     {
-        return self::URLSegment;
+        return self::URLSEGMENT;
     }
 
     /**
@@ -67,7 +67,6 @@ class FoxyStripeController extends \PageController
 
         // loop over each transaction to find FoxyCart Order ID
         foreach ($orders->transactions->transaction as $transaction) {
-
             // if FoxyCart order id, then parse order
             if (isset($transaction->id)) {
                 ($order = Order::get()->filter('Order_ID', (int) $transaction->id)->First()) ?
@@ -104,8 +103,8 @@ class FoxyStripeController extends \PageController
 
         $auth_token = sha1($Member->Customer_ID.'|'.$timestampNew.'|'.FoxyCart::getStoreKey());
 
-        $redirect_complete = 'https://'.FoxyCart::getFoxyCartStoreName().'.foxycart.com/checkout?fc_auth_token='.$auth_token.
-            '&fcsid='.$fcsid.'&fc_customer_id='.$Member->Customer_ID.'&timestamp='.$timestampNew;
+        $redirect_complete = 'https://'.FoxyCart::getFoxyCartStoreName().'.foxycart.com/checkout?fc_auth_token='.
+            $auth_token.'&fcsid='.$fcsid.'&fc_customer_id='.$Member->Customer_ID.'&timestamp='.$timestampNew;
 
         $this->redirect($redirect_complete);
     }

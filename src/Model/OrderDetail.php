@@ -83,7 +83,12 @@ class OrderDetail extends DataObject
 
         if ($this->ID) {
             $fields->addFieldsToTab('Root.Options', array(
-                GridField::create('Options', 'Product Options', $this->OrderOptions(), GridFieldConfig_RecordViewer::create()),
+                GridField::create(
+                    'Options',
+                    'Product Options',
+                    $this->OrderOptions(),
+                    GridFieldConfig_RecordViewer::create()
+                ),
             ));
         }
 

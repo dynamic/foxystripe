@@ -2,7 +2,16 @@
 
 namespace Dynamic\FoxyStripe\Form;
 
+use Dynamic\FoxyStripe\Model\OptionGroup;
+use Dynamic\FoxyStripe\Page\ProductPage;
+use SilverStripe\Forms\CompositeField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\HiddenField;
+use SilverStripe\ORM\GroupedList;
 
 /**
  * Class FoxyStripePurchaseForm.
@@ -95,9 +104,13 @@ class FoxyStripePurchaseForm extends Form
         $this->setProduct($product);
         $this->setSiteConfig($siteConfig);
 
-        $fields = ($fields != null && $fields->exists()) ? $this->getProductFields($fields) : $this->getProductFields(FieldList::create());
+        $fields = ($fields != null && $fields->exists()) ?
+            $this->getProductFields($fields) :
+            $this->getProductFields(FieldList::create());
 
-        $actions = ($actions != null && $actions->exists()) ? $this->getProductActions($actions) : $this->getProductActions(FieldList::create());
+        $actions = ($actions != null && $actions->exists()) ?
+            $this->getProductActions($actions) :
+            $this->getProductActions(FieldList::create());
         $validator = (!empty($validator) || $validator != null) ? $validator : RequiredFields::create();
 
         parent::__construct($controller, $name, $fields, $actions, $validator);
@@ -114,27 +127,50 @@ class FoxyStripePurchaseForm extends Form
      */
     protected function getProductFields(FieldList $fields)
     {
-        $hiddenTitle = ($this->product->ReceiptTitle) ? htmlspecialchars($this->product->ReceiptTitle) : htmlspecialchars($this->product->Title);
+        $hiddenTitle = ($this->product->ReceiptTitle) ?
+            htmlspecialchars($this->product->ReceiptTitle) :
+            htmlspecialchars($this->product->Title);
         $code = $this->product->Code;
 
         if ($this->product->Available) {
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'name',
-                $hiddenTitle))->setValue($hiddenTitle));
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'category',
-                $this->product->Category()->Code))->setValue($this->product->Category()->Code));
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'code',
-                $this->product->Code))->setValue($this->product->Code));
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'product_id',
-                $this->product->ID))->setValue($this->product->ID));
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'price',
-                $this->product->Price))->setValue($this->product->Price));//can't override id
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'weight',
-                $this->product->Weight))->setValue($this->product->Weight));
+            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
+                $code,
+                'name',
+                $hiddenTitle
+            ))->setValue($hiddenTitle));
+            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
+                $code,
+                'category',
+                $this->product->Category()->Code
+            ))->setValue($this->product->Category()->Code));
+            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
+                $code,
+                'code',
+                $this->product->Code
+            ))->setValue($this->product->Code));
+            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
+                $code,
+                'product_id',
+                $this->product->ID
+            ))->setValue($this->product->ID));
+            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
+                $code,
+                'price',
+                $this->product->Price
+            ))->setValue($this->product->Price));//can't override id
+            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
+                $code,
+                'weight',
+                $this->product->Weight
+            ))->setValue($this->product->Weight));
 
             if ($this->product->PreviewImage()->exists()) {
                 $fields->push(
-                    HiddenField::create(ProductPage::getGeneratedValue($code, 'image',
-                        $this->product->PreviewImage()->PaddedImage(80, 80)->absoluteURL))
+                    HiddenField::create(ProductPage::getGeneratedValue(
+                        $code,
+                        'image',
+                        $this->product->PreviewImage()->PaddedImage(80, 80)->absoluteURL
+                    ))
                         ->setValue($this->product->PreviewImage()->PaddedImage(80, 80)->absoluteURL)
                 );
             }
@@ -146,15 +182,22 @@ class FoxyStripePurchaseForm extends Form
             $count = 1;
             $quantity = array();
             while ($count <= $quantityMax) {
-                $countVal = ProductPage::getGeneratedValue($this->product->Code, 'quantity', $count, 'value');
+                $countVal = ProductPage::getGeneratedValue(
+                    $this->product->Code,
+                    'quantity',
+                    $count,
+                    'value'
+                );
                 $quantity[$countVal] = $count;
                 ++$count;
             }
 
             $fields->push(DropdownField::create('quantity', 'Quantity', $quantity));
 
-            $fields->push(HeaderField::create('submitPrice', '$'.$this->product->Price, 4)->addExtraClass('submit-price'));
-            $fields->push(HeaderField::create('unavailableText', 'Selection unavailable', 4)->addExtraClass('hidden unavailable-text'));
+            $fields->push(HeaderField::create('submitPrice', '$'.$this->product->Price, 4)
+                ->addExtraClass('submit-price'));
+            $fields->push(HeaderField::create('unavailableText', 'Selection unavailable', 4)
+                ->addExtraClass('hidden unavailable-text'));
 
             $this->extend('updatePurchaseFormFields', $fields);
         } else {
@@ -177,9 +220,19 @@ class FoxyStripePurchaseForm extends Form
             '',
             _t('ProductForm.AddToCart', 'Add to Cart')
         ));
-        $submit->setAttribute('name',
-            ProductPage::getGeneratedValue($this->product->Code, 'Submit', _t('ProductForm.AddToCart', 'Add to Cart')));
-        if (!$this->site_config->StoreName || $this->site_config->StoreName == '' || !isset($this->site_config->StoreName) || !$this->product->Available) {
+        $submit->setAttribute(
+            'name',
+            ProductPage::getGeneratedValue(
+                $this->product->Code,
+                'Submit',
+                _t('ProductForm.AddToCart', 'Add to Cart')
+            )
+        );
+        if (!$this->site_config->StoreName ||
+            $this->site_config->StoreName == '' ||
+            !isset($this->site_config->StoreName) ||
+            !$this->product->Available
+        ) {
             $submit->setAttribute('Disabled', true);
         }
 
@@ -212,13 +265,22 @@ class FoxyStripePurchaseForm extends Form
             $disabled = array();
             $fullOptions = array();
             foreach ($set as $item) {
-                $fullOptions[ProductPage::getGeneratedValue($this->product->Code, $group->Title,
+                $fullOptions[ProductPage::getGeneratedValue(
+                    $this->product->Code,
+                    $group->Title,
                     $item->getGeneratedValue(),
-                    'value')] = $item->getGeneratedTitle();
+                    'value'
+                )] = $item->getGeneratedTitle();
                 if (!$item->Availability) {
-                    array_push($disabled,
-                        ProductPage::getGeneratedValue($this->product->Code, $group->Title, $item->getGeneratedValue(),
-                            'value'));
+                    array_push(
+                        $disabled,
+                        ProductPage::getGeneratedValue(
+                            $this->product->Code,
+                            $group->Title,
+                            $item->getGeneratedValue(),
+                            'value'
+                        )
+                    );
                 }
             }
             $optionsSet->push(

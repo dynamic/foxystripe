@@ -147,7 +147,9 @@ class Order extends DataObject implements PermissionProvider
     public function getReceiptLink()
     {
         $obj = DBHTMLVarchar::create();
-        $obj->setValue('<a href="'.$this->ReceiptURL.'" target="_blank" class="cms-panel-link action external-link">view</a>');
+        $obj->setValue(
+            '<a href="'.$this->ReceiptURL.'" target="_blank" class="cms-panel-link action external-link">view</a>'
+        );
 
         return $obj;
     }
@@ -198,7 +200,6 @@ class Order extends DataObject implements PermissionProvider
     public function parseOrderInfo($response)
     {
         foreach ($response->transactions->transaction as $transaction) {
-
             // Record transaction data from FoxyCart Datafeed:
             $this->Store_ID = (int) $transaction->store_id;
             $this->TransactionDate = (string) $transaction->transaction_date;
@@ -215,21 +216,18 @@ class Order extends DataObject implements PermissionProvider
 
     /**
      * @param $response
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public function parseOrderCustomer($response)
     {
         foreach ($response->transactions->transaction as $transaction) {
-
             // if not a guest transaction in FoxyCart
             if (isset($transaction->customer_email) && $transaction->is_anonymous == 0) {
-
                 // if Customer is existing member, associate with current order
                 if (Member::get()->filter('Email', $transaction->customer_email)->First()) {
                     $customer = Member::get()->filter('Email', $transaction->customer_email)->First();
-
                     // if new customer, create account with data from FoxyCart
                 } else {
-
                     // set PasswordEncryption to 'none' so imported, encrypted password is not encrypted again
                     Config::inst()->update('Security', 'password_encryption_algorithm', 'none');
 
@@ -272,7 +270,6 @@ class Order extends DataObject implements PermissionProvider
         }
 
         foreach ($response->transactions->transaction as $transaction) {
-
             // Associate ProductPages, Options, Quantity with Order
             foreach ($transaction->transaction_details->transaction_detail as $detail) {
                 $OrderDetail = OrderDetail::create();
@@ -286,10 +283,8 @@ class Order extends DataObject implements PermissionProvider
 
                 // parse OrderOptions
                 foreach ($detail->transaction_detail_options->transaction_detail_option as $option) {
-
                     // Find product via product_id custom variable
                     if ($option->product_option_name == 'product_id') {
-
                         // if product is found, set relation to OrderDetail
                         $OrderProduct = ProductPage::get()->byID((int) $option->product_option_value);
                         if ($OrderProduct) {

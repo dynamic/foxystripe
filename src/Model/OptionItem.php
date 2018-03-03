@@ -114,9 +114,17 @@ class OptionItem extends DataObject
             return OptionGroup::get()->map()->toArray();
         };
         $groupFields = singleton(OptionGroup::class)->getCMSFields();
-        $groupField = DropdownField::create('ProductOptionGroupID', _t('OptionItem.Group', 'Group'), $groups())
+        $groupField = DropdownField::create('ProductOptionGroupID', _t(
+            'OptionItem.Group',
+            'Group'
+        ), $groups())
             ->setEmptyString('')
-            ->setDescription(_t('OptionItem.GroupDescription', 'Name of this group of options. Managed in <a href="admin/settings">Settings > FoxyStripe > Option Groups</a>'));
+            ->setDescription(_t(
+                'OptionItem.GroupDescription',
+                'Name of this group of options. Managed in <a href="admin/settings">
+                        Settings > FoxyStripe > Option Groups
+                        </a>'
+            ));
         if (class_exists('QuickAddNewExtension')) {
             $groupField->useAddNew('OptionGroup', $groups, $groupFields);
         }
@@ -126,18 +134,26 @@ class OptionItem extends DataObject
                 ->setTitle(_t('OptionItem.Title', 'Product Option Name')),
             CheckboxField::create('Available')
                 ->setTitle(_t('OptionItem.Available', 'Available for purchase'))
-                ->setDescription(_t('OptionItem.AvailableDescription', 'If unchecked, will disable this option in the drop down menu')),
+                ->setDescription(_t(
+                    'OptionItem.AvailableDescription',
+                    'If unchecked, will disable this option in the drop down menu'
+                )),
             $groupField,
         ));
 
         $fields->addFieldsToTab('Root.Modifiers', array(
-            HeaderField::create('ModifyHD', _t('OptionItem.ModifyHD', 'Product Option Modifiers'), 2),
+            HeaderField::create('ModifyHD', _t(
+                'OptionItem.ModifyHD',
+                'Product Option Modifiers'
+            ), 2),
 
             // Weight Modifier Fields
             HeaderField::create('WeightHD', _t('OptionItem.WeightHD', 'Modify Weight'), 3),
             NumericField::create('WeightModifier')
                 ->setTitle(_t('OptionItem.WeightModifier', 'Weight')),
-            DropdownField::create('WeightModifierAction', _t('OptionItem.WeightModifierAction', 'Weight Modification'),
+            DropdownField::create(
+                'WeightModifierAction',
+                _t('OptionItem.WeightModifierAction', 'Weight Modification'),
                 array(
                     'Add' => _t(
                         'OptionItem.WeightAdd',
@@ -154,13 +170,18 @@ class OptionItem extends DataObject
                     'Set' => _t('OptionItem.WeightSet', 'Set as a new Weight'),
                 )
             )->setEmptyString('')
-            ->setDescription(_t('OptionItem.WeightDescription', 'Does weight modify or replace base weight?')),
+            ->setDescription(_t(
+                'OptionItem.WeightDescription',
+                'Does weight modify or replace base weight?'
+            )),
 
             // Price Modifier FIelds
             HeaderField::create('PriceHD', _t('OptionItem.PriceHD', 'Modify Price'), 3),
             CurrencyField::create('PriceModifier')
                 ->setTitle(_t('OptionItem.PriceModifier', 'Price')),
-            DropdownField::create('PriceModifierAction', _t('OptionItem.PriceModifierAction', 'Price Modification'),
+            DropdownField::create(
+                'PriceModifierAction',
+                _t('OptionItem.PriceModifierAction', 'Price Modification'),
                 array(
                     'Add' => _t(
                         'OptionItem.PriceAdd',
@@ -183,7 +204,9 @@ class OptionItem extends DataObject
             HeaderField::create('CodeHD', _t('OptionItem.CodeHD', 'Modify Code'), 3),
             TextField::create('CodeModifier')
                 ->setTitle(_t('OptionItem.CodeModifier', 'Code')),
-            DropdownField::create('CodeModifierAction', _t('OptionItem.CodeModifierAction', 'Code Modification'),
+            DropdownField::create(
+                'CodeModifierAction',
+                _t('OptionItem.CodeModifierAction', 'Code Modification'),
                 array(
                     'Add' => _t(
                         'OptionItem.CodeAdd',
@@ -213,7 +236,9 @@ class OptionItem extends DataObject
         // to do - have OptionItem category override set ProductPage category if selected: issue #155
         $categoryField = DropdownField::create('CategoryID', 'Category', $categories())
             ->setEmptyString('')
-            ->setDescription('Categories can be managed in <a href="admin/settings">Settings > FoxyStripe > Categories</a>');
+            ->setDescription('Categories can be managed in <a href="admin/settings">
+                Settings > FoxyStripe > Categories
+        </a>');
         if (class_exists('QuickAddNewExtension')) $categoryField->useAddNew('ProductCategory', $categories);
 
         $fields->insertAfter($categoryField, 'ProductOptionGroupID');
@@ -311,7 +336,12 @@ class OptionItem extends DataObject
     {
         $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
         $title = $this->Title;
-        $title .= ($this->PriceModifier != 0) ? ': ('.self::getOptionModifierActionSymbol($this->PriceModifierAction, $returnWithOnlyPlusMinus = true).'$'.$modPrice.')' : '';
+        $title .= ($this->PriceModifier != 0) ?
+            ': ('.self::getOptionModifierActionSymbol(
+                $this->PriceModifierAction,
+                $returnWithOnlyPlusMinus = true
+            ).'$'.$modPrice.')' :
+            '';
 
         return $title;
     }

@@ -157,7 +157,8 @@ class ProductCategory extends DataObject
             ->displayIf('DiscountType')->isNotEqualTo('');
 
         $fields->dataFieldByName('CustomsValue')
-            ->setDescription('Enter a dollar amount here for the declared customs value for international shipments. If you leave this blank, the sale price of the item will be used.');
+            ->setDescription('Enter a dollar amount here for the declared customs value for international 
+            shipments. If you leave this blank, the sale price of the item will be used.');
 
         /*
         $fields = FieldList::create(
@@ -166,7 +167,8 @@ class ProductCategory extends DataObject
                 _t(
                     'ProductCategory.PCIntro',
                     '<p>Categories must be created in your
-                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
+                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories"
+                            target="_blank">
                             FoxyCart Product Categories
                         </a>, and also manually created in FoxyStripe.
                     </p>'
@@ -282,7 +284,8 @@ class ProductCategory extends DataObject
             'flat_per_order' => 'Flat fee per order with products in this category',
             'flat_per_item' => 'Flat fee per product in this category',
             'flat_percent' => 'Flat fee per shipment + % of price for products in this category',
-            'flat_percent_with_minimum' => 'Flat fee per shipment OR % of order total with products in this category. Whichever is greater.',
+            'flat_percent_with_minimum' => 'Flat fee per shipment OR % of order total with products in this category. 
+                Whichever is greater.',
         ];
     }
 

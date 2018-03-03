@@ -162,8 +162,10 @@ class ProductPage extends \Page implements PermissionProvider
         $fields = parent::getCMSFields();
 
         // allow extensions of ProductPage to override the PreviewImage field description
-        $previewDescription = ($this->stat('customPreviewDescription')) ? $this->stat('customPreviewDescription') : _t('ProductPage.PreviewImageDescription',
-            'Image used throughout site to represent this product');
+        $previewDescription = ($this->stat('customPreviewDescription')) ? $this->stat('customPreviewDescription') : _t(
+            'ProductPage.PreviewImageDescription',
+            'Image used throughout site to represent this product'
+        );
 
         // Cateogry Dropdown field w/ add new
         $source = function () {
@@ -241,7 +243,8 @@ class ProductPage extends \Page implements PermissionProvider
             TextField::create('ReceiptTitle')
                 ->setTitle(_t('ProductPage.ReceiptTitle', 'Product Title for Receipt'))
                 ->setDescription(_t(
-                    'ProductPage.ReceiptTitleDescription', 'Optional'
+                    'ProductPage.ReceiptTitleDescription',
+                    'Optional'
                 )),
         ));
 
@@ -274,7 +277,8 @@ class ProductPage extends \Page implements PermissionProvider
         if (FoxyCart::store_name_warning() !== null) {
             $fields->addFieldToTab('Root.Main', LiteralField::create('StoreSubDomainHeaderWarning', _t(
                 'ProductPage.StoreSubDomainHeaderWarning',
-                '<p class="message error">Store sub-domain must be entered in the <a href="/admin/settings/">site settings</a></p>'
+                '<p class="message error">Store sub-domain must be entered in the 
+                        <a href="/admin/settings/">site settings</a></p>'
             )), 'Title');
         }
 
@@ -379,7 +383,8 @@ class ProductPage extends \Page implements PermissionProvider
     // get FoxyCart Store Name for JS call
     public function getCartScript()
     {
-        return '<script src="https://cdn.foxycart.com/'.FoxyCart::getFoxyCartStoreName().'/loader.js" async defer></script>';
+        $store = FoxyCart::getFoxyCartStoreName();
+        return '<script src="https://cdn.foxycart.com/'.$store.'/loader.js" async defer></script>';
     }
 
     /**

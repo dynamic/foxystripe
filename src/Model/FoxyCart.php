@@ -157,8 +157,9 @@ class FoxyCart
     public static function putCustomer($Member = null)
     {
         // throw error if no $Member Object
-        if (!isset($Member));//trigger_error('No Member set', E_USER_ERROR);
-
+        if (!isset($Member)) {
+//trigger_error('No Member set', E_USER_ERROR);
+        }
         // send updated customer record from API
         $foxyData = array();
         $foxyData['api_action'] = 'customer_save';

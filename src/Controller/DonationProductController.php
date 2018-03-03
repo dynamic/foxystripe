@@ -33,8 +33,11 @@ class DonationProductController extends ProductPageController
 
         $fields = $form->Fields();
 
-        $fields->replaceField(ProductPage::getGeneratedValue($this->Code, 'price',
-            $this->Price), $currencyField = CurrencyField::create('price', 'Amount'));
+        $fields->replaceField(ProductPage::getGeneratedValue(
+            $this->Code,
+            'price',
+            $this->Price
+        ), $currencyField = CurrencyField::create('price', 'Amount'));
 
         $fields->removeByName(array(
             'quantity',

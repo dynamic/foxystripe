@@ -97,7 +97,7 @@ class ProductHolder extends \Page
 
     /**
      * loadDescendantProductGroupIDListInto function.
-     * 
+     *
      * @param mixed &$idList
      */
     public function loadDescendantProductGroupIDListInto(&$idList)
@@ -118,7 +118,7 @@ class ProductHolder extends \Page
 
     /**
      * ProductGroupIDs function.
-     * 
+     *
      * @return array
      */
     public function ProductGroupIDs()

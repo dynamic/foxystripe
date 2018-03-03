@@ -185,7 +185,8 @@ class FoxyStripeClient
 
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                Injector::inst()->get(LoggerInterface::class)->error('setItemCategoriesURL errors - '.json_encode($errors));
+                Injector::inst()
+                    ->get(LoggerInterface::class)->error('setItemCategoriesURL errors - '.json_encode($errors));
             }
         }
     }
@@ -213,7 +214,8 @@ class FoxyStripeClient
 
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                Injector::inst()->get(LoggerInterface::class)->error('setItemCategories errors - '.json_encode($errors));
+                Injector::inst()
+                    ->get(LoggerInterface::class)->error('setItemCategories errors - '.json_encode($errors));
             }
         }
     }

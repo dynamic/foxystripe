@@ -12,7 +12,7 @@ use SilverStripe\Forms\DropdownField;
  * Example instantiation:
  * <code>
  * FoxyStripeDropdownField::create('Country')
- * 		->setSource(array(
+ *      ->setSource(array(
  *     'NZ' => 'New Zealand',
  *     'US' => 'United States',
  *     'GEM'=> 'Germany'
