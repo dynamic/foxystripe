@@ -18,7 +18,7 @@ class OrderOption extends DataObject
      * @var array
      */
     private static $has_one = array(
-        'OrderDetail' => 'OrderDetail'
+        'OrderDetail' => OrderDetail::class
     );
 
     /**

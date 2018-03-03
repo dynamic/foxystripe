@@ -2,8 +2,11 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
+use Dynamic\FoxyStripe\Page\ProductPage;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLVarchar;
+use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 
@@ -152,7 +155,9 @@ class Order extends DataObject implements PermissionProvider
      */
     public function getDecryptedResponse() {
         $decrypted = urldecode($this->Response);
-        return \rc4crypt::decrypt(FoxyCart::getStoreKey(), $decrypted);
+        if (FoxyCart::getStoreKey()) {
+            return \rc4crypt::decrypt(FoxyCart::getStoreKey(), $decrypted);
+        }
     }
 
     /**
@@ -322,7 +327,7 @@ class Order extends DataObject implements PermissionProvider
      * @return bool|int
      */
 	public function canView($member = false) {
-		return Permission::check('Product_ORDERS');
+		return Permission::check('Product_ORDERS', 'any', $member);
 	}
 
     /**
@@ -331,7 +336,7 @@ class Order extends DataObject implements PermissionProvider
      */
 	public function canEdit($member = null) {
         return false;
-        //return Permission::check('Product_ORDERS');
+        //return Permission::check('Product_ORDERS', 'any', $member);
 	}
 
     /**
@@ -341,7 +346,7 @@ class Order extends DataObject implements PermissionProvider
     public function canDelete($member = null)
     {
         return false;
-        //return Permission::check('Product_ORDERS');
+        //return Permission::check('Product_ORDERS', 'any', $member);
     }
 
     /**

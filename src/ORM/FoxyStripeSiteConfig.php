@@ -2,11 +2,14 @@
 
 namespace Dynamic\FoxyStripe\ORM;
 
+use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\FoxyStripeClient;
 use Dynamic\FoxyStripe\Model\OptionGroup;
 use Dynamic\FoxyStripe\Model\ProductCategory;
+use Psr\Log\LoggerInterface;
 use SilverStripe\Control\Director;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -219,15 +222,25 @@ class FoxyStripeSiteConfig extends DataExtension
 
 	}
 
+    /**
+     * @return string
+     */
     private static function getSSOLink() {
         return Director::absoluteBaseURL()."foxystripe/sso/";
     }
 
+    /**
+     * @return string
+     */
     private static function getDataFeedLink() {
         return Director::absoluteBaseURL()."foxystripe/";
     }
 
-    // generate key on install
+    /**
+     * generate key on install
+     *
+     * @throws \SilverStripe\ORM\ValidationException
+     */
     public function requireDefaultRecords() {
 
         parent::requireDefaultRecords();
@@ -245,6 +258,9 @@ class FoxyStripeSiteConfig extends DataExtension
         }
     }
 
+    /**
+     * @return array
+     */
     public function getCheckoutTypes()
     {
         return [
@@ -283,7 +299,7 @@ class FoxyStripeSiteConfig extends DataExtension
             'customer_password_hash_type' => 'sha1_salted_suffix',
             'customer_password_hash_config' => 40,
             'features_multiship' => $this->owner->AllowMultiship,
-            'timezone' => $this->StoreTimezone,
+            //'timezone' => $this->StoreTimezone,
         ];
     }
 
@@ -291,12 +307,15 @@ class FoxyStripeSiteConfig extends DataExtension
      * if StoreTitle is empty, grab values from FoxyCart
      *
      * example of 2 way sync for future reference
+     *
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function onBeforeWrite()
     {
         parent::onBeforeWrite();
 
         if ($this->owner->ID && !$this->owner->StoreTitle && $this->owner->access_token) {
+            /*
             if ($fc = new FoxyStripeClient()) {
                 $client = $fc->getClient();
                 $errors = [];
@@ -306,14 +325,16 @@ class FoxyStripeSiteConfig extends DataExtension
 
                 $errors = array_merge($errors, $client->getErrors($result));
                 if (count($errors)) {
-                    \SS_Log::log('FoxyStripeSiteConfig::onBeforeWrite errors - ' . json_encode($errors), \SS_Log::WARN);
+                    Injector::inst()->get(LoggerInterface::class)
+                        ->error('FoxyStripeSiteConfig::onBeforeWrite errors - ' . json_encode($errors));
                 }
             }
+            */
         }
     }
 
     /**
-     * push updated data to FoxyCart
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function onAfterWrite()
     {

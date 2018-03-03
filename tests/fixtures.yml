@@ -1,6 +1,3 @@
-SilverStripe\SiteConfig\SiteConfig:
-  StoreKey: '123456'
-
 Dynamic\FoxyStripe\Page\ProductHolder:
   default:
     Title: "Products"
@@ -46,12 +43,6 @@ Dynamic\FoxyStripe\Page\ProductPage:
     CategoryID: 1
     ParentID: =>Dynamic\FoxyStripe\Page\ProductHolder.default
 
-Dynamic\FoxyStripe\Model\OptionGroup:
-  og1:
-    Title: 'Size'
-  og2:
-    Title: 'Color'
-
 Dynamic\FoxyStripe\Model\ProductCategory:
   default:
     Title: 'Default'
@@ -59,6 +50,14 @@ Dynamic\FoxyStripe\Model\ProductCategory:
   apparel:
     Title: 'Apparel'
     Code: 'APPAREL'
+
+Dynamic\FoxyStripe\Model\OptionGroup:
+  default:
+    Title: "Options"
+  size:
+    Title: "Size"
+  color:
+    Title: "Color"
 
 Dynamic\FoxyStripe\Model\OptionItem:
   large:
@@ -70,6 +69,7 @@ Dynamic\FoxyStripe\Model\OptionItem:
     CodeModifieraction: 'Add'
     PriceModifierAction: 'Subtract'
     Available: 1
+    ProductOptionGroup: =>Dynamic\FoxyStripe\Model\OptionGroup.size
 
   small:
     Title: 'Small'
@@ -80,17 +80,7 @@ Dynamic\FoxyStripe\Model\OptionItem:
     CodeModifieraction: 'Subtract'
     PriceModifierAction: 'Add'
     Available: 0
-
-Dynamic\FoxyStripe\Model\OptionGroup:
-  default:
-    Title: "Options"
-
-  size:
-    Title: "Size"
-    Options: =>Dynamic\FoxyStripe\Model\OptionItem.large, =>Dynamic\FoxyStripe\Model\OptionItem.small
-
-  color:
-    Title: "Color"
+    ProductOptionGroup: =>Dynamic\FoxyStripe\Model\OptionGroup.size
 
 Dynamic\FoxyStripe\Model\Order:
   one:

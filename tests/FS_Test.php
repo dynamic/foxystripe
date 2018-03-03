@@ -4,13 +4,28 @@ namespace Dynamic\FoxyStripe\Test;
 
 use SilverStripe\Dev\FunctionalTest;
 
-class FS_Test extends FunctionalTest {
+class FS_Test extends FunctionalTest
+{
+    /**
+     * @var string
+     */
+    protected static $fixture_file = 'fixtures.yml';
 
-    protected static $fixture_file = 'foxystripe/tests/FoxyStripeTest.yml';
+    /**
+     * @var bool
+     */
     protected static $disable_themes = true;
+
+    /**
+     * @var bool
+     */
     protected static $use_draft_site = false;
 
-    public function setUp(){
+    /**
+     *
+     */
+    public function setUp()
+    {
         parent::setUp();
 
         ini_set('display_errors', 1);
@@ -18,10 +33,18 @@ class FS_Test extends FunctionalTest {
         error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
     }
 
-    public function logOut(){
+    /**
+     *
+     */
+    public function logOut()
+    {
         $this->session()->clear('loggedInAs');
     }
 
-    public function testProductPage(){}
-
+    /**
+     *
+     */
+    public function testProductPage()
+    {
+    }
 }

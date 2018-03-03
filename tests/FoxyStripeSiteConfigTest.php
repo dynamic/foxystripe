@@ -3,6 +3,7 @@
 namespace Dynamic\FoxyStripe\Test;
 
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\SiteConfig\SiteConfig;
 
 class FoxyStripeSiteConfigTest extends SapphireTest
@@ -10,7 +11,7 @@ class FoxyStripeSiteConfigTest extends SapphireTest
     /**
      * @var string
      */
-    protected static $fixture_file = 'FoxyStripeTest.yml';
+    protected static $fixture_file = 'fixtures.yml';
 
     /**
      *
@@ -19,7 +20,7 @@ class FoxyStripeSiteConfigTest extends SapphireTest
     {
         $object = singleton(SiteConfig::class);
         $fields = $object->getCMSFields();
-        $this->assertInstanceOf('FieldList', $fields);
+        $this->assertInstanceOf(FieldList::class, $fields);
     }
 
     /**

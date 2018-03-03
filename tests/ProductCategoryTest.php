@@ -2,20 +2,23 @@
 
 namespace Dynamic\FoxyStripe\Test;
 
+use Dynamic\FoxyStripe\Model\ProductCategory;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Security\Member;
 
 class ProductCategoryTest extends SapphireTest
 {
     /**
      * @var string
      */
-    protected static $fixture_file = 'foxystripe/tests/FoxyStripeTest.yml';
+    protected static $fixture_file = 'fixtures.yml';
 
     public function testGetCMSFields()
     {
-        $object = $this->objFromFixture('ProductCategory', 'apparel');
+        $object = $this->objFromFixture(ProductCategory::class, 'apparel');
         $fields = $object->getCMSFields();
-        $this->assertInstanceOf('FieldList', $fields);
+        $this->assertInstanceOf(FieldList::class, $fields);
     }
 
     /**
@@ -23,10 +26,10 @@ class ProductCategoryTest extends SapphireTest
      */
     public function testCanView()
     {
-        $object = $this->objFromFixture('ProductCategory', 'apparel');
-        $admin = $this->objFromFixture('Member', 'admin');
+        $object = $this->objFromFixture(ProductCategory::class, 'apparel');
+        $admin = $this->objFromFixture(Member::class, 'admin');
         $this->assertTrue($object->canView($admin));
-        $member = $this->objFromFixture('Member', 'customer');
+        $member = $this->objFromFixture(Member::class, 'customer');
         $this->assertTrue($object->canView($member));
     }
 
@@ -35,10 +38,10 @@ class ProductCategoryTest extends SapphireTest
      */
     public function testCanEdit()
     {
-        $object = $this->objFromFixture('ProductCategory', 'apparel');
-        $admin = $this->objFromFixture('Member', 'admin');
+        $object = $this->objFromFixture(ProductCategory::class, 'apparel');
+        $admin = $this->objFromFixture(Member::class, 'admin');
         $this->assertTrue($object->canEdit($admin));
-        $member = $this->objFromFixture('Member', 'customer');
+        $member = $this->objFromFixture(Member::class, 'customer');
         $this->assertFalse($object->canEdit($member));
     }
 
@@ -47,10 +50,10 @@ class ProductCategoryTest extends SapphireTest
      */
     public function testCanDelete()
     {
-        $object = $this->objFromFixture('ProductCategory', 'apparel');
-        $admin = $this->objFromFixture('Member', 'admin');
+        $object = $this->objFromFixture(ProductCategory::class, 'apparel');
+        $admin = $this->objFromFixture(Member::class, 'admin');
         $this->assertTrue($object->canDelete($admin));
-        $member = $this->objFromFixture('Member', 'customer');
+        $member = $this->objFromFixture(Member::class, 'customer');
         $this->assertFalse($object->canDelete($member));
     }
 
@@ -59,10 +62,10 @@ class ProductCategoryTest extends SapphireTest
      */
     public function testCanCreate()
     {
-        $object = $this->objFromFixture('ProductCategory', 'apparel');
-        $admin = $this->objFromFixture('Member', 'admin');
+        $object = $this->objFromFixture(ProductCategory::class, 'apparel');
+        $admin = $this->objFromFixture(Member::class, 'admin');
         $this->assertTrue($object->canCreate($admin));
-        $member = $this->objFromFixture('Member', 'customer');
+        $member = $this->objFromFixture(Member::class, 'customer');
         $this->assertFalse($object->canCreate($member));
     }
 
@@ -71,7 +74,7 @@ class ProductCategoryTest extends SapphireTest
      */
     public function testGetShippingOptions()
     {
-        $object = singleton('ProductCategory');
+        $object = singleton(ProductCategory::class);
         $this->assertTrue(is_array($object->getShippingOptions()));
     }
 
@@ -80,7 +83,7 @@ class ProductCategoryTest extends SapphireTest
      */
     public function testGetShippingFlatRateTypes()
     {
-        $object = singleton('ProductCategory');
+        $object = singleton(ProductCategory::class);
         $this->assertTrue(is_array($object->getShippingFlatRateTypes()));
     }
 
@@ -89,7 +92,7 @@ class ProductCategoryTest extends SapphireTest
      */
     public function testGetHandlingFeeTypes()
     {
-        $object = singleton('ProductCategory');
+        $object = singleton(ProductCategory::class);
         $this->assertTrue(is_array($object->getHandlingFeeTypes()));
     }
 
@@ -98,7 +101,7 @@ class ProductCategoryTest extends SapphireTest
      */
     public function testGetDiscountTypes()
     {
-        $object = singleton('ProductCategory');
+        $object = singleton(ProductCategory::class);
         $this->assertTrue(is_array($object->getDiscountTypes()));
     }
 
@@ -107,7 +110,7 @@ class ProductCategoryTest extends SapphireTest
      */
     public function testGetDataMap()
     {
-        $object = singleton('ProductCategory');
+        $object = singleton(ProductCategory::class);
         $this->assertTrue(is_array($object->getDataMap()));
     }
 }

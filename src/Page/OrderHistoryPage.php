@@ -6,23 +6,32 @@ use SilverStripe\Control\Controller;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\Security\Member;
 
-class OrderHistoryPage extends \Page {
-
+class OrderHistoryPage extends \Page
+{
+    /**
+     * @var string
+     */
     private static $singular_name = 'Order History Page';
+
+    /**
+     * @var string
+     */
     private static $plural_name = 'Order History Pages';
+
+    /**
+     * @var string
+     */
     private static $description = 'Show a customers past orders. Requires authentication';
 
-	public function getCMSFields(){
-		$fields = parent::getCMSFields();
-
-
-
-		$this->extend('updateCMSFields', $fields);
-		return $fields;
-	}
-
-    // return all current Member's Orders
-    public function getOrders($limit = 10) {
+    /**
+     * return all current Member's Orders
+     *
+     * @param int $limit
+     * @return bool|PaginatedList
+     * @throws \Exception
+     */
+    public function getOrders($limit = 10)
+    {
         if ($Member = Member::currentUser()) {
             $Orders = $Member->Orders()->sort('TransactionDate', 'DESC');
 
@@ -32,5 +41,4 @@ class OrderHistoryPage extends \Page {
         }
         return false;
     }
-
 }

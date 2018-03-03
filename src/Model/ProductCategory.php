@@ -9,6 +9,7 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
 
 class ProductCategory extends DataObject
 {
@@ -192,7 +193,7 @@ class ProductCategory extends DataObject
     }
 
     /**
-     *
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public function requireDefaultRecords()
     {
@@ -323,7 +324,7 @@ class ProductCategory extends DataObject
     }
 
     /**
-     *
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function onAfterWrite()
     {
@@ -337,7 +338,7 @@ class ProductCategory extends DataObject
     }
 
     /**
-     *
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function onAfterDelete()
     {

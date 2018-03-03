@@ -2,13 +2,19 @@
 
 namespace Dynamic\FoxyStripe\Test;
 
-use Dynamic\FoxyStripe\Test\FS_Test;
+use Dynamic\FoxyStripe\Model\FoxyCart;
+use SilverStripe\SiteConfig\SiteConfig;
 
 class StoreSettingsTest extends FS_Test
 {
-
+    /**
+     * @var bool
+     */
 	protected static $use_draft_site = true;
 
+    /**
+     * @throws \SilverStripe\ORM\ValidationException
+     */
 	function setUp(){
 		parent::setUp();
 
@@ -18,6 +24,9 @@ class StoreSettingsTest extends FS_Test
 		$siteConf->write();
 	}
 
+    /**
+     *
+     */
 	function testStoreKey(){
 		$pref = FoxyCart::getKeyPrefix();
 		$siteConf = SiteConfig::current_site_config();
@@ -27,6 +36,9 @@ class StoreSettingsTest extends FS_Test
         $this->assertEquals(substr($siteConf->StoreKey, 0, 6), $pref);
 	}
 
+    /**
+     *
+     */
 	function testStoreName(){
 		$siteConf = SiteConfig::current_site_config();
 

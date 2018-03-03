@@ -29,7 +29,7 @@ class ProductPage extends \Page implements PermissionProvider
     /**
      * @var string
      */
-    private static $allowed_children = [];
+    //private static $allowed_children = [];
 
     /**
      * @var string
@@ -138,7 +138,7 @@ class ProductPage extends \Page implements PermissionProvider
      * @param bool $includerelations
      * @return array
      */
-    function fieldLabels($includerelations = true)
+    public function fieldLabels($includerelations = true)
     {
         $labels = parent::fieldLabels();
 
@@ -250,9 +250,8 @@ class ProductPage extends \Page implements PermissionProvider
             UploadField::create('PreviewImage', '')
                 ->setDescription($previewDescription)
                 ->setFolderName('Uploads/Products')
-                ->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'))
-                ->setAllowedMaxFileNumber(1),
-            HeaderField::create('ProductImagesHD', _t('ProductPage.ProductImagesHD' . 'Product Image Gallery'), 2),
+                ->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png')),
+            HeaderField::create('ProductImagesHD', _t('ProductPage.ProductImagesHD', 'Product Image Gallery'), 2),
             $prodImagesField
                 ->setDescription(_t(
                     'ProductPage.ProductImagesDescription',
@@ -303,7 +302,6 @@ class ProductPage extends \Page implements PermissionProvider
                 if ($holders->find('ID', $origParent)) {
                     $holders->removeByID($origParent);
                 }
-
             }
             $holders->add($currentParent);
         }
@@ -311,15 +309,11 @@ class ProductPage extends \Page implements PermissionProvider
         $title = ltrim($this->Title);
         $title = rtrim($title);
         $this->Title = $title;
-
-
     }
 
     public function onAfterWrite()
     {
         parent::onAfterWrite();
-
-
     }
 
     public function onBeforeDelete()
@@ -376,7 +370,7 @@ class ProductPage extends \Page implements PermissionProvider
     ) {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
         return (SiteConfig::current_site_config()->CartValidation)
-            ? FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode) :
+            ? \FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode) :
             $optionValue;
     }
 
@@ -392,22 +386,22 @@ class ProductPage extends \Page implements PermissionProvider
      */
     public function canEdit($member = null)
     {
-        return Permission::check('Product_CANCRUD');
+        return Permission::check('Product_CANCRUD', 'any', $member);
     }
 
     public function canDelete($member = null)
     {
-        return Permission::check('Product_CANCRUD');
+        return Permission::check('Product_CANCRUD', 'any', $member);
     }
 
     public function canCreate($member = null, $context = [])
     {
-        return Permission::check('Product_CANCRUD');
+        return Permission::check('Product_CANCRUD', 'any', $member);
     }
 
     public function canPublish($member = null)
     {
-        return Permission::check('Product_CANCRUD');
+        return Permission::check('Product_CANCRUD', 'any', $member);
     }
 
     public function providePermissions()
@@ -416,5 +410,4 @@ class ProductPage extends \Page implements PermissionProvider
             'Product_CANCRUD' => 'Allow user to manage Products and related objects'
         );
     }
-
 }

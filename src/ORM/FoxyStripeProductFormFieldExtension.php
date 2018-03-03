@@ -2,6 +2,8 @@
 
 namespace Dynamic\FoxyStripe\ORM;
 
+use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataExtension;
 
 /**

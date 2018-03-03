@@ -2,6 +2,7 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
+use Dynamic\FoxyStripe\Page\ProductPage;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordViewer;
@@ -41,13 +42,23 @@ class OrderDetail extends DataObject
      * @var array
      */
     private static $has_one = array(
-        'Product' => 'ProductPage',
-        'Order' => 'Order'
+        'Product' => ProductPage::class,
+        'Order' => Order::class,
     );
 
+    /**
+     * @var array
+     */
     private static $has_many = array(
-        'OrderOptions' => 'OrderOption'
+        'OrderOptions' => OrderOption::class,
     );
+
+    /**
+     * @var array
+     */
+    private static $many_many = [
+        'OptionItems' => OptionItem::class,
+    ];
 
     /**
      * @var array
@@ -72,7 +83,7 @@ class OrderDetail extends DataObject
 
         if ($this->ID) {
             $fields->addFieldsToTab('Root.Options', array(
-                GridField::create('Options', 'Product Options', $this->Options(), GridFieldConfig_RecordViewer::create())
+                GridField::create('Options', 'Product Options', $this->OrderOptions(), GridFieldConfig_RecordViewer::create())
             ));
         }
 
@@ -85,7 +96,7 @@ class OrderDetail extends DataObject
      */
     public function canView($member = false)
     {
-        return Permission::check('Product_ORDERS');
+        return Permission::check('Product_ORDERS', 'any', $member);
     }
 
     /**
@@ -105,10 +116,10 @@ class OrderDetail extends DataObject
     {
         return false;
         //return Permission::check('Product_ORDERS');
-	}
+    }
 
-	public function canDelete($member = null) {
-		return Permission::check('Product_ORDERS');
-	}
-
+    public function canDelete($member = null)
+    {
+        return Permission::check('Product_ORDERS', 'any', $member);
+    }
 }

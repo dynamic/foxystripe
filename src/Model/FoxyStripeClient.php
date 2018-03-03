@@ -2,14 +2,14 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Subscriber\Cache\CacheSubscriber;
 use Foxy\FoxyClient\FoxyClient;
+use GuzzleHttp\Client;
+use Psr\Log\LoggerInterface;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\Tests\MySQLDatabaseTest\Data;
 use SilverStripe\SiteConfig\SiteConfig;
 
-class FoxyStripeClient extends DataObject
+class FoxyStripeClient
 {
     /**
      * @var string
@@ -38,6 +38,7 @@ class FoxyStripeClient extends DataObject
 
     /**
      * FoxyStripeClient constructor.
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __construct()
     {
@@ -45,14 +46,12 @@ class FoxyStripeClient extends DataObject
             'use_sandbox' => false
         );
 
-        /*
         if ($site_config = SiteConfig::current_site_config()) {
             $config['client_id'] = $site_config->client_id;
             $config['client_secret'] = $site_config->client_secret;
             $config['refresh_token'] = $site_config->refresh_token;
             $config['access_token'] = $site_config->access_token;
         }
-        */
 
         $guzzle_config = array(
             'defaults' => array(
@@ -61,23 +60,21 @@ class FoxyStripeClient extends DataObject
             )
         );
 
-        // todo - fix Guzzle client integration
-
         /**
          * Set up our Guzzle Client
          */
-        //$guzzle = new Client($guzzle_config);
-        //CacheSubscriber::attach($guzzle);
+        $guzzle = new Client($guzzle_config);
+        //CacheSubscriber::attach($guzzle); // todo add caching middleware guzzle-cache-middleware
 
         /**
          * Get our FoxyClient
          */
-        //$fc = new FoxyClient($guzzle, $config);
+        $fc = new FoxyClient($guzzle, $config);
 
-        //$this->setClient($fc);
-        //$this->setCurrentStore();
-        //$this->setItemCategoriesURL();
-        //$this->setItemCategories();
+        $this->setClient($fc);
+        $this->setCurrentStore();
+        $this->setItemCategoriesURL();
+        $this->setItemCategories();
     }
 
     /**
@@ -107,7 +104,7 @@ class FoxyStripeClient extends DataObject
     }
 
     /**
-     *
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function setCurrentStore()
     {
@@ -138,22 +135,24 @@ class FoxyStripeClient extends DataObject
                 }
             }
             if (count($errors)) {
-                \SS_Log::log('setCurrentStore errors - ' . json_encode($errors), \SS_Log::WARN);
+                Injector::inst()->get(LoggerInterface::class)->error('setCurrentStore errors - ' . json_encode($errors));
             }
         }
     }
 
     /**
      * @param array $data
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function updateStore($data = []) {
         $client = $this->getClient();
         $errors = [];
+
         $result = $client->patch($this->getCurrentStore(), $data);
 
         $errors = array_merge($errors, $client->getErrors($result));
         if (count($errors)) {
-            \SS_Log::log('updateStore errors - ' . json_encode($errors), \SS_Log::WARN);
+            Injector::inst()->get(LoggerInterface::class)->error('updateStore errors - ' . json_encode($errors));
         }
     }
 
@@ -166,7 +165,7 @@ class FoxyStripeClient extends DataObject
     }
 
     /**
-     *
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function setItemCategoriesURL()
     {
@@ -182,7 +181,7 @@ class FoxyStripeClient extends DataObject
 
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                \SS_Log::log('setItemCategoriesURL errors - ' . json_encode($errors), \SS_Log::WARN);
+                Injector::inst()->get(LoggerInterface::class)->error('setItemCategoriesURL errors - ' . json_encode($errors));
             }
         }
     }
@@ -196,7 +195,7 @@ class FoxyStripeClient extends DataObject
     }
 
     /**
-     *
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function setItemCategories()
     {
@@ -210,14 +209,15 @@ class FoxyStripeClient extends DataObject
 
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                \SS_Log::log('setItemCategories errors - ' . json_encode($errors), \SS_Log::WARN);
+                Injector::inst()->get(LoggerInterface::class)->error('setItemCategories errors - ' . json_encode($errors));
             }
         }
     }
 
     /**
      * @param $code
-     * @return mixed
+     * @return bool
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getCategory($code)
     {
@@ -234,7 +234,7 @@ class FoxyStripeClient extends DataObject
                 }
                 $errors = array_merge($errors, $client->getErrors($result));
                 if (count($errors)) {
-                    \SS_Log::log('getCategory errors - ' . json_encode($errors), \SS_Log::WARN);
+                    Injector::inst()->get(LoggerInterface::class)->error('getCategory errors - ' . json_encode($errors));
                 }
             }
         }
@@ -243,6 +243,7 @@ class FoxyStripeClient extends DataObject
 
     /**
      * @param array $data
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function putCategory($data = [])
     {
@@ -257,13 +258,14 @@ class FoxyStripeClient extends DataObject
             }
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                \SS_Log::log('putCategory errors - ' . json_encode($errors), \SS_Log::WARN);
+                Injector::inst()->get(LoggerInterface::class)->error('putCategory errors - ' . json_encode($errors));
             }
         }
     }
 
     /**
      * @param array $data
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteCategory($data = [])
     {
@@ -275,7 +277,7 @@ class FoxyStripeClient extends DataObject
 
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                \SS_Log::log('deleteCategory errors - ' . json_encode($errors), \SS_Log::WARN);
+                Injector::inst()->get(LoggerInterface::class)->error('deleteCategory errors - ' . json_encode($errors));
             }
         }
     }

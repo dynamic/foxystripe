@@ -2,7 +2,10 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
+use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Security\Permission;
 
 /**
  *
@@ -93,10 +96,10 @@ class OptionGroup extends DataObject
         $title = $this->Title;
         $firstChar = substr($title, 0, 1);
         if (preg_match('/[^a-zA-Z]/', $firstChar)) {
-            $result->error('The first character of the Title can only be a letter', 'bad');
+            $result->addError('The first character of the Title can only be a letter', 'bad');
         }
         if (preg_match('/[^a-zA-Z]\s/', $title)) {
-            $result->error('Please only use letters, numbers and spaces in the title', 'bad');
+            $result->addError('Please only use letters, numbers and spaces in the title', 'bad');
         }
 
         return $result;
@@ -113,10 +116,11 @@ class OptionGroup extends DataObject
         $items = OptionItem::get()->filter(array('ProductOptionGroupID' => $this->ID));
 
         if (isset($items)) {
-            $noneGroup = OptionGroup::get()->filter(array('Title' => 'Options'))->first();
-            foreach ($items as $item) {
-                $item->ProductOptionGroupID = $noneGroup->ID;
-                $item->write();
+            if ($noneGroup = OptionGroup::get()->filter(array('Title' => 'Options'))->first()) {
+                foreach ($items as $item) {
+                    $item->ProductOptionGroupID = $noneGroup->ID;
+                    $item->write();
+                }
             }
         }
     }

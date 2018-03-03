@@ -3,8 +3,17 @@
 namespace Dynamic\FoxyStripe\Model;
 
 use Dynamic\FoxyStripe\Page\ProductPage;
+use SilverStripe\Control\Session;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\CurrencyField;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Security\Permission;
 
 /**
  * Class OptionItem
@@ -104,7 +113,7 @@ class OptionItem extends DataObject
         $groups = function () {
             return OptionGroup::get()->map()->toArray();
         };
-        $groupFields = singleton('OptionGroup')->getCMSFields();
+        $groupFields = singleton(OptionGroup::class)->getCMSFields();
         $groupField = DropdownField::create('ProductOptionGroupID', _t("OptionItem.Group", "Group"), $groups())
             ->setEmptyString('')
             ->setDescription(_t('OptionItem.GroupDescription', 'Name of this group of options. Managed in <a href="admin/settings">Settings > FoxyStripe > Option Groups</a>'));
@@ -113,7 +122,7 @@ class OptionItem extends DataObject
         }
 
         $fields->addFieldsToTab('Root.Main', array(
-            Textfield::create('Title')
+            TextField::create('Title')
                 ->setTitle(_t("OptionItem.Title", "Product Option Name")),
             CheckboxField::create('Available')
                 ->setTitle(_t("OptionItem.Available", "Available for purchase"))
@@ -210,9 +219,6 @@ class OptionItem extends DataObject
         $fields->insertAfter($categoryField, 'ProductOptionGroupID');
         */
 
-        // allow CMS fields to be extended
-        $this->extend('getCMSFields', $fields);
-
         return $fields;
     }
 
@@ -224,7 +230,7 @@ class OptionItem extends DataObject
         $result = parent::validate();
 
         if ($this->ProductOptionGroupID == 0) {
-            $result->error('Must set a Group prior to saving');
+            $result->addError('Must set a Group prior to saving');
         }
 
         return $result;

@@ -19,7 +19,7 @@ class DonationProduct extends ProductPage
     /**
      * @var array
      */
-    private static $allowed_children = [];
+    //private static $allowed_children = [];
 
     /**
      * @var bool
