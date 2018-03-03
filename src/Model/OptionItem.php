@@ -16,7 +16,7 @@ use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 
 /**
- * Class OptionItem
+ * Class OptionItem.
  */
 class OptionItem extends DataObject
 {
@@ -32,7 +32,7 @@ class OptionItem extends DataObject
         'CodeModifierAction' => "Enum('Add,Subtract,Set','Add')",
         'PriceModifierAction' => "Enum('Add,Subtract,Set','Add')",
         'Available' => 'Boolean',
-        'SortOrder' => 'Int'
+        'SortOrder' => 'Int',
     );
 
     /**
@@ -47,14 +47,14 @@ class OptionItem extends DataObject
      * @var array
      */
     private static $belongs_many_many = array(
-        'OrderDetails' => OrderDetail::class
+        'OrderDetails' => OrderDetail::class,
     );
 
     /**
      * @var array
      */
     private static $defaults = array(
-        'Available' => true
+        'Available' => true,
     );
 
     /**
@@ -63,7 +63,7 @@ class OptionItem extends DataObject
     private static $summary_fields = array(
         'Title' => 'Title',
         'ProductOptionGroup.Title' => 'Group',
-        'IsAvailable' => 'Available'
+        'IsAvailable' => 'Available',
     );
 
     /**
@@ -74,7 +74,7 @@ class OptionItem extends DataObject
             'title' => 'Title',
         ],
         'ProductOptionGroup.Title' => [
-            'title' => 'Group'
+            'title' => 'Group',
         ],
     ];
 
@@ -114,7 +114,7 @@ class OptionItem extends DataObject
             return OptionGroup::get()->map()->toArray();
         };
         $groupFields = singleton(OptionGroup::class)->getCMSFields();
-        $groupField = DropdownField::create('ProductOptionGroupID', _t("OptionItem.Group", "Group"), $groups())
+        $groupField = DropdownField::create('ProductOptionGroupID', _t('OptionItem.Group', 'Group'), $groups())
             ->setEmptyString('')
             ->setDescription(_t('OptionItem.GroupDescription', 'Name of this group of options. Managed in <a href="admin/settings">Settings > FoxyStripe > Option Groups</a>'));
         if (class_exists('QuickAddNewExtension')) {
@@ -123,11 +123,11 @@ class OptionItem extends DataObject
 
         $fields->addFieldsToTab('Root.Main', array(
             TextField::create('Title')
-                ->setTitle(_t("OptionItem.Title", "Product Option Name")),
+                ->setTitle(_t('OptionItem.Title', 'Product Option Name')),
             CheckboxField::create('Available')
-                ->setTitle(_t("OptionItem.Available", "Available for purchase"))
-                ->setDescription(_t('OptionItem.AvailableDescription', "If unchecked, will disable this option in the drop down menu")),
-            $groupField
+                ->setTitle(_t('OptionItem.Available', 'Available for purchase'))
+                ->setDescription(_t('OptionItem.AvailableDescription', 'If unchecked, will disable this option in the drop down menu')),
+            $groupField,
         ));
 
         $fields->addFieldsToTab('Root.Modifiers', array(
@@ -141,17 +141,17 @@ class OptionItem extends DataObject
                 array(
                     'Add' => _t(
                         'OptionItem.WeightAdd',
-                        "Add to Base Weight ({weight})",
+                        'Add to Base Weight ({weight})',
                         'Add to weight',
                         array('weight' => $parentWeight)
                     ),
                     'Subtract' => _t(
                         'OptionItem.WeightSubtract',
-                        "Subtract from Base Weight ({weight})",
+                        'Subtract from Base Weight ({weight})',
                         'Subtract from weight',
                         array('weight' => $parentWeight)
                     ),
-                    'Set' => _t('OptionItem.WeightSet', 'Set as a new Weight')
+                    'Set' => _t('OptionItem.WeightSet', 'Set as a new Weight'),
                 )
             )->setEmptyString('')
             ->setDescription(_t('OptionItem.WeightDescription', 'Does weight modify or replace base weight?')),
@@ -164,17 +164,17 @@ class OptionItem extends DataObject
                 array(
                     'Add' => _t(
                         'OptionItem.PriceAdd',
-                        "Add to Base Price ({price})",
+                        'Add to Base Price ({price})',
                         'Add to price',
                         array('price' => $parentPrice)
                     ),
                     'Subtract' => _t(
                         'OptionItem.PriceSubtract',
-                        "Subtract from Base Price ({price})",
+                        'Subtract from Base Price ({price})',
                         'Subtract from price',
                         array('price' => $parentPrice)
                     ),
-                    'Set' => _t('OptionItem.PriceSet', 'Set as a new Price')
+                    'Set' => _t('OptionItem.PriceSet', 'Set as a new Price'),
                 )
             )->setEmptyString('')
             ->setDescription(_t('OptionItem.PriceDescription', 'Does price modify or replace base price?')),
@@ -187,7 +187,7 @@ class OptionItem extends DataObject
                 array(
                     'Add' => _t(
                         'OptionItem.CodeAdd',
-                        "Add to Base Code ({code})",
+                        'Add to Base Code ({code})',
                         'Add to code',
                         array('code' => $parentCode)
                     ),
@@ -197,10 +197,10 @@ class OptionItem extends DataObject
                         'Subtract from code',
                         array('code' => $parentCode)
                     ),
-                    'Set' => _t('OptionItem.CodeSet', 'Set as a new Code')
+                    'Set' => _t('OptionItem.CodeSet', 'Set as a new Code'),
                 )
             )->setEmptyString('')
-            ->setDescription(_t('OptionItem.CodeDescription', 'Does code modify or replace base code?'))
+            ->setDescription(_t('OptionItem.CodeDescription', 'Does code modify or replace base code?')),
         ));
 
         /*
@@ -239,9 +239,10 @@ class OptionItem extends DataObject
     /**
      * @param $oma
      * @param bool $returnWithOnlyPlusMinus
+     *
      * @return string
      */
-    public static function getOptionModifierActionSymbol($oma, $returnWithOnlyPlusMinus=false)
+    public static function getOptionModifierActionSymbol($oma, $returnWithOnlyPlusMinus = false)
     {
         switch ($oma) {
             case 'Subtract':
@@ -253,6 +254,7 @@ class OptionItem extends DataObject
             default:
                 $symbol = '+';
         }
+
         return $symbol;
     }
 
@@ -293,11 +295,12 @@ class OptionItem extends DataObject
      */
     public function getGeneratedValue()
     {
-        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
-        $modPriceWithSymbol = OptionItem::getOptionModifierActionSymbol($this->PriceModifierAction).$modPrice;
-        $modWeight = ($this->WeightModifier) ? (string)$this->WeightModifier : '0';
-        $modWeight = OptionItem::getOptionModifierActionSymbol($this->WeightModifierAction).$modWeight;
-        $modCode = OptionItem::getOptionModifierActionSymbol($this->CodeModifierAction).$this->CodeModifier;
+        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
+        $modPriceWithSymbol = self::getOptionModifierActionSymbol($this->PriceModifierAction).$modPrice;
+        $modWeight = ($this->WeightModifier) ? (string) $this->WeightModifier : '0';
+        $modWeight = self::getOptionModifierActionSymbol($this->WeightModifierAction).$modWeight;
+        $modCode = self::getOptionModifierActionSymbol($this->CodeModifierAction).$this->CodeModifier;
+
         return $this->Title.'{p'.$modPriceWithSymbol.'|w'.$modWeight.'|c'.$modCode.'}';
     }
 
@@ -306,9 +309,10 @@ class OptionItem extends DataObject
      */
     public function getGeneratedTitle()
     {
-        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
+        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
         $title = $this->Title;
-        $title .= ($this->PriceModifier != 0) ? ': ('.OptionItem::getOptionModifierActionSymbol($this->PriceModifierAction, $returnWithOnlyPlusMinus=true).'$'.$modPrice.')' : '';
+        $title .= ($this->PriceModifier != 0) ? ': ('.self::getOptionModifierActionSymbol($this->PriceModifierAction, $returnWithOnlyPlusMinus = true).'$'.$modPrice.')' : '';
+
         return $title;
     }
 
@@ -317,7 +321,7 @@ class OptionItem extends DataObject
      */
     public function getAvailability()
     {
-        $available = ($this->Available == 1) ? true : false ;
+        $available = ($this->Available == 1) ? true : false;
 
         $this->extend('updateOptionAvailability', $available);
 
@@ -330,13 +334,15 @@ class OptionItem extends DataObject
     public function getIsAvailable()
     {
         if ($this->getAvailability()) {
-            return "yes";
+            return 'yes';
         }
-        return "no";
+
+        return 'no';
     }
 
     /**
      * @param bool $member
+     *
      * @return bool
      */
     public function canView($member = false)
@@ -346,6 +352,7 @@ class OptionItem extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canEdit($member = null)
@@ -355,6 +362,7 @@ class OptionItem extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canDelete($member = null)
@@ -364,6 +372,7 @@ class OptionItem extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canCreate($member = null, $context = [])

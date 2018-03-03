@@ -5,15 +5,13 @@ namespace Dynamic\FoxyStripe\Form;
 use SilverStripe\Forms\Form;
 
 /**
- * Class FoxyStripePurchaseForm
+ * Class FoxyStripePurchaseForm.
  *
  * @property SiteConfig $site_config
  * @property ProductPage $product
- *
  */
 class FoxyStripePurchaseForm extends Form
 {
-
     /**
      * @var
      */
@@ -25,6 +23,7 @@ class FoxyStripePurchaseForm extends Form
 
     /**
      * @param $siteConfig
+     *
      * @return $this
      */
     public function setSiteConfig($siteConfig)
@@ -32,6 +31,7 @@ class FoxyStripePurchaseForm extends Form
         $siteConfig = $siteConfig === null ? SiteConfig::current_site_config() : $siteConfig;
         if ($siteConfig instanceof SiteConfig) {
             $this->site_config = $siteConfig;
+
             return $this;
         }
         throw new InvalidArgumentException('$siteConfig needs to be an instance of SiteConfig.');
@@ -45,17 +45,20 @@ class FoxyStripePurchaseForm extends Form
         if (!$this->site_config) {
             $this->setSiteConfig(SiteConfig::current_site_config());
         }
+
         return $this->site_config;
     }
 
     /**
      * @param $product
+     *
      * @return $this
      */
     public function setProduct($product)
     {
         if ($product instanceof ProductPage) {
             $this->product = $product;
+
             return $this;
         }
         throw new InvalidArgumentException('$product needs to be an instance of ProductPage.');
@@ -71,13 +74,14 @@ class FoxyStripePurchaseForm extends Form
 
     /**
      * FoxyStripePurchaseForm constructor.
-     * @param Controller $controller
-     * @param string $name
+     *
+     * @param Controller     $controller
+     * @param string         $name
      * @param FieldList|null $fields
      * @param FieldList|null $actions
-     * @param null $validator
-     * @param null $product
-     * @param null $siteConfig
+     * @param null           $validator
+     * @param null           $product
+     * @param null           $siteConfig
      */
     public function __construct(
         $controller,
@@ -87,8 +91,7 @@ class FoxyStripePurchaseForm extends Form
         $validator = null,
         $product = null,
         $siteConfig = null
-    )
-    {
+    ) {
         $this->setProduct($product);
         $this->setSiteConfig($siteConfig);
 
@@ -102,11 +105,11 @@ class FoxyStripePurchaseForm extends Form
         //have to call after parent::__construct()
         $this->setAttribute('action', FoxyCart::FormActionURL());
         $this->disableSecurityToken();
-
     }
 
     /**
      * @param FieldList $fields
+     *
      * @return FieldList
      */
     protected function getProductFields(FieldList $fields)
@@ -128,8 +131,6 @@ class FoxyStripePurchaseForm extends Form
             $fields->push(HiddenField::create(ProductPage::getGeneratedValue($code, 'weight',
                 $this->product->Weight))->setValue($this->product->Weight));
 
-
-
             if ($this->product->PreviewImage()->exists()) {
                 $fields->push(
                     HiddenField::create(ProductPage::getGeneratedValue($code, 'image',
@@ -147,12 +148,12 @@ class FoxyStripePurchaseForm extends Form
             while ($count <= $quantityMax) {
                 $countVal = ProductPage::getGeneratedValue($this->product->Code, 'quantity', $count, 'value');
                 $quantity[$countVal] = $count;
-                $count++;
+                ++$count;
             }
 
             $fields->push(DropdownField::create('quantity', 'Quantity', $quantity));
 
-            $fields->push(HeaderField::create('submitPrice', '$' . $this->product->Price, 4)->addExtraClass('submit-price'));
+            $fields->push(HeaderField::create('submitPrice', '$'.$this->product->Price, 4)->addExtraClass('submit-price'));
             $fields->push(HeaderField::create('unavailableText', 'Selection unavailable', 4)->addExtraClass('hidden unavailable-text'));
 
             $this->extend('updatePurchaseFormFields', $fields);
@@ -167,11 +168,11 @@ class FoxyStripePurchaseForm extends Form
 
     /**
      * @param FieldList $actions
+     *
      * @return FieldList
      */
     protected function getProductActions(FieldList $actions)
     {
-
         $actions->push($submit = FormAction::create(
             '',
             _t('ProductForm.AddToCart', 'Add to Cart')
@@ -192,7 +193,6 @@ class FoxyStripePurchaseForm extends Form
      */
     protected function getProductOptionSet()
     {
-
         $assignAvailable = function ($self) {
             $this->extend('updateFoxyStripePurchaseForm', $form);
             $self->Available = ($self->getAvailability()) ? true : false;
@@ -231,5 +231,4 @@ class FoxyStripePurchaseForm extends Form
 
         return $optionsSet;
     }
-
 }

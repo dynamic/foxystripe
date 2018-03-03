@@ -12,10 +12,7 @@ use SilverStripe\Security\Permission;
 
 /**
  *
- * @package FoxyStripe
- *
  */
-
 class ProductImage extends DataObject
 {
     /**
@@ -23,7 +20,7 @@ class ProductImage extends DataObject
      */
     private static $db = array(
         'Title' => 'Text',
-        'SortOrder' => 'Int'
+        'SortOrder' => 'Int',
     );
 
     /**
@@ -44,7 +41,7 @@ class ProductImage extends DataObject
      */
     private static $summary_fields = array(
         'Image.CMSThumbnail' => 'Image',
-        'Title' => 'Caption'
+        'Title' => 'Caption',
     );
 
     /**
@@ -73,6 +70,7 @@ class ProductImage extends DataObject
 
     /**
      * @param bool $member
+     *
      * @return bool
      */
     public function canView($member = false)
@@ -82,6 +80,7 @@ class ProductImage extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool
      */
     public function canEdit($member = null)
@@ -91,6 +90,7 @@ class ProductImage extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canDelete($member = null)
@@ -99,8 +99,9 @@ class ProductImage extends DataObject
     }
 
     /**
-     * @param null $member
+     * @param null  $member
      * @param array $context
+     *
      * @return bool|int
      */
     public function canCreate($member = null, $context = [])

@@ -58,7 +58,7 @@ class ProductPage extends \Page implements PermissionProvider
      */
     private static $has_one = array(
         'PreviewImage' => Image::class,
-        'Category' => ProductCategory::class
+        'Category' => ProductCategory::class,
     );
 
     /**
@@ -74,7 +74,7 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $belongs_many_many = array(
-        'ProductHolders' => ProductHolder::class
+        'ProductHolders' => ProductHolder::class,
     );
 
     /**
@@ -96,7 +96,7 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $indexes = array(
-        'Code' => true // make unique
+        'Code' => true, // make unique
     );
 
     /**
@@ -105,7 +105,7 @@ class ProductPage extends \Page implements PermissionProvider
     private static $defaults = array(
         'ShowInMenus' => false,
         'Available' => true,
-        'Weight' => '1.0'
+        'Weight' => '1.0',
     );
 
     /**
@@ -115,7 +115,7 @@ class ProductPage extends \Page implements PermissionProvider
         'Title',
         'Code',
         'Price.Nice',
-        'Category.Title'
+        'Category.Title',
     );
 
     /**
@@ -126,7 +126,7 @@ class ProductPage extends \Page implements PermissionProvider
         'Code',
         'Featured',
         'Available',
-        'Category.ID'
+        'Category.ID',
     );
 
     /**
@@ -136,6 +136,7 @@ class ProductPage extends \Page implements PermissionProvider
 
     /**
      * @param bool $includerelations
+     *
      * @return array
      */
     public function fieldLabels($includerelations = true)
@@ -143,7 +144,7 @@ class ProductPage extends \Page implements PermissionProvider
         $labels = parent::fieldLabels();
 
         $labels['Title'] = _t('ProductPage.TitleLabel', 'Name');
-        $labels['Code'] = _t('ProductPage.CodeLabel', "Code");
+        $labels['Code'] = _t('ProductPage.CodeLabel', 'Code');
         $labels['Price.Nice'] = _t('ProductPage.PriceLabel', 'Price');
         $labels['Featured.Nice'] = _t('ProductPage.NiceLabel', 'Featured');
         $labels['Available.Nice'] = _t('ProductPage.AvailableLabel', 'Available');
@@ -241,7 +242,7 @@ class ProductPage extends \Page implements PermissionProvider
                 ->setTitle(_t('ProductPage.ReceiptTitle', 'Product Title for Receipt'))
                 ->setDescription(_t(
                     'ProductPage.ReceiptTitleDescription', 'Optional'
-                ))
+                )),
         ));
 
         // Images tab
@@ -256,7 +257,7 @@ class ProductPage extends \Page implements PermissionProvider
                 ->setDescription(_t(
                     'ProductPage.ProductImagesDescription',
                     'Additional Product Images, shown in gallery on Product page'
-                ))
+                )),
         ));
 
         // Options Tab
@@ -267,13 +268,13 @@ class ProductPage extends \Page implements PermissionProvider
                 '<p>Product Options allow products to be customized by attributes such as size or color.
                     Options can also modify the product\'s price, weight or code.</p>'
             )),
-            $prodOptField
+            $prodOptField,
         ));
 
         if (FoxyCart::store_name_warning() !== null) {
-            $fields->addFieldToTab('Root.Main', LiteralField::create("StoreSubDomainHeaderWarning", _t(
+            $fields->addFieldToTab('Root.Main', LiteralField::create('StoreSubDomainHeaderWarning', _t(
                 'ProductPage.StoreSubDomainHeaderWarning',
-                "<p class=\"message error\">Store sub-domain must be entered in the <a href=\"/admin/settings/\">site settings</a></p>"
+                '<p class="message error">Store sub-domain must be entered in the <a href="/admin/settings/">site settings</a></p>'
             )), 'Title');
         }
 
@@ -291,7 +292,7 @@ class ProductPage extends \Page implements PermissionProvider
         //update many_many lists when multi-group is on
         if (SiteConfig::current_site_config()->MultiGroup) {
             $holders = $this->ProductHolders();
-            $product = ProductPage::get()->byID($this->ID);
+            $product = self::get()->byID($this->ID);
             if (isset($product->ParentID)) {
                 $origParent = $product->ParentID;
             } else {
@@ -318,7 +319,7 @@ class ProductPage extends \Page implements PermissionProvider
 
     public function onBeforeDelete()
     {
-        if ($this->Status != "Published") {
+        if ($this->Status != 'Published') {
             if ($this->ProductOptions()) {
                 $options = $this->getComponents('ProductOptions');
                 foreach ($options as $option) {
@@ -369,6 +370,7 @@ class ProductPage extends \Page implements PermissionProvider
         $urlEncode = false
     ) {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
+
         return (SiteConfig::current_site_config()->CartValidation)
             ? \FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode) :
             $optionValue;
@@ -377,12 +379,13 @@ class ProductPage extends \Page implements PermissionProvider
     // get FoxyCart Store Name for JS call
     public function getCartScript()
     {
-        return '<script src="https://cdn.foxycart.com/' . FoxyCart::getFoxyCartStoreName() . '/loader.js" async defer></script>';
+        return '<script src="https://cdn.foxycart.com/'.FoxyCart::getFoxyCartStoreName().'/loader.js" async defer></script>';
     }
 
     /**
      * @param Member $member
-     * @return boolean
+     *
+     * @return bool
      */
     public function canEdit($member = null)
     {
@@ -407,7 +410,7 @@ class ProductPage extends \Page implements PermissionProvider
     public function providePermissions()
     {
         return array(
-            'Product_CANCRUD' => 'Allow user to manage Products and related objects'
+            'Product_CANCRUD' => 'Allow user to manage Products and related objects',
         );
     }
 }

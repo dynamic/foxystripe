@@ -7,11 +7,10 @@ use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataExtension;
 
 /**
- * Class FoxyStripeProductFormFieldExtension
+ * Class FoxyStripeProductFormFieldExtension.
  */
 class FoxyStripeProductFormFieldExtension extends DataExtension
 {
-
     /**
      * @param $attributes
      */
@@ -24,5 +23,4 @@ class FoxyStripeProductFormFieldExtension extends DataExtension
             }
         }
     }
-
 }

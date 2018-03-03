@@ -10,7 +10,7 @@ class OrderHistoryPageController extends \PageController
      * @var array
      */
     private static $allowed_actions = array(
-        'index'
+        'index',
     );
 
     /**
@@ -34,6 +34,7 @@ class OrderHistoryPageController extends \PageController
     public function Index()
     {
         $this->checkMember();
+
         return array();
     }
 }

@@ -24,21 +24,21 @@ class Order extends DataObject implements PermissionProvider
         'OrderTotal' => 'Currency',
         'ReceiptURL' => 'Varchar(255)',
         'OrderStatus' => 'Varchar(255)',
-        'Response' => 'Text'
+        'Response' => 'Text',
     );
 
     /**
      * @var array
      */
     private static $has_one = array(
-        'Member' => 'Member'
+        'Member' => 'Member',
     );
 
     /**
      * @var array
      */
     private static $has_many = array(
-        'Details' => 'OrderDetail'
+        'Details' => 'OrderDetail',
     );
 
     /**
@@ -72,7 +72,7 @@ class Order extends DataObject implements PermissionProvider
         'ShippingTotal.Nice',
         'TaxTotal.Nice',
         'OrderTotal.Nice',
-        'ReceiptLink'
+        'ReceiptLink',
     );
 
     /**
@@ -81,26 +81,26 @@ class Order extends DataObject implements PermissionProvider
     private static $searchable_fields = array(
         'Order_ID',
         'TransactionDate' => array(
-            "field" => "DateField",
-            "filter" => "PartialMatchFilter"
+            'field' => 'DateField',
+            'filter' => 'PartialMatchFilter',
         ),
         'Member.ID',
         'OrderTotal',
-        'Details.ProductID'
+        'Details.ProductID',
     );
 
     /**
      * @var array
      */
     private static $casting = array(
-        'ReceiptLink' => 'HTMLVarchar'
+        'ReceiptLink' => 'HTMLVarchar',
     );
 
     /**
      * @var array
      */
     private static $indexes = array(
-        'Order_ID' => true // make unique
+        'Order_ID' => true, // make unique
     );
 
     /**
@@ -110,6 +110,7 @@ class Order extends DataObject implements PermissionProvider
 
     /**
      * @param bool $includerelations
+     *
      * @return array|string
      */
     public function fieldLabels($includerelations = true)
@@ -117,8 +118,8 @@ class Order extends DataObject implements PermissionProvider
         $labels = parent::fieldLabels();
 
         $labels['Order_ID'] = _t('Order.Order_ID', 'Order ID#');
-        $labels['TransactionDate'] = _t('Order.TransactionDate', "Date");
-        $labels['TransactionDate.NiceUS'] = _t('Order.TransactionDate', "Date");
+        $labels['TransactionDate'] = _t('Order.TransactionDate', 'Date');
+        $labels['TransactionDate.NiceUS'] = _t('Order.TransactionDate', 'Date');
         $labels['Member.Name'] = _t('Order.MemberName', 'Customer');
         $labels['Member.ID'] = _t('Order.MemberName', 'Customer');
         $labels['ProductTotal.Nice'] = _t('Order.ProductTotal', 'Sub Total');
@@ -145,15 +146,17 @@ class Order extends DataObject implements PermissionProvider
      */
     public function getReceiptLink()
     {
-        $obj= DBHTMLVarchar::create();
-        $obj->setValue('<a href="' . $this->ReceiptURL . '" target="_blank" class="cms-panel-link action external-link">view</a>');
+        $obj = DBHTMLVarchar::create();
+        $obj->setValue('<a href="'.$this->ReceiptURL.'" target="_blank" class="cms-panel-link action external-link">view</a>');
+
         return $obj;
     }
 
     /**
      * @return mixed
      */
-    public function getDecryptedResponse() {
+    public function getDecryptedResponse()
+    {
         $decrypted = urldecode($this->Response);
         if (FoxyCart::getStoreKey()) {
             return \rc4crypt::decrypt(FoxyCart::getStoreKey(), $decrypted);
@@ -163,20 +166,20 @@ class Order extends DataObject implements PermissionProvider
     /**
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public function onBeforeWrite() {
-
+    public function onBeforeWrite()
+    {
         $this->parseOrder();
         parent::onBeforeWrite();
     }
 
     /**
      * @return bool
+     *
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public function parseOrder() {
-
+    public function parseOrder()
+    {
         if ($this->getDecryptedResponse()) {
-
             $response = new \SimpleXMLElement($this->getDecryptedResponse());
 
             $this->parseOrderInfo($response);
@@ -184,19 +187,16 @@ class Order extends DataObject implements PermissionProvider
             $this->parseOrderDetails($response);
 
             return true;
-
         } else {
-
             return false;
-
         }
     }
 
     /**
      * @param $response
      */
-    public function parseOrderInfo($response) {
-
+    public function parseOrderInfo($response)
+    {
         foreach ($response->transactions->transaction as $transaction) {
 
             // Record transaction data from FoxyCart Datafeed:
@@ -216,16 +216,15 @@ class Order extends DataObject implements PermissionProvider
     /**
      * @param $response
      */
-    public function parseOrderCustomer($response) {
-
+    public function parseOrderCustomer($response)
+    {
         foreach ($response->transactions->transaction as $transaction) {
 
             // if not a guest transaction in FoxyCart
             if (isset($transaction->customer_email) && $transaction->is_anonymous == 0) {
 
                 // if Customer is existing member, associate with current order
-                if(Member::get()->filter('Email', $transaction->customer_email)->First()) {
-
+                if (Member::get()->filter('Email', $transaction->customer_email)->First()) {
                     $customer = Member::get()->filter('Email', $transaction->customer_email)->First();
 
                     // if new customer, create account with data from FoxyCart
@@ -252,16 +251,17 @@ class Order extends DataObject implements PermissionProvider
                 $this->MemberID = $customer->ID;
 
                 $this->extend('handleOrderCustomer', $order, $response, $customer);
-
             }
         }
     }
 
     /**
      * @param $response
+     *
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public function parseOrderDetails($response) {
+    public function parseOrderDetails($response)
+    {
 
         // remove previous OrderDetails and OrderOptions so we don't end up with duplicates
         foreach ($this->Details() as $detail) {
@@ -275,7 +275,6 @@ class Order extends DataObject implements PermissionProvider
 
             // Associate ProductPages, Options, Quantity with Order
             foreach ($transaction->transaction_details->transaction_detail as $detail) {
-
                 $OrderDetail = OrderDetail::create();
 
                 $OrderDetail->Quantity = (int) $detail->product_quantity;
@@ -293,10 +292,10 @@ class Order extends DataObject implements PermissionProvider
 
                         // if product is found, set relation to OrderDetail
                         $OrderProduct = ProductPage::get()->byID((int) $option->product_option_value);
-                        if ($OrderProduct) $OrderDetail->ProductID = $OrderProduct->ID;
-
+                        if ($OrderProduct) {
+                            $OrderDetail->ProductID = $OrderProduct->ID;
+                        }
                     } else {
-
                         $OrderOption = OrderOption::create();
                         $OrderOption->Name = (string) $option->product_option_name;
                         $OrderOption->Value = (string) $option->product_option_value;
@@ -305,7 +304,6 @@ class Order extends DataObject implements PermissionProvider
 
                         $priceModifier += $option->price_mod;
                     }
-
                 }
 
                 $OrderDetail->Price = (float) $detail->product_price + (float) $priceModifier;
@@ -324,23 +322,28 @@ class Order extends DataObject implements PermissionProvider
 
     /**
      * @param bool $member
+     *
      * @return bool|int
      */
-	public function canView($member = false) {
-		return Permission::check('Product_ORDERS', 'any', $member);
-	}
+    public function canView($member = false)
+    {
+        return Permission::check('Product_ORDERS', 'any', $member);
+    }
 
     /**
      * @param null $member
+     *
      * @return bool
      */
-	public function canEdit($member = null) {
+    public function canEdit($member = null)
+    {
         return false;
         //return Permission::check('Product_ORDERS', 'any', $member);
-	}
+    }
 
     /**
      * @param null $member
+     *
      * @return bool
      */
     public function canDelete($member = null)
@@ -350,8 +353,9 @@ class Order extends DataObject implements PermissionProvider
     }
 
     /**
-     * @param null $member
+     * @param null  $member
      * @param array $context
+     *
      * @return bool
      */
     public function canCreate($member = null, $context = [])
@@ -365,7 +369,7 @@ class Order extends DataObject implements PermissionProvider
     public function providePermissions()
     {
         return array(
-            'Product_ORDERS' => 'Allow user to manage Orders and related objects'
+            'Product_ORDERS' => 'Allow user to manage Orders and related objects',
         );
     }
 }

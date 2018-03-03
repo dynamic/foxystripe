@@ -9,17 +9,14 @@ use SilverStripe\Security\Permission;
 
 /**
  *
- * @package FoxyStripe
- *
  */
-
 class OptionGroup extends DataObject
 {
     /**
      * @var array
      */
     private static $db = array(
-        'Title' => 'Varchar(100)'
+        'Title' => 'Varchar(100)',
     );
 
     /**
@@ -56,24 +53,24 @@ class OptionGroup extends DataObject
     {
         parent::requireDefaultRecords();
         // create a catch-all group
-        if (!OptionGroup::get()->filter(array('Title' => 'Options'))->first()) {
-            $do = new OptionGroup();
-            $do->Title = "Options";
+        if (!self::get()->filter(array('Title' => 'Options'))->first()) {
+            $do = new self();
+            $do->Title = 'Options';
             $do->write();
         }
-        if (!OptionGroup::get()->filter(array('Title' => 'Size'))->first()) {
-            $do = new OptionGroup();
-            $do->Title = "Size";
+        if (!self::get()->filter(array('Title' => 'Size'))->first()) {
+            $do = new self();
+            $do->Title = 'Size';
             $do->write();
         }
-        if (!OptionGroup::get()->filter(array('Title' => 'Color'))->first()) {
-            $do = new OptionGroup();
-            $do->Title = "Color";
+        if (!self::get()->filter(array('Title' => 'Color'))->first()) {
+            $do = new self();
+            $do->Title = 'Color';
             $do->write();
         }
-        if (!OptionGroup::get()->filter(array('Title' => 'Type'))->first()) {
-            $do = new OptionGroup();
-            $do->Title = "Type";
+        if (!self::get()->filter(array('Title' => 'Type'))->first()) {
+            $do = new self();
+            $do->Title = 'Type';
             $do->write();
         }
     }
@@ -116,7 +113,7 @@ class OptionGroup extends DataObject
         $items = OptionItem::get()->filter(array('ProductOptionGroupID' => $this->ID));
 
         if (isset($items)) {
-            if ($noneGroup = OptionGroup::get()->filter(array('Title' => 'Options'))->first()) {
+            if ($noneGroup = self::get()->filter(array('Title' => 'Options'))->first()) {
                 foreach ($items as $item) {
                     $item->ProductOptionGroupID = $noneGroup->ID;
                     $item->write();
@@ -127,6 +124,7 @@ class OptionGroup extends DataObject
 
     /**
      * @param bool $member
+     *
      * @return bool
      */
     public function canView($member = false)
@@ -136,6 +134,7 @@ class OptionGroup extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canEdit($member = null)
@@ -152,6 +151,7 @@ class OptionGroup extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canDelete($member = null)
@@ -161,6 +161,7 @@ class OptionGroup extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canCreate($member = null, $context = [])

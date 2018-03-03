@@ -24,10 +24,12 @@ class OrderHistoryPage extends \Page
     private static $description = 'Show a customers past orders. Requires authentication';
 
     /**
-     * return all current Member's Orders
+     * return all current Member's Orders.
      *
      * @param int $limit
+     *
      * @return bool|PaginatedList
+     *
      * @throws \Exception
      */
     public function getOrders($limit = 10)
@@ -37,8 +39,10 @@ class OrderHistoryPage extends \Page
 
             $list = new PaginatedList($Orders, Controller::curr()->request);
             $list->setPageLength($limit);
+
             return $list;
         }
+
         return false;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
-use Dynamic\FoxyStripe\Model\FoxyStripeClient;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
@@ -57,14 +56,14 @@ class ProductCategory extends DataObject
      */
     private static $summary_fields = array(
         'Title' => 'Name',
-        'Code' => 'Code'
+        'Code' => 'Code',
     );
 
     /**
      * @var array
      */
     private static $indexes = array(
-        'Code' => true
+        'Code' => true,
     );
 
     /**
@@ -198,9 +197,9 @@ class ProductCategory extends DataObject
     public function requireDefaultRecords()
     {
         parent::requireDefaultRecords();
-        $allCats = ProductCategory::get();
+        $allCats = self::get();
         if (!$allCats->count()) {
-            $cat = new ProductCategory();
+            $cat = new self();
             $cat->Title = 'Default';
             $cat->Code = 'DEFAULT';
             $cat->write();
@@ -209,6 +208,7 @@ class ProductCategory extends DataObject
 
     /**
      * @param bool $member
+     *
      * @return bool
      */
     public function canView($member = false)
@@ -218,6 +218,7 @@ class ProductCategory extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canEdit($member = null)
@@ -227,6 +228,7 @@ class ProductCategory extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canDelete($member = null)
@@ -238,6 +240,7 @@ class ProductCategory extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool|int
      */
     public function canCreate($member = null, $context = [])

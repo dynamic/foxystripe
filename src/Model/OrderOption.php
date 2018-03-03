@@ -11,14 +11,14 @@ class OrderOption extends DataObject
      */
     private static $db = array(
         'Name' => 'Varchar(200)',
-        'Value' => 'Varchar(200)'
+        'Value' => 'Varchar(200)',
     );
 
     /**
      * @var array
      */
     private static $has_one = array(
-        'OrderDetail' => OrderDetail::class
+        'OrderDetail' => OrderDetail::class,
     );
 
     /**
@@ -26,7 +26,7 @@ class OrderOption extends DataObject
      */
     private static $summary_fields = array(
         'Name',
-        'Value'
+        'Value',
     );
 
     /**

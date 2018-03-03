@@ -9,10 +9,10 @@ use SilverStripe\ORM\DataExtension;
 class CustomerExtension extends DataExtension
 {
     /**
-     * @var array 
+     * @var array
      */
     private static $db = array(
-        'Customer_ID' => 'Int'
+        'Customer_ID' => 'Int',
     );
 
     /**
@@ -26,7 +26,7 @@ class CustomerExtension extends DataExtension
      * @var array
      */
     private static $indexes = array(
-        'Customer_ID' => true // make unique
+        'Customer_ID' => true, // make unique
     );
 
     /**

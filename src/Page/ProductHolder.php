@@ -41,8 +41,8 @@ class ProductHolder extends \Page
      */
     private static $many_many_extraFields = array(
         'Products' => array(
-            'SortOrder' => 'Int'
-        )
+            'SortOrder' => 'Int',
+        ),
     );
 
     /**
@@ -98,9 +98,7 @@ class ProductHolder extends \Page
     /**
      * loadDescendantProductGroupIDListInto function.
      * 
-     * @access public
      * @param mixed &$idList
-     * @return void
      */
     public function loadDescendantProductGroupIDListInto(&$idList)
     {
@@ -109,45 +107,47 @@ class ProductHolder extends \Page
                 if (in_array($child->ID, $idList)) {
                     continue;
                 }
-                
-                if ($child instanceof ProductHolder) {
+
+                if ($child instanceof self) {
                     $idList[] = $child->ID;
                     $child->loadDescendantProductGroupIDListInto($idList);
                 }
             }
         }
     }
-    
+
     /**
      * ProductGroupIDs function.
      * 
-     * @access public
      * @return array
      */
     public function ProductGroupIDs()
     {
         $holderIDs = array();
         $this->loadDescendantProductGroupIDListInto($holderIDs);
+
         return $holderIDs;
     }
 
     /**
      * @param int $limit
+     *
      * @return PaginatedList
+     *
      * @throws \Exception
      */
     public function ProductList($limit = 10)
     {
         $config = SiteConfig::current_site_config();
 
-        if ($config->ProductLimit>0) {
+        if ($config->ProductLimit > 0) {
             $limit = $config->ProductLimit;
         }
 
         if ($config->MultiGroup) {
             $entries = $this->Products()->sort('SortOrder');
         } else {
-            $filter = '"ParentID" = ' . $this->ID;
+            $filter = '"ParentID" = '.$this->ID;
 
             // Build a list of all IDs for ProductGroups that are children
             $holderIDs = $this->ProductGroupIDs();
@@ -158,7 +158,7 @@ class ProductHolder extends \Page
                 if ($filter) {
                     $filter .= ' OR ';
                 }
-                $filter .= '"ParentID" IN (' . implode(',', $holderIDs) . ")";
+                $filter .= '"ParentID" IN ('.implode(',', $holderIDs).')';
             }
 
             $order = '"SiteTree"."Title" ASC';
@@ -166,9 +166,9 @@ class ProductHolder extends \Page
             $entries = ProductPage::get()->where($filter);
         }
 
-
         $list = new PaginatedList($entries, Controller::curr()->request);
         $list->setPageLength($limit);
+
         return $list;
     }
 }

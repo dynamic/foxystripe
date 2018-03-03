@@ -35,7 +35,7 @@ class OrderDetail extends DataObject
         'ProductName' => 'Varchar(255)',
         'ProductCode' => 'Varchar(100)',
         'ProductImage' => 'Text',
-        'ProductCategory' => 'Varchar(100)'
+        'ProductCategory' => 'Varchar(100)',
     );
 
     /**
@@ -66,7 +66,7 @@ class OrderDetail extends DataObject
     private static $summary_fields = array(
         'Product.Title',
         'Quantity',
-        'Price.Nice'
+        'Price.Nice',
     );
 
     /**
@@ -83,7 +83,7 @@ class OrderDetail extends DataObject
 
         if ($this->ID) {
             $fields->addFieldsToTab('Root.Options', array(
-                GridField::create('Options', 'Product Options', $this->OrderOptions(), GridFieldConfig_RecordViewer::create())
+                GridField::create('Options', 'Product Options', $this->OrderOptions(), GridFieldConfig_RecordViewer::create()),
             ));
         }
 
@@ -92,6 +92,7 @@ class OrderDetail extends DataObject
 
     /**
      * @param bool $member
+     *
      * @return bool|int
      */
     public function canView($member = false)
@@ -101,6 +102,7 @@ class OrderDetail extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool
      */
     public function canEdit($member = null)
@@ -110,6 +112,7 @@ class OrderDetail extends DataObject
 
     /**
      * @param null $member
+     *
      * @return bool
      */
     public function canCreate($member = null, $context = [])

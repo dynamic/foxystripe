@@ -8,7 +8,6 @@ use SilverStripe\Security\Member;
 
 class FoxyStripeController extends \PageController
 {
-
     /**
      *
      */
@@ -27,37 +26,39 @@ class FoxyStripeController extends \PageController
      */
     private static $allowed_actions = array(
         'index',
-        'sso'
+        'sso',
     );
 
     /**
      * @return string
+     *
      * @throws \SilverStripe\ORM\ValidationException
      */
     public function index()
     {
         // handle POST from FoxyCart API transaction
-        if ((isset($_POST["FoxyData"]) or isset($_POST['FoxySubscriptionData']))) {
-            $FoxyData_encrypted = (isset($_POST["FoxyData"])) ?
-                urldecode($_POST["FoxyData"]) :
-                urldecode($_POST["FoxySubscriptionData"]);
+        if ((isset($_POST['FoxyData']) or isset($_POST['FoxySubscriptionData']))) {
+            $FoxyData_encrypted = (isset($_POST['FoxyData'])) ?
+                urldecode($_POST['FoxyData']) :
+                urldecode($_POST['FoxySubscriptionData']);
             $FoxyData_decrypted = \rc4crypt::decrypt(FoxyCart::getStoreKey(), $FoxyData_encrypted);
 
             // parse the response and save the order
             self::handleDataFeed($FoxyData_encrypted, $FoxyData_decrypted);
-            
+
             // extend to allow for additional integrations with Datafeed
             $this->extend('addIntegrations', $FoxyData_encrypted);
-            
+
             return 'foxy';
         } else {
-            return "No FoxyData or FoxySubscriptionData received.";
+            return 'No FoxyData or FoxySubscriptionData received.';
         }
     }
 
     /**
      * @param $encrypted
      * @param $decrypted
+     *
      * @throws \SilverStripe\ORM\ValidationException
      */
     public function handleDataFeed($encrypted, $decrypted)
@@ -81,9 +82,8 @@ class FoxyStripeController extends \PageController
         }
     }
 
-
     /**
-     * Single Sign on integration with FoxyCart
+     * Single Sign on integration with FoxyCart.
      */
     public function sso()
     {
@@ -102,11 +102,11 @@ class FoxyStripeController extends \PageController
             $Member->Customer_ID = 0;
         }
 
-        $auth_token = sha1($Member->Customer_ID . '|' . $timestampNew . '|' . FoxyCart::getStoreKey());
+        $auth_token = sha1($Member->Customer_ID.'|'.$timestampNew.'|'.FoxyCart::getStoreKey());
 
-        $redirect_complete = 'https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/checkout?fc_auth_token=' . $auth_token .
-            '&fcsid=' . $fcsid . '&fc_customer_id=' . $Member->Customer_ID . '&timestamp=' . $timestampNew;
-    
+        $redirect_complete = 'https://'.FoxyCart::getFoxyCartStoreName().'.foxycart.com/checkout?fc_auth_token='.$auth_token.
+            '&fcsid='.$fcsid.'&fc_customer_id='.$Member->Customer_ID.'&timestamp='.$timestampNew;
+
         $this->redirect($redirect_complete);
     }
 }

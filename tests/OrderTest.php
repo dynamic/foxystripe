@@ -99,7 +99,7 @@ class OrderTest extends SapphireTest
     {
         $object = $this->objFromFixture(Order::class, 'one');
         $expected = array(
-            'Product_ORDERS' => 'Allow user to manage Orders and related objects'
+            'Product_ORDERS' => 'Allow user to manage Orders and related objects',
         );
         $this->assertEquals($expected, $object->providePermissions());
     }

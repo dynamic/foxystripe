@@ -10,7 +10,7 @@ class OrderAdmin extends ModelAdmin
      * @var array
      */
     private static $managed_models = array(
-        'Order'
+        'Order',
     );
 
     /**
@@ -26,6 +26,7 @@ class OrderAdmin extends ModelAdmin
     /**
      * @param null $id
      * @param null $fields
+     *
      * @return \SilverStripe\Forms\Form
      */
     public function getEditForm($id = null, $fields = null)

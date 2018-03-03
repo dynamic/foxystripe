@@ -6,7 +6,6 @@ use Foxy\FoxyClient\FoxyClient;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\SiteConfig\SiteConfig;
 
 class FoxyStripeClient
@@ -38,12 +37,13 @@ class FoxyStripeClient
 
     /**
      * FoxyStripeClient constructor.
+     *
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __construct()
     {
         $config = array(
-            'use_sandbox' => false
+            'use_sandbox' => false,
         );
 
         if ($site_config = SiteConfig::current_site_config()) {
@@ -56,17 +56,17 @@ class FoxyStripeClient
         $guzzle_config = array(
             'defaults' => array(
                 'debug' => false,
-                'exceptions' => false
-            )
+                'exceptions' => false,
+            ),
         );
 
-        /**
+        /*
          * Set up our Guzzle Client
          */
         $guzzle = new Client($guzzle_config);
         //CacheSubscriber::attach($guzzle); // todo add caching middleware guzzle-cache-middleware
 
-        /**
+        /*
          * Get our FoxyClient
          */
         $fc = new FoxyClient($guzzle, $config);
@@ -87,11 +87,13 @@ class FoxyStripeClient
 
     /**
      * @param $client
+     *
      * @return $this
      */
     public function setClient($client)
     {
         $this->client = $client;
+
         return $this;
     }
 
@@ -135,16 +137,18 @@ class FoxyStripeClient
                 }
             }
             if (count($errors)) {
-                Injector::inst()->get(LoggerInterface::class)->error('setCurrentStore errors - ' . json_encode($errors));
+                Injector::inst()->get(LoggerInterface::class)->error('setCurrentStore errors - '.json_encode($errors));
             }
         }
     }
 
     /**
      * @param array $data
+     *
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function updateStore($data = []) {
+    public function updateStore($data = [])
+    {
         $client = $this->getClient();
         $errors = [];
 
@@ -152,7 +156,7 @@ class FoxyStripeClient
 
         $errors = array_merge($errors, $client->getErrors($result));
         if (count($errors)) {
-            Injector::inst()->get(LoggerInterface::class)->error('updateStore errors - ' . json_encode($errors));
+            Injector::inst()->get(LoggerInterface::class)->error('updateStore errors - '.json_encode($errors));
         }
     }
 
@@ -181,7 +185,7 @@ class FoxyStripeClient
 
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                Injector::inst()->get(LoggerInterface::class)->error('setItemCategoriesURL errors - ' . json_encode($errors));
+                Injector::inst()->get(LoggerInterface::class)->error('setItemCategoriesURL errors - '.json_encode($errors));
             }
         }
     }
@@ -209,14 +213,16 @@ class FoxyStripeClient
 
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                Injector::inst()->get(LoggerInterface::class)->error('setItemCategories errors - ' . json_encode($errors));
+                Injector::inst()->get(LoggerInterface::class)->error('setItemCategories errors - '.json_encode($errors));
             }
         }
     }
 
     /**
      * @param $code
+     *
      * @return bool
+     *
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getCategory($code)
@@ -230,19 +236,22 @@ class FoxyStripeClient
             if ($result = $client->get($categoriesURL, $data)) {
                 if (count($result['_embedded']['fx:item_categories']) > 0) {
                     $category = $result['_embedded']['fx:item_categories'][0]['_links']['self']['href'];
+
                     return $category;
                 }
                 $errors = array_merge($errors, $client->getErrors($result));
                 if (count($errors)) {
-                    Injector::inst()->get(LoggerInterface::class)->error('getCategory errors - ' . json_encode($errors));
+                    Injector::inst()->get(LoggerInterface::class)->error('getCategory errors - '.json_encode($errors));
                 }
             }
         }
+
         return false;
     }
 
     /**
      * @param array $data
+     *
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function putCategory($data = [])
@@ -258,13 +267,14 @@ class FoxyStripeClient
             }
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                Injector::inst()->get(LoggerInterface::class)->error('putCategory errors - ' . json_encode($errors));
+                Injector::inst()->get(LoggerInterface::class)->error('putCategory errors - '.json_encode($errors));
             }
         }
     }
 
     /**
      * @param array $data
+     *
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteCategory($data = [])
@@ -277,7 +287,7 @@ class FoxyStripeClient
 
             $errors = array_merge($errors, $client->getErrors($result));
             if (count($errors)) {
-                Injector::inst()->get(LoggerInterface::class)->error('deleteCategory errors - ' . json_encode($errors));
+                Injector::inst()->get(LoggerInterface::class)->error('deleteCategory errors - '.json_encode($errors));
             }
         }
     }
