@@ -219,7 +219,8 @@ class ProductPageTest extends FS_Test
 
         $this->logInWithPermission('ADMIN');
 
-        $holder = $this->objFromFixture(ProductHolder::class, 'default');//build holder page, ProductPage can't be on root level
+        $holder = $this->objFromFixture(ProductHolder::class, 'default');
+        //build holder page, ProductPage can't be on root level
         $holder->doPublish();
 
         $product = $this->objFromFixture(ProductPage::class, 'product1');//build product page
@@ -227,7 +228,8 @@ class ProductPageTest extends FS_Test
 
         $productID = $product->ID;
 
-        $optionGroup = $this->objFromFixture(OptionGroup::class, 'size');//build the group for the options
+        $optionGroup = $this->objFromFixture(OptionGroup::class, 'size');
+        //build the group for the options
         $optionGroup->write();
         $option = $this->objFromFixture(OptionItem::class, 'small');//build first option
         $option->write();
@@ -242,13 +244,15 @@ class ProductPageTest extends FS_Test
 
         $testOption = $this->objFromFixture(OptionItem::class, 'large');
 
-        $this->assertThat($testOption->ID, $this->logicalNot($this->equalTo(0)));//make sure the first option still exists
+        $this->assertThat($testOption->ID, $this->logicalNot($this->equalTo(0)));
+        //make sure the first option still exists
 
         $product->doRestoreToStage();//restore page to draft site
         $product->doUnpublish();//unpublish page
         $product->deleteFromStage('Stage');//remove product from draft site
 
-        $checkDeleted = OptionItem::get()->filter(array('Title' => 'Large', 'ProductID' => $productID))->first();//query same option as above
+        $checkDeleted = OptionItem::get()->filter(array('Title' => 'Large', 'ProductID' => $productID))->first();
+        //query same option as above
 
         $this->assertEquals($checkDeleted->ID, 0);//check that the ID is 0 (empty object/non-existent)
     }
