@@ -12,9 +12,6 @@
 [![Monthly Downloads](https://poser.pugx.org/dynamic/foxystripe/d/monthly)](https://packagist.org/packages/dynamic/foxystripe)
 [![Daily Downloads](https://poser.pugx.org/dynamic/foxystripe/d/daily)](https://packagist.org/packages/dynamic/foxystripe)
 
-[![Dependency Status](https://www.versioneye.com/php/dynamic:foxystripe/badge.svg)](https://www.versioneye.com/php/dynamic:foxystripe)
-[![Reference Status](https://www.versioneye.com/php/dynamic:foxystripe/reference_badge.svg?style=flat)](https://www.versioneye.com/php/dynamic:foxystripe/references)
-
 FoxyStripe is a [SilverStripe](http://silverstripe.org) ecommerce module designed to integrate with [FoxyCart](http://www.foxycart.com/).
 
 FoxyCart provides you with a flexible, powerful, customizable, and secure ecommerce platform. FoxyStripe provides a product catalog that integrates with the FoxyCart shopping cart and API.
@@ -35,7 +32,7 @@ Read more about [Using FoxyStripe](docs/en/Use.MD) and [Advanced Features](docs/
 
 ## Requirements
 
-*  SilverStripe ^3.1
+*  SilverStripe 4.x
 *  FoxyCart Store 2.x
 
 ## Setup
@@ -67,7 +64,7 @@ To set up additional features, such as Single Sign On and Order History, see [Ad
 
 ### Maintainer Contact
 
- *  [Dynamic, Inc](http://www.dynamicagency.com) (<dev@dy.ag>)
+ *  [Dynamic](http://www.dynamicagency.com) (<dev@dynamicagency.com>)
    
 ### Credits
 
