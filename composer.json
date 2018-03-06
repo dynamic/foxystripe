@@ -18,14 +18,24 @@
     "type": "silverstripe-module",
     "license": "BSD-3-Clause",
     "require": {
-        "silverstripe/cms": "^4.0",
-        "foxycart/foxyclient": "~1.0"
+        "silverstripe/recipe-cms": "^1.0@dev",
+        "symbiote/silverstripe-gridfieldextensions": "^3.1@dev",
+        "dynamic/silverstripe-country-dropdown-field": "1.0.x-dev",
+        "foxycart/foxyclient": "^2.0",
+        "unclecheese/display-logic": "^2.0@dev"
     },
     "require-dev": {
-        "phpunit/PHPUnit": "^3.7"
+        "phpunit/PHPUnit": "^5.7",
+        "squizlabs/php_codesniffer": "*"
     },
     "config": {
         "process-timeout": 600
+    },
+    "autoload": {
+        "psr-4": {
+            "Dynamic\\FoxyStripe\\": "src/",
+            "Dynamic\\FoxyStripe\\Test\\": "tests/"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

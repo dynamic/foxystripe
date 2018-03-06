@@ -1,18 +1,25 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Test;
+
+use Dynamic\FoxyStripe\Model\Order;
+use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\FieldType\DBHTMLVarchar;
+use SilverStripe\Security\Member;
+
 class OrderTest extends SapphireTest
 {
     /**
      * @var string
      */
-    protected static $fixture_file = 'foxystripe/tests/FoxyStripeTest.yml';
+    protected static $fixture_file = 'fixtures.yml';
 
     /**
      *
      */
     public function testFieldLabels()
     {
-        $object = $this->objFromFixture('Order', 'one');
+        $object = $this->objFromFixture(Order::class, 'one');
         $labels = $object->FieldLabels();
         $this->assertNotNull($labels['Order_ID']);
         $this->assertNotNull($labels['TransactionDate']);
@@ -33,8 +40,8 @@ class OrderTest extends SapphireTest
      */
     public function testReceiptLink()
     {
-        $object = $this->objFromFixture('Order', 'one');
-        $this->assertInstanceOf('HTMLVarchar', $object->ReceiptLink());
+        $object = $this->objFromFixture(Order::class, 'one');
+        $this->assertInstanceOf(DBHTMLVarchar::class, $object->ReceiptLink());
     }
 
     /**
@@ -42,11 +49,11 @@ class OrderTest extends SapphireTest
      */
     public function testCanView()
     {
-        $object = $this->objFromFixture('Order', 'one');
-        $admin = $this->objFromFixture('Member', 'admin');
+        $object = $this->objFromFixture(Order::class, 'one');
+        $admin = $this->objFromFixture(Member::class, 'admin');
         $this->assertTrue($object->canView($admin));
-        $member = $this->objFromFixture('Member', 'customer');
-        $this->assertTrue($object->canView($member));
+        $member = $this->objFromFixture(Member::class, 'customer');
+        $this->assertFalse($object->canView($member));
     }
 
     /**
@@ -54,10 +61,10 @@ class OrderTest extends SapphireTest
      */
     public function testCanEdit()
     {
-        $object = $this->objFromFixture('Order', 'one');
-        $admin = $this->objFromFixture('Member', 'admin');
+        $object = $this->objFromFixture(Order::class, 'one');
+        $admin = $this->objFromFixture(Member::class, 'admin');
         $this->assertFalse($object->canEdit($admin));
-        $member = $this->objFromFixture('Member', 'customer');
+        $member = $this->objFromFixture(Member::class, 'customer');
         $this->assertFalse($object->canEdit($member));
     }
 
@@ -66,10 +73,10 @@ class OrderTest extends SapphireTest
      */
     public function testCanDelete()
     {
-        $object = $this->objFromFixture('Order', 'one');
-        $admin = $this->objFromFixture('Member', 'admin');
+        $object = $this->objFromFixture(Order::class, 'one');
+        $admin = $this->objFromFixture(Member::class, 'admin');
         $this->assertFalse($object->canDelete($admin));
-        $member = $this->objFromFixture('Member', 'customer');
+        $member = $this->objFromFixture(Member::class, 'customer');
         $this->assertFalse($object->canDelete($member));
     }
 
@@ -78,10 +85,10 @@ class OrderTest extends SapphireTest
      */
     public function testCanCreate()
     {
-        $object = $this->objFromFixture('Order', 'one');
-        $admin = $this->objFromFixture('Member', 'admin');
+        $object = $this->objFromFixture(Order::class, 'one');
+        $admin = $this->objFromFixture(Member::class, 'admin');
         $this->assertFalse($object->canCreate($admin));
-        $member = $this->objFromFixture('Member', 'customer');
+        $member = $this->objFromFixture(Member::class, 'customer');
         $this->assertFalse($object->canCreate($member));
     }
 
@@ -90,9 +97,9 @@ class OrderTest extends SapphireTest
      */
     public function testProvidePermissions()
     {
-        $object = $this->objFromFixture('Order', 'one');
+        $object = $this->objFromFixture(Order::class, 'one');
         $expected = array(
-            'Product_ORDERS' => 'Allow user to manage Orders and related objects'
+            'Product_ORDERS' => 'Allow user to manage Orders and related objects',
         );
         $this->assertEquals($expected, $object->providePermissions());
     }
