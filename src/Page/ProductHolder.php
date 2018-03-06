@@ -2,13 +2,13 @@
 
 namespace Dynamic\FoxyStripe\Page;
 
+use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\PaginatedList;
-use SilverStripe\SiteConfig\SiteConfig;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
@@ -62,12 +62,13 @@ class ProductHolder extends \Page
 
     /**
      * @return FieldList
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
 
-        if (SiteConfig::current_site_config()->MultiGroup) {
+        if (FoxyStripeSetting::current_foxystripe_setting()->MultiGroup) {
             $config = GridFieldConfig_RelationEditor::create();
             $config->addComponent(new GridFieldOrderableRows('SortOrder'));
             $config->removeComponentsByType('GridFieldAddExistingAutocompleter');
@@ -138,7 +139,7 @@ class ProductHolder extends \Page
      */
     public function ProductList($limit = 10)
     {
-        $config = SiteConfig::current_site_config();
+        $config = FoxyStripeSetting::current_foxystripe_setting();
 
         if ($config->ProductLimit > 0) {
             $limit = $config->ProductLimit;
