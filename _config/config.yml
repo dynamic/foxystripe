@@ -1,9 +1,6 @@
 ---
 Name: foxystripeconfig
 ---
-SilverStripe\SiteConfig\SiteConfig:
-  extensions:
-    - Dynamic\FoxyStripe\ORM\FoxyStripeSiteConfig
 SilverStripe\Security\Member:
   extensions:
     - Dynamic\FoxyStripe\ORM\CustomerExtension

@@ -2,6 +2,7 @@
 
 namespace Dynamic\FoxyStripe\Form;
 
+use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\OptionGroup;
 use Dynamic\FoxyStripe\Page\ProductPage;
 use SilverStripe\Forms\CompositeField;
@@ -11,7 +12,9 @@ use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\GroupedList;
+use SilverStripe\SiteConfig\SiteConfig;
 
 /**
  * Class FoxyStripePurchaseForm.
@@ -43,7 +46,7 @@ class FoxyStripePurchaseForm extends Form
 
             return $this;
         }
-        throw new InvalidArgumentException('$siteConfig needs to be an instance of SiteConfig.');
+        throw new \InvalidArgumentException('$siteConfig needs to be an instance of SiteConfig.');
     }
 
     /**
@@ -70,7 +73,7 @@ class FoxyStripePurchaseForm extends Form
 
             return $this;
         }
-        throw new InvalidArgumentException('$product needs to be an instance of ProductPage.');
+        throw new \InvalidArgumentException('$product needs to be an instance of ProductPage.');
     }
 
     /**

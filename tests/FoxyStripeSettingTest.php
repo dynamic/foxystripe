@@ -2,11 +2,11 @@
 
 namespace Dynamic\FoxyStripe\Test;
 
+use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\SiteConfig\SiteConfig;
 
-class FoxyStripeSiteConfigTest extends SapphireTest
+class FoxyStripeSettingTest extends SapphireTest
 {
     /**
      * @var string
@@ -18,7 +18,7 @@ class FoxyStripeSiteConfigTest extends SapphireTest
      */
     public function testGetCMSFields()
     {
-        $object = singleton(SiteConfig::class);
+        $object = singleton(FoxyStripeSetting::class);
         $fields = $object->getCMSFields();
         $this->assertInstanceOf(FieldList::class, $fields);
     }
@@ -28,7 +28,7 @@ class FoxyStripeSiteConfigTest extends SapphireTest
      */
     public function testGetDataMap()
     {
-        $object = singleton(SiteConfig::class);
+        $object = singleton(FoxyStripeSetting::class);
         $this->assertTrue(is_array($object->getDataMap()));
     }
 }

@@ -1,32 +1,49 @@
 <?php
 
-namespace Dynamic\FoxyStripe\ORM;
+namespace Dynamic\FoxyStripe\Model;
 
 use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
-use Dynamic\FoxyStripe\Model\FoxyCart;
-use Dynamic\FoxyStripe\Model\FoxyStripeClient;
-use Dynamic\FoxyStripe\Model\OptionGroup;
-use Dynamic\FoxyStripe\Model\ProductCategory;
-use Psr\Log\LoggerInterface;
+use Dynamic\FoxyStripe\Admin\FoxyStripeAdmin;
 use SilverStripe\Control\Director;
-use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
-use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\PermissionProvider;
+use SilverStripe\Security\Security;
+use SilverStripe\View\TemplateGlobalProvider;
 
-class FoxyStripeSiteConfig extends DataExtension
+class FoxyStripeSetting extends DataObject implements PermissionProvider, TemplateGlobalProvider
 {
+    /**
+     * @var string
+     */
+    private static $singular_name = 'FoxyStripe Setting';
+    /**
+     * @var string
+     */
+    private static $plural_name = 'FoxyStripe Settings';
+    /**
+     * @var string
+     */
+    private static $description = 'Update the settings for your store';
+
+    /**
+     * @var array
+     */
     private static $db = array(
         'StoreTitle' => 'Varchar(255)',
         'StoreName' => 'Varchar(255)',
@@ -61,14 +78,37 @@ class FoxyStripeSiteConfig extends DataExtension
         'ProductLimit' => 10,
     );
 
-    public function updateCMSFields(FieldList $fields)
-    {
+    /**
+     * @var string
+     */
+    private static $table_name = 'FS_FoxyStripeSetting';
 
-        // set TabSet names to avoid spaces from camel case
-        $fields->addFieldToTab('Root', new TabSet('FoxyStripe', 'FoxyStripe'));
+    /**
+     * Default permission to check for 'LoggedInUsers' to create or edit pages.
+     *
+     * @var array
+     * @config
+     */
+    private static $required_permission = array('CMS_ACCESS_CMSMain', 'CMS_ACCESS_LeftAndMain');
+
+    /**
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
+        $fields = FieldList::create(
+            TabSet::create(
+                'Root',
+                $tabMain = Tab::create(
+                    'Main'
+                )
+            ),
+            HiddenField::create('ID')
+        );
+        $tabMain->setTitle('Settings');
 
         // settings tab
-        $fields->addFieldsToTab('Root.FoxyStripe.Settings', array(
+        $fields->addFieldsToTab('Root.Main', array(
             // Store Details
             HeaderField::create('StoreDetails', _t('FoxyStripeSiteConfig.StoreDetails', 'Store Settings'), 3),
             LiteralField::create('DetailsIntro', _t(
@@ -124,40 +164,9 @@ class FoxyStripeSiteConfig extends DataExtension
             TextField::create('StoreTimezone', 'Store timezone'),
             TextField::create('StoreLogoURL', 'Logo URL')
                 ->setAttribute('placeholder', 'http://'),
-
-            // Advanced Settings
-            /*
-            HeaderField::create('AdvanceHeader', _t('FoxyStripeSiteConfig.AdvancedHeader', 'Advanced Settings'), 3),
-            LiteralField::create('AdvancedIntro', _t(
-                'FoxyStripeSiteConfig.AdvancedIntro',
-                '<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures"
-                     target="_blank">FoxyCart advanced store settings</a>.</p>'
-            )),
-            ReadonlyField::create(
-                'DataFeedLink',
-                _t('FoxyStripeSiteConfig.DataFeedLink', 'FoxyCart DataFeed URL'),
-                self::getDataFeedLink()
-            )->setDescription(_t('FoxyStripeSiteConfig.DataFeedLinkDescription', 'copy/paste to FoxyCart')),
-            CheckboxField::create('CartValidation')
-                ->setTitle(_t('FoxyStripeSiteConfig.CartValidation', 'Enable Cart Validation'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.CartValidationDescription',
-                    'You must
-                    <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures#use_cart_validation"
-                        target="_blank">enable cart validation</a> in the FoxyCart admin.'
-            )),
-            ReadonlyField::create('StoreKey')
-                ->setTitle(_t('FoxyStripeSiteConfig.StoreKey', 'FoxyCart API Key'))
-                ->setDescription(_t('FoxyStripeSiteConfig.StoreKeyDescription', 'copy/paste to FoxyCart')),
-            ReadonlyField::create('SSOLink', _t(
-            'FoxyStripeSiteConfig.SSOLink',
-            'Single Sign On URL'), self::getSSOLink()
-            )
-                ->setDescription(_t('FoxyStripeSiteConfig.SSOLinkDescription', 'copy/paste to FoxyCart'))
-            */
         ));
 
-        $fields->addFieldsToTab('Root.FoxyStripe.Advanced', [
+        $fields->addFieldsToTab('Root.Advanced', [
             HeaderField::create('AdvanceHeader', _t(
                 'FoxyStripeSiteConfig.AdvancedHeader',
                 'Advanced Settings'
@@ -189,15 +198,14 @@ class FoxyStripeSiteConfig extends DataExtension
                 'StoreSubDomainHeaderWarning',
                 _t(
                     'FoxyStripeSiteConfig.StoreSubDomainHeadingWarning',
-                    '<p class="message error">Store sub-domain must be entered in the <a href="/admin/settings/">
-                            site settings
+                    '<p class="message error">Store Domain must be entered below
                         </a></p>'
                 )
             ), 'StoreDetails');
         }
 
         // products tab
-        $fields->addFieldsToTab('Root.FoxyStripe.Products', array(
+        $fields->addFieldsToTab('Root.Products', array(
             HeaderField::create('ProductHeader', _t(
                 'FoxyStripeSiteConfig.ProductHeader',
                 'Products'
@@ -231,7 +239,7 @@ class FoxyStripeSiteConfig extends DataExtension
         ));
 
         // categories tab
-        $fields->addFieldsToTab('Root.FoxyStripe.Categories', array(
+        $fields->addFieldsToTab('Root.Categories', array(
             HeaderField::create('CategoryHD', _t('FoxyStripeSiteConfig.CategoryHD', 'FoxyStripe Categories'), 3),
             LiteralField::create('CategoryDescrip', _t(
                 'FoxyStripeSiteConfig.CategoryDescrip',
@@ -254,7 +262,7 @@ class FoxyStripeSiteConfig extends DataExtension
         ));
 
         // option groups tab
-        $fields->addFieldsToTab('Root.FoxyStripe.Groups', array(
+        $fields->addFieldsToTab('Root.Groups', array(
             HeaderField::create('OptionGroupsHead', _t('FoxyStripeSiteConfig', 'Product Option Groups'), 3),
             LiteralField::create('OptionGroupsDescrip', _t(
                 'FoxyStripeSiteConfig.OptionGroupsDescrip',
@@ -269,13 +277,150 @@ class FoxyStripeSiteConfig extends DataExtension
         ));
 
         // api tab
-        $fields->addFieldsToTab('Root.FoxyStripe.API', [
+        $fields->addFieldsToTab('Root.API', [
             HeaderField::create('APIHD', 'FoxyCart API Settings', 3),
             TextField::create('client_id', 'FoxyCart Client ID'),
             TextField::create('client_secret', 'FoxyCart Client Secret'),
             TextField::create('access_token', 'FoxyCart Access Token'),
             TextField::create('refresh_token', 'FoxyCart Refresh Token'),
         ]);
+
+        $this->extend('updateCMSFields', $fields);
+
+        return $fields;
+    }
+
+    /**
+     * @return FieldList
+     */
+    public function getCMSActions()
+    {
+        if (Permission::check('ADMIN') || Permission::check('EDIT_FOXYSTRIPE_SETTING')) {
+            $actions = new FieldList(
+                FormAction::create('save_foxystripe_setting', _t('FoxyStripeSetting.SAVE', 'Save'))
+                    ->addExtraClass('btn-primary font-icon-save')
+            );
+        } else {
+            $actions = FieldList::create();
+        }
+        $this->extend('updateCMSActions', $actions);
+
+        return $actions;
+    }
+
+    /**
+     * @throws \SilverStripe\ORM\ValidationException
+     */
+    public function requireDefaultRecords()
+    {
+        parent::requireDefaultRecords();
+        $config = self::current_foxystripe_setting();
+
+        if (!$config) {
+            self::make_foxystripe_setting();
+            DB::alteration_message('Added default FoxyStripe Setting', 'created');
+        }
+
+        if (!$config->StoreKey) {
+            $key = FoxyCart::setStoreKey();
+            while (!ctype_alnum($key)) {
+                $key = FoxyCart::setStoreKey();
+            }
+            $config->StoreKey = $key;
+            $config->write();
+            DB::alteration_message('Created FoxyCart Store Key '.$key, 'created');
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function CMSEditLink()
+    {
+        return FoxyStripeAdmin::singleton()->Link();
+    }
+
+    /**
+     * @param null $member
+     *
+     * @return bool|int|null
+     */
+    public function canEdit($member = null)
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        $extended = $this->extendedCan('canEdit', $member);
+        if ($extended !== null) {
+            return $extended;
+        }
+
+        return Permission::checkMember($member, 'EDIT_FOXYSTRIPE_SETTING');
+    }
+
+    /**
+     * @return array
+     */
+    public function providePermissions()
+    {
+        return array(
+            'EDIT_FOXYSTRIPE_SETTING' => array(
+                'name' => _t(
+                    'FoxyStripeSetting.EDIT_FOXYSTRIPE_SETTING',
+                    'Manage FoxyStripe settings'
+                ),
+                'category' => _t(
+                    'Permissions.PERMISSIONS_FOXYSTRIPE_SETTING',
+                    'FoxyStripe'
+                ),
+                'help' => _t(
+                    'FoxyStripeSetting.EDIT_PERMISSION_FOXYSTRIPE_SETTING',
+                    'Ability to edit the settings of a FoxyStripe Store.'
+                ),
+                'sort' => 400,
+            ),
+        );
+    }
+
+    /**
+     * Get the current sites {@link GlobalSiteSetting}, and creates a new one
+     * through {@link make_global_config()} if none is found.
+     *
+     * @return FoxyStripeSetting|DataObject
+     * @throws \SilverStripe\ORM\ValidationException
+     */
+    public static function current_foxystripe_setting()
+    {
+        if ($config = self::get()->first()) {
+            return $config;
+        }
+
+        return self::make_foxystripe_setting();
+    }
+
+    /**
+     * Create {@link GlobalSiteSetting} with defaults from language file.
+     *
+     * @return static
+     * @throws \SilverStripe\ORM\ValidationException
+     */
+    public static function make_foxystripe_setting()
+    {
+        $config = self::create();
+        $config->write();
+
+        return $config;
+    }
+
+    /**
+     * Add $GlobalConfig to all SSViewers.
+     */
+    public static function get_template_global_variables()
+    {
+        return array(
+            'FoxyStripe' => 'current_foxystripe_config',
+        );
     }
 
     /**
@@ -292,28 +437,6 @@ class FoxyStripeSiteConfig extends DataExtension
     private static function getDataFeedLink()
     {
         return Director::absoluteBaseURL().'foxystripe/';
-    }
-
-    /**
-     * generate key on install.
-     *
-     * @throws \SilverStripe\ORM\ValidationException
-     */
-    public function requireDefaultRecords()
-    {
-        parent::requireDefaultRecords();
-
-        $siteConfig = SiteConfig::current_site_config();
-
-        if (!$siteConfig->StoreKey) {
-            $key = FoxyCart::setStoreKey();
-            while (!ctype_alnum($key)) {
-                $key = FoxyCart::setStoreKey();
-            }
-            $siteConfig->StoreKey = $key;
-            $siteConfig->write();
-            DB::alteration_message($siteConfig->ClassName.': created FoxyCart Store Key '.$key, 'created');
-        }
     }
 
     /**

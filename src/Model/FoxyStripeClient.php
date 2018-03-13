@@ -37,8 +37,8 @@ class FoxyStripeClient
 
     /**
      * FoxyStripeClient constructor.
-     *
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public function __construct()
     {
@@ -46,11 +46,11 @@ class FoxyStripeClient
             'use_sandbox' => false,
         );
 
-        if ($site_config = SiteConfig::current_site_config()) {
-            $config['client_id'] = $site_config->client_id;
-            $config['client_secret'] = $site_config->client_secret;
-            $config['refresh_token'] = $site_config->refresh_token;
-            $config['access_token'] = $site_config->access_token;
+        if ($setting = FoxyStripeSetting::current_foxystripe_setting()) {
+            $config['client_id'] = $setting->client_id;
+            $config['client_secret'] = $setting->client_secret;
+            $config['refresh_token'] = $setting->refresh_token;
+            $config['access_token'] = $setting->access_token;
         }
 
         $guzzle_config = array(

@@ -3,6 +3,7 @@
 namespace Dynamic\FoxyStripe\Page;
 
 use Dynamic\FoxyStripe\Model\FoxyCart;
+use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use Dynamic\FoxyStripe\Model\OptionItem;
 use Dynamic\FoxyStripe\Model\OrderDetail;
 use Dynamic\FoxyStripe\Model\ProductCategory;
@@ -285,6 +286,9 @@ class ProductPage extends \Page implements PermissionProvider
         return $fields;
     }
 
+    /**
+     * @throws \SilverStripe\ORM\ValidationException
+     */
     public function onBeforeWrite()
     {
         parent::onBeforeWrite();
@@ -294,7 +298,7 @@ class ProductPage extends \Page implements PermissionProvider
         }
 
         //update many_many lists when multi-group is on
-        if (SiteConfig::current_site_config()->MultiGroup) {
+        if (FoxyStripeSetting::current_foxystripe_setting()->MultiGroup) {
             $holders = $this->ProductHolders();
             $product = self::get()->byID($this->ID);
             if (isset($product->ParentID)) {
@@ -375,7 +379,7 @@ class ProductPage extends \Page implements PermissionProvider
     ) {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
 
-        return (SiteConfig::current_site_config()->CartValidation)
+        return (FoxyStripeSetting::current_foxystripe_setting()->CartValidation)
             ? \FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode) :
             $optionValue;
     }

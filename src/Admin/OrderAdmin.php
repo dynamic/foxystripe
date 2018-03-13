@@ -24,6 +24,11 @@ class OrderAdmin extends ModelAdmin
     private static $menu_title = 'Orders';
 
     /**
+     * @var int
+     */
+    private static $menu_priority = 4;
+
+    /**
      * @param null $id
      * @param null $fields
      *

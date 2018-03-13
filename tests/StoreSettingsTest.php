@@ -3,6 +3,7 @@
 namespace Dynamic\FoxyStripe\Test;
 
 use Dynamic\FoxyStripe\Model\FoxyCart;
+use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use SilverStripe\SiteConfig\SiteConfig;
 
 class StoreSettingsTest extends FS_Test
@@ -19,7 +20,7 @@ class StoreSettingsTest extends FS_Test
     {
         parent::setUp();
 
-        $siteConf = SiteConfig::current_site_config();
+        $siteConf = FoxyStripeSetting::current_foxystripe_setting();
         $siteConf->StoreName = 'foxystripe';
         $siteConf->requireDefaultRecords();
         $siteConf->write();
@@ -31,7 +32,7 @@ class StoreSettingsTest extends FS_Test
     public function testStoreKey()
     {
         $pref = FoxyCart::getKeyPrefix();
-        $siteConf = SiteConfig::current_site_config();
+        $siteConf = FoxyStripeSetting::current_foxystripe_setting();
 
         $this->assertTrue(ctype_alnum($siteConf->StoreKey));
         $this->assertEquals(strlen($siteConf->StoreKey), 60);
@@ -43,7 +44,7 @@ class StoreSettingsTest extends FS_Test
      */
     public function testStoreName()
     {
-        $siteConf = SiteConfig::current_site_config();
+        $siteConf = FoxyStripeSetting::current_foxystripe_setting();
 
         $this->assertEquals($siteConf->StoreName, 'foxystripe');
     }
