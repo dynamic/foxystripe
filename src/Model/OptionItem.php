@@ -16,7 +16,26 @@ use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 
 /**
- * Class OptionItem.
+ * Class OptionItem
+ * @package Dynamic\FoxyStripe\Model
+ *
+ * @property \SilverStripe\ORM\FieldType\DBText Title
+ * @property \SilverStripe\ORM\FieldType\DBInt WeightModifier
+ * @property \SilverStripe\ORM\FieldType\DBText CodeModifier
+ * @property \SilverStripe\ORM\FieldType\DBCurrency PriceModifier
+ * @property \SilverStripe\ORM\FieldType\DBEnum WeightModifierAction
+ * @property \SilverStripe\ORM\FieldType\DBEnum CodeModifierAction
+ * @property \SilverStripe\ORM\FieldType\DBEnum PriceModifierAction
+ * @property \SilverStripe\ORM\FieldType\DBBoolean Available
+ * @property \SilverStripe\ORM\FieldType\DBInt SortOrder
+ *
+ * @property int ProductID
+ * @method ProductPage Product
+ * @property int ProductOptionGroupID
+ * @method OptionGroup ProductOptionGroup
+ *
+ * @method \SilverStripe\ORM\ManyManyList OrderDetails
+ *
  */
 class OptionItem extends DataObject
 {
@@ -402,6 +421,7 @@ class OptionItem extends DataObject
 
     /**
      * @param null $member
+     * @param array $context
      *
      * @return bool|int
      */

@@ -25,6 +25,29 @@ use SilverStripe\Security\PermissionProvider;
 use SilverStripe\SiteConfig\SiteConfig;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
+/**
+ * Class ProductPage
+ * @package Dynamic\FoxyStripe\Page
+ *
+ * @property \SilverStripe\ORM\FieldType\DBCurrency Price
+ * @property \SilverStripe\ORM\FieldType\DBDecimal Weight
+ * @property \SilverStripe\ORM\FieldType\DBVarchar Code
+ * @property \SilverStripe\ORM\FieldType\DBVarchar ReceiptTitle
+ * @property \SilverStripe\ORM\FieldType\DBBoolean Featured
+ * @property \SilverStripe\ORM\FieldType\DBBoolean Available
+ *
+ * @property int PreviewImageID
+ * @method Image PreviewImage
+ * @property int CategoryID
+ * @method ProductCategory Category
+ *
+ *
+ * @method \SilverStripe\ORM\HasManyList ProductImages
+ * @method \SilverStripe\ORM\HasManyList ProductOptions
+ * @method \SilverStripe\ORM\HasManyList OrderDetails
+ *
+ * @method \SilverStripe\ORM\ManyManyList ProductHolders
+ */
 class ProductPage extends \Page implements PermissionProvider
 {
     /**
