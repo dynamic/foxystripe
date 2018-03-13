@@ -5,6 +5,7 @@ namespace Dynamic\FoxyStripe\Page;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
 
 class OrderHistoryPage extends \Page
 {
@@ -34,7 +35,7 @@ class OrderHistoryPage extends \Page
      */
     public function getOrders($limit = 10)
     {
-        if ($Member = Member::currentUser()) {
+        if ($Member = Security::getCurrentUser()) {
             $Orders = $Member->Orders()->sort('TransactionDate', 'DESC');
 
             $list = new PaginatedList($Orders, Controller::curr()->request);

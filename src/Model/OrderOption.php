@@ -4,6 +4,16 @@ namespace Dynamic\FoxyStripe\Model;
 
 use SilverStripe\ORM\DataObject;
 
+/**
+ * Class OrderOption
+ * @package Dynamic\FoxyStripe\Model
+ *
+ * @property \SilverStripe\ORM\FieldType\DBVarchar Name
+ * @property \SilverStripe\ORM\FieldType\DBVarchar Value
+ * @property int OrderDetailID
+ *
+ * @method OrderDetail OrderDetail
+ */
 class OrderOption extends DataObject
 {
     /**

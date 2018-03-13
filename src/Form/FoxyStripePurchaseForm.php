@@ -5,6 +5,7 @@ namespace Dynamic\FoxyStripe\Form;
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\OptionGroup;
 use Dynamic\FoxyStripe\Page\ProductPage;
+use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -87,13 +88,13 @@ class FoxyStripePurchaseForm extends Form
     /**
      * FoxyStripePurchaseForm constructor.
      *
-     * @param Controller     $controller
-     * @param string         $name
-     * @param FieldList|null $fields
-     * @param FieldList|null $actions
-     * @param null           $validator
-     * @param null           $product
-     * @param null           $siteConfig
+     * @param ContentController     $controller
+     * @param string                $name
+     * @param FieldList|null        $fields
+     * @param FieldList|null        $actions
+     * @param null                  $validator
+     * @param null                  $product
+     * @param null                  $siteConfig
      */
     public function __construct(
         $controller,

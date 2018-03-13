@@ -2,6 +2,8 @@
 
 namespace Dynamic\FoxyStripe\Form;
 
+use Dynamic\FoxyStripe\Page\ProductPage;
+use SilverStripe\Control\Controller;
 use SilverStripe\Forms\DropdownField;
 
 /**
@@ -57,6 +59,8 @@ class FoxyStripeDropdownField extends DropdownField
      * regardless of the {@link setDisabled()} settings.
      *
      * @param array $items Collection of array keys, as defined in the $source array
+     *
+     * @return $this
      */
     public function setDisabledItems($items)
     {
@@ -74,7 +78,9 @@ class FoxyStripeDropdownField extends DropdownField
     }
 
     /**
-     * @param array $source
+     * @param mixed $source
+     *
+     * @return $this
      */
     public function setSource($source)
     {

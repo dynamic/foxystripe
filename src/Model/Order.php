@@ -4,12 +4,33 @@ namespace Dynamic\FoxyStripe\Model;
 
 use Dynamic\FoxyStripe\Page\ProductPage;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Forms\DateField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLVarchar;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
+use SilverStripe\Security\Security;
 
+/**
+ * Class Order
+ * @package Dynamic\FoxyStripe\Model
+ *
+ * @property \SilverStripe\ORM\FieldType\DBInt Order_ID
+ * @property \SilverStripe\ORM\FieldType\DBDatetime TransactionDate
+ * @property \SilverStripe\ORM\FieldType\DBCurrency ProductTotal
+ * @property \SilverStripe\ORM\FieldType\DBCurrency TaxTotal
+ * @property \SilverStripe\ORM\FieldType\DBCurrency ShippingTotal
+ * @property \SilverStripe\ORM\FieldType\DBCurrency OrderTotal
+ * @property \SilverStripe\ORM\FieldType\DBVarchar ReceiptURL
+ * @property \SilverStripe\ORM\FieldType\DBVarchar OrderStatus
+ * @property \SilverStripe\ORM\FieldType\DBVarchar Response
+ *
+ * @property int MemberID
+ * @method Member Member
+ *
+ * @method \SilverStripe\ORM\HasManyList Details
+ */
 class Order extends DataObject implements PermissionProvider
 {
     /**
@@ -17,7 +38,7 @@ class Order extends DataObject implements PermissionProvider
      */
     private static $db = array(
         'Order_ID' => 'Int',
-        'TransactionDate' => 'Datetime',
+        'TransactionDate' => 'DBDatetime',
         'ProductTotal' => 'Currency',
         'TaxTotal' => 'Currency',
         'ShippingTotal' => 'Currency',
@@ -31,14 +52,14 @@ class Order extends DataObject implements PermissionProvider
      * @var array
      */
     private static $has_one = array(
-        'Member' => 'Member',
+        'Member' => Member::class,
     );
 
     /**
      * @var array
      */
     private static $has_many = array(
-        'Details' => 'OrderDetail',
+        'Details' => OrderDetail::class,
     );
 
     /**
@@ -81,7 +102,7 @@ class Order extends DataObject implements PermissionProvider
     private static $searchable_fields = array(
         'Order_ID',
         'TransactionDate' => array(
-            'field' => 'DateField',
+            'field' => DateField::class,
             'filter' => 'PartialMatchFilter',
         ),
         'Member.ID',
@@ -155,7 +176,7 @@ class Order extends DataObject implements PermissionProvider
     }
 
     /**
-     * @return mixed
+     * @return string|bool
      */
     public function getDecryptedResponse()
     {
@@ -163,6 +184,7 @@ class Order extends DataObject implements PermissionProvider
         if (FoxyCart::getStoreKey()) {
             return \rc4crypt::decrypt(FoxyCart::getStoreKey(), $decrypted);
         }
+        return false;
     }
 
     /**
@@ -229,7 +251,7 @@ class Order extends DataObject implements PermissionProvider
                     // if new customer, create account with data from FoxyCart
                 } else {
                     // set PasswordEncryption to 'none' so imported, encrypted password is not encrypted again
-                    Config::inst()->update('Security', 'password_encryption_algorithm', 'none');
+                    Config::modify()->set(Security::class, 'password_encryption_algorithm', 'none');
 
                     // create new Member, set password info from FoxyCart
                     $customer = Member::create();
@@ -263,6 +285,7 @@ class Order extends DataObject implements PermissionProvider
 
         // remove previous OrderDetails and OrderOptions so we don't end up with duplicates
         foreach ($this->Details() as $detail) {
+            /** @var OrderOption $orderOption */
             foreach ($detail->OrderOptions() as $orderOption) {
                 $orderOption->delete();
             }
@@ -320,7 +343,7 @@ class Order extends DataObject implements PermissionProvider
      *
      * @return bool|int
      */
-    public function canView($member = false)
+    public function canView($member = null)
     {
         return Permission::check('Product_ORDERS', 'any', $member);
     }

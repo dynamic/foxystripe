@@ -8,7 +8,12 @@ use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 
 /**
+ * Class OptionGroup
+ * @package Dynamic\FoxyStripe\Model
  *
+ * @property \SilverStripe\ORM\FieldType\DBVarchar Title
+ *
+ * @method \SilverStripe\ORM\HasManyList Options
  */
 class OptionGroup extends DataObject
 {
@@ -47,7 +52,7 @@ class OptionGroup extends DataObject
     private static $table_name = 'FS_OptionGroup';
 
     /**
-     *
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public function requireDefaultRecords()
     {
@@ -103,7 +108,7 @@ class OptionGroup extends DataObject
     }
 
     /**
-     *
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public function onBeforeDelete()
     {
@@ -114,6 +119,7 @@ class OptionGroup extends DataObject
 
         if (isset($items)) {
             if ($noneGroup = self::get()->filter(array('Title' => 'Options'))->first()) {
+                /** @var OptionItem $item */
                 foreach ($items as $item) {
                     $item->ProductOptionGroupID = $noneGroup->ID;
                     $item->write();
@@ -127,7 +133,7 @@ class OptionGroup extends DataObject
      *
      * @return bool
      */
-    public function canView($member = false)
+    public function canView($member = null)
     {
         return true;
     }
@@ -161,6 +167,7 @@ class OptionGroup extends DataObject
 
     /**
      * @param null $member
+     * @param array $context
      *
      * @return bool|int
      */

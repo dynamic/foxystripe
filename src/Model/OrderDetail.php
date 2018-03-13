@@ -7,8 +7,26 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordViewer;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverStripe\Security\Permission;
 
+/**
+ * Class OrderDetail
+ * @package Dynamic\FoxyStripe\Model
+ *
+ * @property \SilverStripe\ORM\FieldType\DBInt Quantity
+ * @property \SilverStripe\ORM\FieldType\DBCurrency Price
+ * @property \SilverStripe\ORM\FieldType\DBVarchar ProductName
+ * @property \SilverStripe\ORM\FieldType\DBVarchar ProductCode
+ * @property \SilverStripe\ORM\FieldType\DBText ProductImage
+ * @property \SilverStripe\ORM\FieldType\DBVarchar ProductCategory
+ *
+ * @property int ProductID
+ * @property int OrderID
+ *
+ * @method \SilverStripe\ORM\HasManyList OrderOptions
+ * @method \SilverStripe\ORM\ManyManyList OptionItems
+ */
 class OrderDetail extends DataObject
 {
     /**
@@ -100,7 +118,7 @@ class OrderDetail extends DataObject
      *
      * @return bool|int
      */
-    public function canView($member = false)
+    public function canView($member = null)
     {
         return Permission::check('Product_ORDERS', 'any', $member);
     }
@@ -117,6 +135,7 @@ class OrderDetail extends DataObject
 
     /**
      * @param null $member
+     * @param array $context
      *
      * @return bool
      */

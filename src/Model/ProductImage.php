@@ -9,9 +9,19 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
+use u\v\w\interfaceB;
 
 /**
+ * Class ProductImage
+ * @package Dynamic\FoxyStripe\Model
  *
+ * @property \SilverStripe\ORM\FieldType\DBText Title
+ * @property \SilverStripe\ORM\FieldType\DBInt SortOrder
+ *
+ * @property int ImageID
+ * @method Image Image
+ * @property int ParentID
+ * @method SiteTree Parent
  */
 class ProductImage extends DataObject
 {
@@ -73,7 +83,7 @@ class ProductImage extends DataObject
      *
      * @return bool
      */
-    public function canView($member = false)
+    public function canView($member = null)
     {
         return true;
     }
