@@ -127,7 +127,7 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
     private static $required_permission = ['CMS_ACCESS_CMSMain', 'CMS_ACCESS_LeftAndMain'];
 
     /**
-     * @return FieldList|static
+     * @return FieldList
      */
     public function getCMSFields()
     {

@@ -7,6 +7,7 @@ use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use Dynamic\FoxyStripe\Model\OptionGroup;
 use Dynamic\FoxyStripe\Model\OptionItem;
 use Dynamic\FoxyStripe\Page\ProductPage;
+use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -91,8 +92,8 @@ class FoxyStripePurchaseForm extends Form
     /**
      * FoxyStripePurchaseForm constructor.
      *
-     * @param $controller
-     * @param $name
+     * @param ContentController $controller
+     * @param string $name
      * @param FieldList|null $fields
      * @param FieldList|null $actions
      * @param null $validator
