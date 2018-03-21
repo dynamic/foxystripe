@@ -12,6 +12,10 @@ use SilverStripe\ORM\PaginatedList;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
+/**\
+ * Class ProductHolder
+ * @package Dynamic\FoxyStripe\Page
+ */
 class ProductHolder extends \Page
 {
     /**
@@ -62,7 +66,6 @@ class ProductHolder extends \Page
 
     /**
      * @return FieldList
-     * @throws \SilverStripe\ORM\ValidationException
      */
     public function getCMSFields()
     {
@@ -167,7 +170,7 @@ class ProductHolder extends \Page
             $entries = ProductPage::get()->where($filter);
         }
 
-        $list = new PaginatedList($entries, Controller::curr()->request);
+        $list = new PaginatedList($entries, Controller::curr()->getRequest());
         $list->setPageLength($limit);
 
         return $list;

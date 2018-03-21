@@ -6,7 +6,6 @@ use Foxy\FoxyClient\FoxyClient;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\SiteConfig\SiteConfig;
 
 class FoxyStripeClient
 {
@@ -38,7 +37,6 @@ class FoxyStripeClient
     /**
      * FoxyStripeClient constructor.
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SilverStripe\ORM\ValidationException
      */
     public function __construct()
     {

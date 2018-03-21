@@ -66,8 +66,8 @@ class FoxyStripeAdmin extends LeftAndMain
     /**
      * @param null $id
      * @param null $fields
+     *
      * @return $this|Form
-     * @throws ValidationException
      */
     public function getEditForm($id = null, $fields = null)
     {
@@ -112,6 +112,7 @@ class FoxyStripeAdmin extends LeftAndMain
                     },
                 ));
             }
+            return null;
         });
         $form->addExtraClass('flexbox-area-grow fill-height cms-content cms-edit-form');
         $form->setAttribute('data-pjax-fragment', 'CurrentForm');
@@ -142,8 +143,8 @@ class FoxyStripeAdmin extends LeftAndMain
      *
      * @param $data
      * @param $form
+     *
      * @return \SilverStripe\Control\HTTPResponse
-     * @throws ValidationException
      * @throws \SilverStripe\Control\HTTPResponse_Exception
      */
     public function save_foxystripe_setting($data, $form)

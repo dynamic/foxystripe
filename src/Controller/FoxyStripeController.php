@@ -5,6 +5,7 @@ namespace Dynamic\FoxyStripe\Controller;
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\Order;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
 
 class FoxyStripeController extends \PageController
 {
@@ -94,8 +95,8 @@ class FoxyStripeController extends \PageController
         // get current member if logged in. If not, create a 'fake' user with Customer_ID = 0
         // fake user will redirect to FC checkout, ask customer to log in
         // to do: consider a login/registration form here if not logged in
-        if ($Member = Member::currentUser()) {
-            $Member = Member::currentUser();
+        if ($Member = Security::getCurrentUser()) {
+            $Member = Security::getCurrentUser();
         } else {
             $Member = new Member();
             $Member->Customer_ID = 0;

@@ -176,7 +176,7 @@ class Order extends DataObject implements PermissionProvider
     }
 
     /**
-     * @return string|bool
+     * @return bool|string
      */
     public function getDecryptedResponse()
     {

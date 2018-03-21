@@ -3,9 +3,10 @@
 namespace Dynamic\FoxyStripe\Form;
 
 use Dynamic\FoxyStripe\Model\FoxyCart;
+use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use Dynamic\FoxyStripe\Model\OptionGroup;
+use Dynamic\FoxyStripe\Model\OptionItem;
 use Dynamic\FoxyStripe\Page\ProductPage;
-use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -14,13 +15,14 @@ use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\RequiredFields;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\GroupedList;
 use SilverStripe\SiteConfig\SiteConfig;
 
 /**
  * Class FoxyStripePurchaseForm.
  *
- * @property SiteConfig $site_config
+ * @property FoxyStripeSetting $site_config
  * @property ProductPage $product
  */
 class FoxyStripePurchaseForm extends Form
@@ -29,6 +31,7 @@ class FoxyStripePurchaseForm extends Form
      * @var
      */
     protected $site_config;
+
     /**
      * @var
      */
@@ -41,22 +44,22 @@ class FoxyStripePurchaseForm extends Form
      */
     public function setSiteConfig($siteConfig)
     {
-        $siteConfig = $siteConfig === null ? SiteConfig::current_site_config() : $siteConfig;
-        if ($siteConfig instanceof SiteConfig) {
+        $siteConfig = $siteConfig === null ? FoxyStripeSetting::current_foxystripe_setting() : $siteConfig;
+        if ($siteConfig instanceof FoxyStripeSetting) {
             $this->site_config = $siteConfig;
 
             return $this;
         }
-        throw new \InvalidArgumentException('$siteConfig needs to be an instance of SiteConfig.');
+        throw new \InvalidArgumentException('$siteConfig needs to be an instance of FoxyStripeSetting.');
     }
 
     /**
-     * @return SiteConfig
+     * @return FoxyStripeSetting
      */
     public function getSiteConfig()
     {
         if (!$this->site_config) {
-            $this->setSiteConfig(SiteConfig::current_site_config());
+            $this->setSiteConfig(FoxyStripeSetting::current_foxystripe_setting());
         }
 
         return $this->site_config;
@@ -88,13 +91,14 @@ class FoxyStripePurchaseForm extends Form
     /**
      * FoxyStripePurchaseForm constructor.
      *
-     * @param ContentController     $controller
-     * @param string                $name
-     * @param FieldList|null        $fields
-     * @param FieldList|null        $actions
-     * @param null                  $validator
-     * @param null                  $product
-     * @param null                  $siteConfig
+     * @param $controller
+     * @param $name
+     * @param FieldList|null $fields
+     * @param FieldList|null $actions
+     * @param null $validator
+     * @param null $product
+     * @param null $siteConfig
+     *
      */
     public function __construct(
         $controller,
@@ -205,7 +209,7 @@ class FoxyStripePurchaseForm extends Form
 
             $this->extend('updatePurchaseFormFields', $fields);
         } else {
-            $fields->push(HeaderField::create('submitPrice', 'Currently Out of Stock'), 4);
+            $fields->push(HeaderField::create('submitPrice', 'Currently Out of Stock', 4));
         }
 
         $this->extend('updateFoxyStripePurchaseFormFields', $fields);
@@ -251,6 +255,7 @@ class FoxyStripePurchaseForm extends Form
     protected function getProductOptionSet()
     {
         $assignAvailable = function ($self) {
+            /** @var OptionItem $self */
             $this->extend('updateFoxyStripePurchaseForm', $form);
             $self->Available = ($self->getAvailability()) ? true : false;
         };
@@ -259,8 +264,10 @@ class FoxyStripePurchaseForm extends Form
         $groupedOptions = new GroupedList($options);
         $groupedBy = $groupedOptions->groupBy('ProductOptionGroupID');
 
+        /** @var CompositeField $optionsSet */
         $optionsSet = CompositeField::create();
 
+        /** @var DataList $set */
         foreach ($groupedBy as $id => $set) {
             $group = OptionGroup::get()->byID($id);
             $title = $group->Title;

@@ -20,9 +20,9 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
-use SilverStripe\SiteConfig\SiteConfig;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
@@ -186,7 +186,7 @@ class ProductPage extends \Page implements PermissionProvider
         $fields = parent::getCMSFields();
 
         // allow extensions of ProductPage to override the PreviewImage field description
-        $previewDescription = ($this->stat('customPreviewDescription')) ? $this->stat('customPreviewDescription') : _t(
+        $previewDescription = ($this->config()->get('customPreviewDescription')) ? $this->config()->get('customPreviewDescription') : _t(
             'ProductPage.PreviewImageDescription',
             'Image used throughout site to represent this product'
         );
@@ -310,7 +310,7 @@ class ProductPage extends \Page implements PermissionProvider
     }
 
     /**
-     * @throws \SilverStripe\ORM\ValidationException
+     * @throws \Exception
      */
     public function onBeforeWrite()
     {
@@ -392,6 +392,16 @@ class ProductPage extends \Page implements PermissionProvider
         return new RequiredFields(array('CategoryID', 'Price', 'Weight', 'Code'));
     }
 
+    /**
+     * @param null $productCode
+     * @param null $optionName
+     * @param null $optionValue
+     * @param string $method
+     * @param bool $output
+     * @param bool $urlEncode
+     *
+     * @return null|string
+     */
     public static function getGeneratedValue(
         $productCode = null,
         $optionName = null,
@@ -407,7 +417,11 @@ class ProductPage extends \Page implements PermissionProvider
             $optionValue;
     }
 
-    // get FoxyCart Store Name for JS call
+    /**
+     * get FoxyCart Store Name for JS call
+     *
+     * @return string
+     */
     public function getCartScript()
     {
         $store = FoxyCart::getFoxyCartStoreName();
