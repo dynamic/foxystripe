@@ -122,7 +122,10 @@ class OptionItem extends DataObject
         ]);
 
         // set variables from Product
-        $productID = ($this->ProductID != 0) ? $this->ProductID : Controller::curr()->getRequest()->getSession()->get('CMSMain.currentPage');
+        $productID = ($this->ProductID != 0) ?
+            $this->ProductID :
+            Controller::curr()->getRequest()->getSession()->get('CMSMain.currentPage');
+
         /** @var ProductPage $product */
         $product = ProductPage::get()->byID($productID);
 

@@ -68,38 +68,38 @@ class ProductPage extends \Page implements PermissionProvider
     /**
      * @var array
      */
-    private static $db = array(
+    private static $db = [
         'Price' => 'Currency',
         'Weight' => 'Decimal',
         'Code' => 'Varchar(100)',
         'ReceiptTitle' => 'HTMLVarchar(255)',
         'Featured' => 'Boolean',
         'Available' => 'Boolean',
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $has_one = array(
+    private static $has_one = [
         'PreviewImage' => Image::class,
         'Category' => ProductCategory::class,
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $has_many = array(
+    private static $has_many = [
         'ProductImages' => ProductImage::class,
         'ProductOptions' => OptionItem::class,
         'OrderDetails' => OrderDetail::class,
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $belongs_many_many = array(
+    private static $belongs_many_many = [
         'ProductHolders' => ProductHolder::class,
-    );
+    ];
 
     /**
      * @var string
@@ -119,39 +119,39 @@ class ProductPage extends \Page implements PermissionProvider
     /**
      * @var array
      */
-    private static $indexes = array(
+    private static $indexes = [
         'Code' => true, // make unique
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $defaults = array(
+    private static $defaults = [
         'ShowInMenus' => false,
         'Available' => true,
         'Weight' => '1.0',
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $summary_fields = array(
+    private static $summary_fields = [
         'Title',
         'Code',
         'Price.Nice',
         'Category.Title',
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $searchable_fields = array(
+    private static $searchable_fields = [
         'Title',
         'Code',
         'Featured',
         'Available',
         'Category.ID',
-    );
+    ];
 
     /**
      * @var string
@@ -186,10 +186,12 @@ class ProductPage extends \Page implements PermissionProvider
         $fields = parent::getCMSFields();
 
         // allow extensions of ProductPage to override the PreviewImage field description
-        $previewDescription = ($this->config()->get('customPreviewDescription')) ? $this->config()->get('customPreviewDescription') : _t(
-            'ProductPage.PreviewImageDescription',
-            'Image used throughout site to represent this product'
-        );
+        $previewDescription = ($this->config()->get('customPreviewDescription')) ?
+            $this->config()->get('customPreviewDescription') :
+            _t(
+                'ProductPage.PreviewImageDescription',
+                'Image used throughout site to represent this product'
+            );
 
         // Cateogry Dropdown field w/ add new
         $source = function () {
@@ -235,7 +237,7 @@ class ProductPage extends \Page implements PermissionProvider
         );
 
         // Details tab
-        $fields->addFieldsToTab('Root.Details', array(
+        $fields->addFieldsToTab('Root.Details', [
             HeaderField::create('DetailHD', 'Product Details', 2),
             CheckboxField::create('Available')
                 ->setTitle(_t('ProductPage.Available', 'Available for purchase'))
@@ -270,25 +272,25 @@ class ProductPage extends \Page implements PermissionProvider
                     'ProductPage.ReceiptTitleDescription',
                     'Optional'
                 )),
-        ));
+        ]);
 
         // Images tab
-        $fields->addFieldsToTab('Root.Images', array(
+        $fields->addFieldsToTab('Root.Images', [
             HeaderField::create('MainImageHD', _t('ProductPage.MainImageHD', 'Product Image'), 2),
             UploadField::create('PreviewImage', '')
                 ->setDescription($previewDescription)
                 ->setFolderName('Uploads/Products')
-                ->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png')),
+                ->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']),
             HeaderField::create('ProductImagesHD', _t('ProductPage.ProductImagesHD', 'Product Image Gallery'), 2),
             $prodImagesField
                 ->setDescription(_t(
                     'ProductPage.ProductImagesDescription',
                     'Additional Product Images, shown in gallery on Product page'
                 )),
-        ));
+        ]);
 
         // Options Tab
-        $fields->addFieldsToTab('Root.Options', array(
+        $fields->addFieldsToTab('Root.Options', [
             HeaderField::create('OptionsHD', _t('ProductPage.OptionsHD', 'Product Options'), 2),
             LiteralField::create('OptionsDescrip', _t(
                 'Page.OptionsDescrip',
@@ -296,7 +298,7 @@ class ProductPage extends \Page implements PermissionProvider
                     Options can also modify the product\'s price, weight or code.</p>'
             )),
             $prodOptField,
-        ));
+        ]);
 
         if (FoxyCart::store_name_warning() !== null) {
             $fields->addFieldToTab('Root.Main', LiteralField::create('StoreSubDomainHeaderWarning', _t(
@@ -316,7 +318,7 @@ class ProductPage extends \Page implements PermissionProvider
     {
         parent::onBeforeWrite();
         if (!$this->CategoryID) {
-            $default = ProductCategory::get()->filter(array('Code' => 'DEFAULT'))->first();
+            $default = ProductCategory::get()->filter(['Code' => 'DEFAULT'])->first();
             $this->CategoryID = $default->ID;
         }
 
@@ -389,7 +391,7 @@ class ProductPage extends \Page implements PermissionProvider
 
     public function getCMSValidator()
     {
-        return new RequiredFields(array('CategoryID', 'Price', 'Weight', 'Code'));
+        return new RequiredFields(['CategoryID', 'Price', 'Weight', 'Code']);
     }
 
     /**
@@ -425,7 +427,8 @@ class ProductPage extends \Page implements PermissionProvider
     public function getCartScript()
     {
         $store = FoxyCart::getFoxyCartStoreName();
-        return '<script src="https://cdn.foxycart.com/'.$store.'/loader.js" async defer></script>';
+
+        return '<script src="https://cdn.foxycart.com/' . $store . '/loader.js" async defer></script>';
     }
 
     /**
@@ -455,8 +458,8 @@ class ProductPage extends \Page implements PermissionProvider
 
     public function providePermissions()
     {
-        return array(
+        return [
             'Product_CANCRUD' => 'Allow user to manage Products and related objects',
-        );
+        ];
     }
 }

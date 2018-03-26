@@ -448,7 +448,6 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
         try {
             $config->write();
         } catch (ValidationException $e) {
-
         }
 
         return $config;
