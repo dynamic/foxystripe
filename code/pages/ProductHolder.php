@@ -70,8 +70,6 @@ class ProductHolder extends Page
             );
         }
 
-        $this->extend('updateCMSFields', $fields);
-
         return $fields;
     }
 
