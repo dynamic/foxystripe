@@ -55,10 +55,11 @@ class ProductHolder extends Page
             if (class_exists('GridFieldSortableRows')) {
                 $config->addComponent(new GridFieldSortableRows('SortOrder'));
             }
-            if (class_exists('GridFieldManyRelationHandler')) {
+            if (class_exists('GridFieldAddExistingSearchButton')) {
                 $config->removeComponentsByType('GridFieldAddExistingAutocompleter');
-                $config->addComponent(new GridFieldManyRelationHandler());
+                $config->addComponent(new GridFieldAddExistingSearchButton());
             }
+            $config->removeComponentsByType('GridFieldAddNewButton');
             $fields->addFieldToTab(
                 'Root.Products',
                 GridField::create(
