@@ -20,7 +20,8 @@
     "require": {
         "silverstripe/cms": "^3.2",
         "silverstripe/framework": "^3.2",
-        "unclecheese/betterbuttons": "^1.2"
+        "unclecheese/betterbuttons": "^1.2",
+        "unclecheese/display-logic": "1.5.0"
     },
     "suggest": {
         "colymba/gridfield-bulk-editing-tools": "^v2.1",

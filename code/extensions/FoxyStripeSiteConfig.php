@@ -8,7 +8,9 @@ class FoxyStripeSiteConfig extends DataExtension{
 		'MultiGroup' => 'Boolean',
 		'ProductLimit' => 'Int',
 		'CartValidation' => 'Boolean',
-		'MaxQuantity' => 'Int'
+		'MaxQuantity' => 'Int',
+        'CustomSSL' => 'Boolean',
+        'RemoteDomain' => 'Varchar(255)',
 	);
 
     // Set Default values
@@ -29,9 +31,14 @@ class FoxyStripeSiteConfig extends DataExtension{
 				'FoxyStripeSiteConfig.DetailsIntro',
                 '<p>Maps to data in your <a href="https://admin.foxycart.com/admin.php?ThisAction=EditStore" target="_blank">FoxyCart store settings</a>.'
             )),
+			CheckboxField::create('CustomSSL', 'Use custom SSL'),
+            TextField::create('RemoteDomain', 'Store remote domain')
+                ->setDescription('custom subdomain for FoxyCart')
+                ->displayIf('CustomSSL')->isChecked()->end(),
 			TextField::create('StoreName')
 				->setTitle(_t('FoxyStripeSiteConfig.StoreName', 'Store Sub Domain'))
-				->setDescription(_t('FoxyStripeSiteConfig.StoreNameDescription', 'the sub domain for your FoxyCart store')),
+				->setDescription(_t('FoxyStripeSiteConfig.StoreNameDescription', 'the sub domain for your FoxyCart store'))
+                ->hideIf('CustomSSL')->isChecked()->end(),
 
 			// Advanced Settings
 			HeaderField::create('AdvanceHeader', _t('FoxyStripeSiteConfig.AdvancedHeader', 'Advanced Settings'), 3),
