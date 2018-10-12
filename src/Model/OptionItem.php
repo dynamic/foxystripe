@@ -45,7 +45,7 @@ class OptionItem extends DataObject
      */
     private static $db = array(
         'Title' => 'Text',
-        'WeightModifier' => 'Int',
+        'WeightModifier' => 'Decimal',
         'CodeModifier' => 'Text',
         'PriceModifier' => 'Currency',
         'WeightModifierAction' => "Enum('Add,Subtract,Set','Add')",
@@ -173,7 +173,7 @@ class OptionItem extends DataObject
 
             // Weight Modifier Fields
             HeaderField::create('WeightHD', _t('OptionItem.WeightHD', 'Modify Weight'), 3),
-            NumericField::create('WeightModifier')
+            TextField::create('WeightModifier')
                 ->setTitle(_t('OptionItem.WeightModifier', 'Weight')),
             DropdownField::create(
                 'WeightModifierAction',
