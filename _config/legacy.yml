@@ -1,0 +1,16 @@
+---
+name: foxystripe-legacy
+---
+SilverStripe\ORM\DatabaseAdmin:
+  classname_value_remapping:
+    OptionGroup: Dynamic\FoxyStripe\Model\OptionGroup
+    OptionItem: Dynamic\FoxyStripe\Model\OptionItem
+    Order: Dynamic\FoxyStripe\Model\Order
+    OrderDetail: Dynamic\FoxyStripe\Model\OrderDetail
+    OrderOption: Dynamic\FoxyStripe\Model\OrderOption
+    ProductCategory: Dynamic\FoxyStripe\Model\ProductCategory
+    ProductImage: Dynamic\FoxyStripe\Model\ProductImage
+    DonationPage: Dynamic\FoxyStripe\Page\DonationPage
+    OrderHistoryPage: Dynamic\FoxyStripe\Page\OrderHistoryPage
+    ProductHolder: Dynamic\FoxyStripe\Page\ProductHolder
+    ProductPage: Dynamic\FoxyStripe\Page\ProductPage
