@@ -37,19 +37,21 @@ class FoxyCart
 
     /**
      * @return mixed|null
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public static function getStoreKey()
     {
-        $config = SiteConfig::current_site_config();
+        $config = FoxyStripeSetting::current_foxystripe_setting();
         if ($config->StoreKey) {
             return $config->StoreKey;
         }
 
-        return;
+        return null;
     }
 
     /**
      * @return null|string
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public static function store_name_warning()
     {
@@ -63,19 +65,21 @@ class FoxyCart
 
     /**
      * @return mixed|null
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public static function getFoxyCartStoreName()
     {
-        $config = SiteConfig::current_site_config();
+        $config = FoxyStripeSetting::current_foxystripe_setting();
         if ($config->StoreName) {
             return $config->StoreName;
         }
 
-        return;
+        return null;
     }
 
     /**
      * @return string
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public static function FormActionURL()
     {
@@ -88,10 +92,8 @@ class FoxyCart
 
     /**
      * @param array $foxyData
-     *
      * @return string
-     *
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SilverStripe\ORM\ValidationException
      */
     private static function getAPIRequest($foxyData = array())
     {
@@ -122,10 +124,8 @@ class FoxyCart
 
     /**
      * @param null $Member
-     *
      * @return string
-     *
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public static function getCustomer($Member = null)
     {
@@ -149,16 +149,14 @@ class FoxyCart
 
     /**
      * @param null $Member
-     *
      * @return string
-     *
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public static function putCustomer($Member = null)
     {
         // throw error if no $Member Object
         if (!isset($Member)) {
-//trigger_error('No Member set', E_USER_ERROR);
+            //trigger_error('No Member set', E_USER_ERROR);
         }
         // send updated customer record from API
         $foxyData = array();

@@ -98,6 +98,20 @@ class FoxyStripeClient
     }
 
     /**
+     * @return bool
+     * @throws \SilverStripe\ORM\ValidationException
+     */
+    public static function is_valid()
+    {
+        $config = FoxyStripeSetting::current_foxystripe_setting();
+        return $config->EnableAPI &&
+            $config->client_id &&
+            $config->client_secret &&
+            $config->refresh_token &&
+            $config->access_token;
+    }
+
+    /**
      * @return mixed
      */
     public function getCurrentStore()
@@ -106,12 +120,12 @@ class FoxyStripeClient
     }
 
     /**
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public function setCurrentStore()
     {
         $client = $this->getClient();
-        $config = SiteConfig::current_site_config();
+        $config = FoxyStripeSetting::current_foxystripe_setting();
 
         $errors = array();
         $data = array(
