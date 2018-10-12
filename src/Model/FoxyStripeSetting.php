@@ -4,7 +4,9 @@ namespace Dynamic\FoxyStripe\Model;
 
 use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
 use Dynamic\FoxyStripe\Admin\FoxyStripeAdmin;
+use Psr\Log\LoggerInterface;
 use SilverStripe\Control\Director;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -67,6 +69,7 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
         'MultiGroup' => 'Boolean',
         'ProductLimit' => 'Int',
         'MaxQuantity' => 'Int',
+        'EnableAPI' => 'Boolean',
         'client_id' => 'Varchar(255)',
         'client_secret' => 'Varchar(255)',
         'access_token' => 'Varchar(255)',
@@ -277,13 +280,16 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
         ));
 
         // api tab
-        $fields->addFieldsToTab('Root.API', [
-            HeaderField::create('APIHD', 'FoxyCart API Settings', 3),
-            TextField::create('client_id', 'FoxyCart Client ID'),
-            TextField::create('client_secret', 'FoxyCart Client Secret'),
-            TextField::create('access_token', 'FoxyCart Access Token'),
-            TextField::create('refresh_token', 'FoxyCart Refresh Token'),
-        ]);
+        if (Permission::check('ADMIN')) {
+            $fields->addFieldsToTab('Root.API', [
+                HeaderField::create('APIHD', 'FoxyCart API Settings', 3),
+                CheckboxField::create('EnableAPI', 'Enable FoxyCart API'),
+                TextField::create('client_id', 'FoxyCart Client ID'),
+                TextField::create('client_secret', 'FoxyCart Client Secret'),
+                TextField::create('access_token', 'FoxyCart Access Token'),
+                TextField::create('refresh_token', 'FoxyCart Refresh Token'),
+            ]);
+        }
 
         $this->extend('updateCMSFields', $fields);
 
@@ -458,28 +464,28 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
     public function getDataMap()
     {
         return [
-            'store_name' => $this->owner->StoreTitle,
-            'store_domain' => $this->owner->StoreName,
-            'store_url' => $this->owner->StoreURL,
-            'receipt_continue_url' => $this->owner->ReceiptURL,
-            'store_email' => $this->owner->StoreEmail,
-            'from_email' => $this->owner->FromEmail,
-            'postal_code' => $this->owner->StorePostalCode,
-            'country' => $this->owner->StoreCountry,
-            'region' => $this->owner->StoreRegion,
-            'locale_code' => $this->owner->StoreLocaleCode,
-            'logo_url' => $this->owner->StoreLogoURL,
-            'checkout_type' => $this->owner->CheckoutType,
-            'bcc_on_receipt_email' => $this->owner->BccEmail,
-            'use_webhook' => $this->owner->UseWebhook,
+            'store_name' => $this->StoreTitle,
+            'store_domain' => $this->StoreName,
+            'store_url' => $this->StoreURL,
+            'receipt_continue_url' => $this->ReceiptURL,
+            'store_email' => $this->StoreEmail,
+            'from_email' => $this->FromEmail,
+            'postal_code' => $this->StorePostalCode,
+            'country' => $this->StoreCountry,
+            'region' => $this->StoreRegion,
+            'locale_code' => $this->StoreLocaleCode,
+            'logo_url' => $this->StoreLogoURL,
+            'checkout_type' => $this->CheckoutType,
+            'bcc_on_receipt_email' => $this->BccEmail,
+            'use_webhook' => $this->UseWebhook,
             'webhook_url' => $this->getDataFeedLink(),
-            'webhook_key' => $this->owner->StoreKey,
-            'use_cart_validation' => $this->owner->CartValidation,
-            'use_single_sign_on' => $this->owner->UseSingleSignOn,
+            'webhook_key' => $this->StoreKey,
+            'use_cart_validation' => $this->CartValidation,
+            'use_single_sign_on' => $this->UseSingleSignOn,
             'single_sign_on_url' => $this->getSSOLink(),
             'customer_password_hash_type' => 'sha1_salted_suffix',
             'customer_password_hash_config' => 40,
-            'features_multiship' => $this->owner->AllowMultiship,
+            'features_multiship' => $this->AllowMultiship,
             //'timezone' => $this->StoreTimezone,
         ];
     }
@@ -495,7 +501,7 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
     {
         parent::onBeforeWrite();
 
-        if ($this->owner->ID && !$this->owner->StoreTitle && $this->owner->access_token) {
+        if ($this->ID && !$this->StoreTitle && $this->access_token) {
             /*
             if ($fc = new FoxyStripeClient()) {
                 $client = $fc->getClient();
@@ -515,15 +521,16 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
     }
 
     /**
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public function onAfterWrite()
     {
         parent::onAfterWrite();
 
-        if ($this->owner->isChanged() && $this->owner->access_token) {
+        if (FoxyStripeClient::is_valid() && $this->isChanged()) {
             if ($fc = new FoxyStripeClient()) {
                 $fc->updateStore($this->getDataMap());
+                Injector::inst()->get(LoggerInterface::class)->debug('Store Updated');
             }
         }
     }
