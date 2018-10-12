@@ -7,7 +7,6 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordViewer;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverStripe\Security\Permission;
 
 /**

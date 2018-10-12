@@ -5,6 +5,7 @@ namespace Dynamic\FoxyStripe\Model;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\Security\Member;
 
 /**
  *
@@ -46,7 +47,7 @@ class FoxyCart
             return $config->StoreKey;
         }
 
-        return null;
+        return false;
     }
 
     /**
@@ -74,7 +75,7 @@ class FoxyCart
             return $config->StoreName;
         }
 
-        return null;
+        return false;
     }
 
     /**
@@ -97,7 +98,7 @@ class FoxyCart
      */
     private static function getAPIRequest($foxyData = array())
     {
-        if (self::getStoreKey()) {
+        if (self::getStoreKey() && self::getFoxyCartStoreName()) {
             $foxy_domain = self::getFoxyCartStoreName().'.foxycart.com';
             $foxyData['api_token'] = self::getStoreKey();
 
@@ -120,6 +121,7 @@ class FoxyCart
 
             return $response;
         }
+        return false;
     }
 
     /**
@@ -127,7 +129,7 @@ class FoxyCart
      * @return string
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public static function getCustomer($Member = null)
+    public static function getCustomer(Member $Member = null)
     {
 
         // throw error if no $Member Object
@@ -152,11 +154,12 @@ class FoxyCart
      * @return string
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public static function putCustomer($Member = null)
+    public static function putCustomer(Member $Member = null)
     {
         // throw error if no $Member Object
-        if (!isset($Member)) {
-            //trigger_error('No Member set', E_USER_ERROR);
+        if ($Member === null) {
+//trigger_error('No Member set', E_USER_ERROR);
+            return false;
         }
         // send updated customer record from API
         $foxyData = array();

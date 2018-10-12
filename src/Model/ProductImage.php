@@ -9,7 +9,6 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
-use u\v\w\interfaceB;
 
 /**
  * Class ProductImage

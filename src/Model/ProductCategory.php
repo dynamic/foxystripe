@@ -10,12 +10,35 @@ use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 
+/**
+ * Class ProductCategory
+ * @package Dynamic\FoxyStripe\Model
+ *
+ * @property \SilverStripe\ORM\FieldType\DBVarchar Title
+ * @property \SilverStripe\ORM\FieldType\DBVarchar Code
+ * @property \SilverStripe\ORM\FieldType\DBVarchar DeliveryType
+ * @property \SilverStripe\ORM\FieldType\DBInt MaxDownloads
+ * @property \SilverStripe\ORM\FieldType\DBInt MaxDownloadsTime
+ * @property \SilverStripe\ORM\FieldType\DBFloat DefaultWeight
+ * @property \SilverStripe\ORM\FieldType\DBEnum DefaultWeightUnit
+ * @property \SilverStripe\ORM\FieldType\DBEnum DefaultLengthUnit
+ * @property \SilverStripe\ORM\FieldType\DBCurrency ShippingFlatRate
+ * @property \SilverStripe\ORM\FieldType\DBVarchar ShippingFlatRateType
+ * @property \SilverStripe\ORM\FieldType\DBVarchar HandlingFeeType
+ * @property \SilverStripe\ORM\FieldType\DBCurrency HandlingFee
+ * @property \SilverStripe\ORM\FieldType\DBDecimal HandlingFeePercentage
+ * @property \SilverStripe\ORM\FieldType\DBCurrency HandlingFeeMinimum
+ * @property \SilverStripe\ORM\FieldType\DBVarchar DiscountType
+ * @property \SilverStripe\ORM\FieldType\DBVarchar DiscountName
+ * @property \SilverStripe\ORM\FieldType\DBVarchar DiscountDetails
+ * @property \SilverStripe\ORM\FieldType\DBCurrency CustomsValue
+ */
 class ProductCategory extends DataObject
 {
     /**
      * @var array
      */
-    private static $db = array(
+    private static $db = [
         'Title' => 'Varchar(255)',
         'Code' => 'Varchar(50)',
         'DeliveryType' => 'Varchar(50)',
@@ -34,7 +57,7 @@ class ProductCategory extends DataObject
         'DiscountName' => 'Varchar(50)',
         'DiscountDetails' => 'Varchar(200)',
         'CustomsValue' => 'Currency',
-    );
+    ];
 
     /**
      * @var string
@@ -54,17 +77,17 @@ class ProductCategory extends DataObject
     /**
      * @var array
      */
-    private static $summary_fields = array(
+    private static $summary_fields = [
         'Title' => 'Name',
         'Code' => 'Code',
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $indexes = array(
+    private static $indexes = [
         'Code' => true,
-    );
+    ];
 
     /**
      * @var string
@@ -242,6 +265,8 @@ class ProductCategory extends DataObject
 
     /**
      * @param null $member
+     *
+     * @param array $context
      *
      * @return bool|int
      */

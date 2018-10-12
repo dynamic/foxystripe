@@ -38,7 +38,7 @@ class OrderHistoryPage extends \Page
         if ($Member = Security::getCurrentUser()) {
             $Orders = $Member->Orders()->sort('TransactionDate', 'DESC');
 
-            $list = new PaginatedList($Orders, Controller::curr()->request);
+            $list = new PaginatedList($Orders, Controller::curr()->getRequest());
             $list->setPageLength($limit);
 
             return $list;

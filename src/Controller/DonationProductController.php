@@ -2,9 +2,17 @@
 
 use Dynamic\FoxyStripe\Page\ProductPage;
 use Dynamic\FoxyStripe\Page\ProductPageController;
-use SilverStripe\SiteConfig\SiteConfig;
+use Dynamic\FoxyStripe\Form\FoxyStripePurchaseForm;
+use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use SilverStripe\View\Requirements;
+use SilverStripe\Forms\CurrencyField;
+use SilverStripe\Control\Director;
 
+/**
+ * Class DonationProductController
+ *
+ * @mixin \Dynamic\FoxyStripe\Page\DonationProduct
+ */
 class DonationProductController extends ProductPageController
 {
     /**
@@ -39,15 +47,15 @@ class DonationProductController extends ProductPageController
             $this->Price
         ), $currencyField = CurrencyField::create('price', 'Amount'));
 
-        $fields->removeByName(array(
+        $fields->removeByName([
             'quantity',
             ProductPage::getGeneratedValue($this->Code, 'weight', $this->Weight),
-        ));
+        ]);
 
-        if (SiteConfig::current_site_config()->CartValidation) {
+        if (FoxyStripeSetting::current_foxystripe_setting()->CartValidation) {
             Requirements::javascript('framework/thirdparty/jquery-validate/jquery.validate.js');
             Requirements::javascriptTemplate('foxystripe/javascript/donationProduct.js', [
-                'Trigger' => (string) $currencyField->getAttribute('id'),
+                'Trigger' => (string)$currencyField->getAttribute('id'),
                 'UpdateURL' => Director::absoluteURL($this->Link('updatevalue')),
             ]);
         }
@@ -64,15 +72,15 @@ class DonationProductController extends ProductPageController
      */
     public function updatevalue(\SilverStripe\Control\HTTPRequest $request)
     {
-        if ($request->getVar('Price') && SiteConfig::current_site_config()->CartValidation) {
+        if ($request->getVar('Price') && FoxyStripeSetting::current_foxystripe_setting()->CartValidation) {
             $vars = $request->getVars();
             $signedPrice = FoxyCart_Helper::fc_hash_value($this->Code, 'price', $vars['Price'], 'name', false);
             $json = json_encode(['Price' => $signedPrice]);
-            $response = new HTTPResponse($json);
-            $response->removeHeader('Content-Type');
-            $response->addHeader('Content-Type', 'application/json');
 
-            return $response;
+            $this->response->setBody($json);
+            $this->response->addHeader('Content-Type', 'application/json');
+
+            return $this->response;
         }
 
         return 'false';

@@ -4,6 +4,12 @@ namespace Dynamic\FoxyStripe\Page;
 
 use SilverStripe\Security\Security;
 
+/**
+ * Class OrderHistoryPageController
+ * @package Dynamic\FoxyStripe\Page
+ *
+ * @mixin OrderHistoryPage
+ */
 class OrderHistoryPageController extends \PageController
 {
     /**

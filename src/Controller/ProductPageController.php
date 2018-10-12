@@ -5,6 +5,12 @@ namespace Dynamic\FoxyStripe\Page;
 use Dynamic\FoxyStripe\Form\FoxyStripePurchaseForm;
 use SilverStripe\View\Requirements;
 
+/**
+ * Class ProductPageController
+ * @package Dynamic\FoxyStripe\Page
+ *
+ * @mixin ProductPage
+ */
 class ProductPageController extends \PageController
 {
     private static $allowed_actions = array(

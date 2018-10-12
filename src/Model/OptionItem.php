@@ -3,6 +3,7 @@
 namespace Dynamic\FoxyStripe\Model;
 
 use Dynamic\FoxyStripe\Page\ProductPage;
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\Session;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
@@ -121,7 +122,11 @@ class OptionItem extends DataObject
         ]);
 
         // set variables from Product
-        $productID = ($this->ProductID != 0) ? $this->ProductID : Session::get('CMSMain.currentPage');
+        $productID = ($this->ProductID != 0) ?
+            $this->ProductID :
+            Controller::curr()->getRequest()->getSession()->get('CMSMain.currentPage');
+
+        /** @var ProductPage $product */
         $product = ProductPage::get()->byID($productID);
 
         $parentPrice = $product->obj('Price')->Nice();
