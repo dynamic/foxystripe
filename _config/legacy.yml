@@ -10,7 +10,7 @@ SilverStripe\ORM\DatabaseAdmin:
     OrderOption: Dynamic\FoxyStripe\Model\OrderOption
     ProductCategory: Dynamic\FoxyStripe\Model\ProductCategory
     ProductImage: Dynamic\FoxyStripe\Model\ProductImage
-    DonationPage: Dynamic\FoxyStripe\Page\DonationPage
+    DonationProduct: Dynamic\FoxyStripe\Page\DonationProduct
     OrderHistoryPage: Dynamic\FoxyStripe\Page\OrderHistoryPage
     ProductHolder: Dynamic\FoxyStripe\Page\ProductHolder
     ProductPage: Dynamic\FoxyStripe\Page\ProductPage
