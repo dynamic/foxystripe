@@ -27,7 +27,7 @@ class DonationProduct extends ProductPage
     private static $can_be_root = true;
 
     /**
-     * @var string 
+     * @var string
      */
     private static $table_name = 'DonationProduct';
 
