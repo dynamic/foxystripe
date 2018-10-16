@@ -12,6 +12,10 @@ See the [using FoxyStripe](userguide/index.md) document.
 
 See the [advanced features](userguide/features.md) document.
 
+### Migrating from SilverStripe 3.x to 4.x
+
+See the [SilverStripe 4 migration](userguide/migration.md) document.
+
 ### Recommended Add-Ons
 
 The following add-ons are optional, but will enhance FoxyStripe when installed:

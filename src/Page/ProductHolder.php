@@ -62,7 +62,7 @@ class ProductHolder extends \Page
     /**
      * @var string
      */
-    private static $table_name = 'FS_ProductHolder';
+    private static $table_name = 'ProductHolder';
 
     /**
      * @return FieldList

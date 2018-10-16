@@ -49,7 +49,7 @@ class OptionGroup extends DataObject
     /**
      * @var string
      */
-    private static $table_name = 'FS_OptionGroup';
+    private static $table_name = 'OptionGroup';
 
     /**
      * @throws \SilverStripe\ORM\ValidationException

@@ -27,6 +27,11 @@ class DonationProduct extends ProductPage
     private static $can_be_root = true;
 
     /**
+     * @var string
+     */
+    private static $table_name = 'DonationProduct';
+
+    /**
      * @return FieldList
      */
     public function getCMSFields()

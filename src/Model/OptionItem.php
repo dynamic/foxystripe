@@ -106,7 +106,7 @@ class OptionItem extends DataObject
     /**
      * @var string
      */
-    private static $table_name = 'FS_OptionItem';
+    private static $table_name = 'OptionItem';
 
     /**
      * @return FieldList

@@ -51,7 +51,7 @@ class ProductPageTest extends FS_Test
         $product2->write();
         $this->assertTrue($product2->exists());
 
-        $versions = DB::query('Select * FROM "FS_ProductPage_Versions" WHERE "RecordID" = '.$productID);
+        $versions = DB::query('Select * FROM "ProductPage_Versions" WHERE "RecordID" = '.$productID);
         $versionsPostPublish = array();
         foreach ($versions as $versionRow) {
             $versionsPostPublish[] = $versionRow;
@@ -60,7 +60,7 @@ class ProductPageTest extends FS_Test
         $product2->delete();
         $this->assertTrue(!$product2->exists());
 
-        $versions = DB::query('Select * FROM "FS_ProductPage_Versions" WHERE "RecordID" = '.$productID);
+        $versions = DB::query('Select * FROM "ProductPage_Versions" WHERE "RecordID" = '.$productID);
         $versionsPostDelete = array();
         foreach ($versions as $versionRow) {
             $versionsPostDelete[] = $versionRow;

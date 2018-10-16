@@ -156,7 +156,7 @@ class ProductPage extends \Page implements PermissionProvider
     /**
      * @var string
      */
-    private static $table_name = 'FS_ProductPage';
+    private static $table_name = 'ProductPage';
 
     /**
      * @param bool $includerelations

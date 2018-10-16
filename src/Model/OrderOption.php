@@ -42,5 +42,5 @@ class OrderOption extends DataObject
     /**
      * @var string
      */
-    private static $table_name = 'FS_OrderOption';
+    private static $table_name = 'OrderOption';
 }
