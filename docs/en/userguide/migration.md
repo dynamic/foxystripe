@@ -14,9 +14,7 @@ FoxyStripe 4 introduces a new class `FoxyStripeSetting` to store your FoxyCart s
   	    - Dynamic\FoxyStripe\ORM\SiteConfigMigration
 	```
 2. Open Settings in the CMS - [http://example.com/admin/settings](http://example.com/admin/settings)	
-3. Hit Save
-
-The data will save to the current `FoxyStripeSetting` via `onAfterWrite()` on `SiteConfig`
+3. Hit 'Save'. The data will save to the current `FoxyStripeSetting` via `onAfterWrite()` on `SiteConfig`
 4. Remove the `SiteConfigMigration` DataExtension from `SiteConfig`
 
 Your FoxyCart settings should now be viewable in the FoxyStripe admin.
