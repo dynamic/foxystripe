@@ -89,7 +89,7 @@ class OrderDetail extends DataObject
     /**
      * @var string
      */
-    private static $table_name = 'FS_OrderDetail';
+    private static $table_name = 'OrderDetail';
 
     /**
      * @return FieldList

@@ -87,7 +87,7 @@ class Order extends DataObject implements PermissionProvider
      */
     private static $summary_fields = array(
         'Order_ID',
-        'TransactionDate.NiceUS',
+        'TransactionDate.Nice',
         'Member.Name',
         'ProductTotal.Nice',
         'ShippingTotal.Nice',
@@ -127,7 +127,7 @@ class Order extends DataObject implements PermissionProvider
     /**
      * @var string
      */
-    private static $table_name = 'FS_Order';
+    private static $table_name = 'Order';
 
     /**
      * @param bool $includerelations

@@ -56,7 +56,7 @@ class ProductImage extends DataObject
     /**
      * @var string
      */
-    private static $table_name = 'FS_ProductImage';
+    private static $table_name = 'ProductImage';
 
     /**
      * @return \SilverStripe\Forms\FieldList

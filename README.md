@@ -23,7 +23,7 @@ Features include:
 *	Two-way Single Sign On with FoxyCart
 *	HMAC Product Validation
 
-Read more about [Using FoxyStripe](docs/en/Use.MD) and [Advanced Features](docs/en/Features.MD)
+Read more about [Using FoxyStripe](docs/en/userguide/index.md), [Advanced Features](docs/en/userguide/features.md) and [Migrating from SilverStripe 3.x to 4.x](docs/en/userguide/migration.md)
 
 
 ## Installation

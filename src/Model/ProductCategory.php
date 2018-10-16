@@ -92,7 +92,7 @@ class ProductCategory extends DataObject
     /**
      * @var string
      */
-    private static $table_name = 'FS_ProductCategory';
+    private static $table_name = 'ProductCategory';
 
     /**
      * @return FieldList

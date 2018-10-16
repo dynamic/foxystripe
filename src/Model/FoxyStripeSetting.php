@@ -116,7 +116,7 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
     /**
      * @var string
      */
-    private static $table_name = 'FS_FoxyStripeSetting';
+    private static $table_name = 'FoxyStripeSetting';
 
     /**
      * Default permission to check for 'LoggedInUsers' to create or edit pages.
