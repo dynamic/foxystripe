@@ -1,4 +1,7 @@
 <?php
+
+use Dynamic\FoxyStripe\Model\FoxyCart;
+
 /**
  * FoxyCart_Helper.
  *
