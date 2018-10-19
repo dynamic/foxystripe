@@ -178,9 +178,9 @@ class FoxyStripePurchaseForm extends Form
                     HiddenField::create(ProductPage::getGeneratedValue(
                         $code,
                         'image',
-                        $this->product->PreviewImage()->PaddedImage(80, 80)->absoluteURL
+                        $this->product->PreviewImage()->Pad(80, 80)->absoluteURL
                     ))
-                        ->setValue($this->product->PreviewImage()->PaddedImage(80, 80)->absoluteURL)
+                        ->setValue($this->product->PreviewImage()->Pad(80, 80)->absoluteURL)
                 );
             }
 
