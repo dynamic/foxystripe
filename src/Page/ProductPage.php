@@ -420,18 +420,6 @@ class ProductPage extends \Page implements PermissionProvider
     }
 
     /**
-     * get FoxyCart Store Name for JS call
-     *
-     * @return string
-     */
-    public function getCartScript()
-    {
-        $store = FoxyCart::getFoxyCartStoreName();
-
-        return '<script src="https://cdn.foxycart.com/' . $store . '/loader.js" async defer></script>';
-    }
-
-    /**
      * @param Member $member
      *
      * @return bool
