@@ -20,18 +20,18 @@ class ProductPageController extends \PageController
     public function init()
     {
         parent::init();
-        Requirements::javascript('framework/thirdparty/jquery/jquery.js');
+        Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
         if ($this->data()->Available && $this->ProductOptions()->exists()) {
             $formName = $this->PurchaseForm()->FormName();
             Requirements::javascriptTemplate(
-                'foxystripe/javascript/out_of_stock.js',
+                'dynamic/foxystripe: javascript/out_of_stock.js',
                 [
                     'FormName' => $formName,
                 ],
                 'foxystripe.out_of_stock'
             );
             Requirements::javascriptTemplate(
-                'foxystripe/javascript/product_options.js',
+                'dynamic/foxystripe: javascript/product_options.js',
                 [
                     'FormName' => $formName,
                 ],
