@@ -106,11 +106,13 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
         'client_secret' => 'Varchar(255)',
         'access_token' => 'Varchar(255)',
         'refresh_token' => 'Varchar(255)',
+        'EnableSidecart' => 'Boolean',
     ];
 
     // Set Default values
     private static $defaults = [
         'ProductLimit' => 10,
+        'EnableSidecart' => 1,
     ];
 
     /**
@@ -322,6 +324,12 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
                 TextField::create('refresh_token', 'FoxyCart Refresh Token'),
             ]);
         }
+
+        $fields->addFieldsToTab('Root.Template', [
+            HeaderField::create('TemplateHD', _t('FoxyStripeSiteConfig.TemplateHD', 'Template Options'), 3),
+            CheckboxField::create('EnableSidecart')
+                ->setDescription('Turns on the Sidebar cart. Uncheck to use the full page cart.'),
+        ]);
 
         $this->extend('updateCMSFields', $fields);
 

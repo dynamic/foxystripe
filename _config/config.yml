@@ -4,15 +4,15 @@ Name: foxystripeconfig
 SilverStripe\Security\Member:
   extensions:
     - Dynamic\FoxyStripe\ORM\CustomerExtension
-Page:
+
+PageController:
   extensions:
     - Dynamic\FoxyStripe\ORM\FoxyStripePageExtension
-SilverStripe\Forms\DateField:
-  default_config:
-    showcalendar: true
+
 SilverStripe\Forms\FormField:
   extensions:
     - Dynamic\FoxyStripe\ORM\FoxyStripeProductFormFieldExtension
+
 SilverStripe\Core\Injector\Injector:
   TimeZoneData:
     properties:

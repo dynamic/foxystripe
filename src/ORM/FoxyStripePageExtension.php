@@ -3,18 +3,27 @@
 namespace Dynamic\FoxyStripe\ORM;
 
 use Dynamic\FoxyStripe\Model\FoxyCart;
-use SilverStripe\ORM\DataExtension;
+use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
+use SilverStripe\Core\Extension;
+use SilverStripe\View\Requirements;
 
-class FoxyStripePageExtension extends DataExtension
+class FoxyStripePageExtension extends Extension
 {
     /**
-     * get FoxyCart Store Name for JS call
-     *
-     * @return string
+     * @throws \SilverStripe\ORM\ValidationException
      */
-    public function getCartScript()
+    public function onAfterInit()
     {
-        return '<script src="https://cdn.foxycart.com/'.FoxyCart::getFoxyCartStoreName().'/loader.js" async defer>
-            </script>';
+        $config = FoxyStripeSetting::current_foxystripe_setting();
+
+        if ($config->EnableSidecart) {
+            Requirements::javascript(
+                "https://cdn.foxycart.com/" . FoxyCart::getFoxyCartStoreName() . "/loader.js",
+                [
+                    "async" => true,
+                    "defer" => true,
+                ]
+            );
+        }
     }
 }
