@@ -9,10 +9,6 @@ PageController:
   extensions:
     - Dynamic\FoxyStripe\ORM\FoxyStripePageExtension
 
-SilverStripe\Forms\DateField:
-  default_config:
-    showcalendar: true
-
 SilverStripe\Forms\FormField:
   extensions:
     - Dynamic\FoxyStripe\ORM\FoxyStripeProductFormFieldExtension
