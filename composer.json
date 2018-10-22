@@ -41,6 +41,11 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "extra": {
+        "expose": [
+            "thirdparty",
+            "css",
+            "javascript"
+        ],
         "installer-name": "foxystripe",
         "branch-alias": {
             "dev-master": "4.0.x-dev"
