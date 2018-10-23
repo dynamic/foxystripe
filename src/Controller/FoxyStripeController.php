@@ -3,6 +3,7 @@
 namespace Dynamic\FoxyStripe\Controller;
 
 use Dynamic\FoxyStripe\Model\FoxyCart;
+use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use Dynamic\FoxyStripe\Model\Order;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
@@ -104,7 +105,14 @@ class FoxyStripeController extends \PageController
 
         $auth_token = sha1($Member->Customer_ID.'|'.$timestampNew.'|'.FoxyCart::getStoreKey());
 
-        $redirect_complete = 'https://'.FoxyCart::getFoxyCartStoreName().'.foxycart.com/checkout?fc_auth_token='.
+        $config = FoxyStripeSetting::current_foxystripe_setting();
+        if ($config->CustomSSL) {
+            $link = FoxyCart::getFoxyCartStoreName();
+        } else {
+            $link = FoxyCart::getFoxyCartStoreName() . '.foxycart.com';
+        }
+
+        $redirect_complete = 'https://'.$link.'.foxycart.com/checkout?fc_auth_token='.
             $auth_token.'&fcsid='.$fcsid.'&fc_customer_id='.$Member->Customer_ID.'&timestamp='.$timestampNew;
 
         $this->redirect($redirect_complete);
