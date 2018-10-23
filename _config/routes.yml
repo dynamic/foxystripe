@@ -2,6 +2,6 @@
 Name: foxystriperoutes
 After: framework/routes#coreroutes
 ---
-Director:
+SilverStripe\Control\Director:
   rules:
     'foxystripe//$Action/$ID/$Name': 'FoxyStripeController'
