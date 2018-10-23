@@ -236,7 +236,14 @@ class FoxyStripe_Controller extends Page_Controller {
 
         $auth_token = sha1($Member->Customer_ID . '|' . $timestampNew . '|' . FoxyCart::getStoreKey());
 
-        $redirect_complete = 'https://' . FoxyCart::getFoxyCartStoreName() . '.foxycart.com/checkout?fc_auth_token=' . $auth_token .
+        $config = SiteConfig::current_site_config();
+        if ($config->CustomSSL) {
+            $link = FoxyCart::getFoxyCartStoreName();
+        } else {
+            $link = FoxyCart::getFoxyCartStoreName() . '.foxycart.com';
+        }
+
+        $redirect_complete = 'https://' . $link . '/checkout?fc_auth_token=' . $auth_token .
             '&fcsid=' . $fcsid . '&fc_customer_id=' . $Member->Customer_ID . '&timestamp=' . $timestampNew;
 	
 	    $this->redirect($redirect_complete);
