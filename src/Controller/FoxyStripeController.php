@@ -4,8 +4,10 @@ namespace Dynamic\FoxyStripe\Controller;
 
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
+use Dynamic\FoxyStripe\Model\OptionItem;
 use Dynamic\FoxyStripe\Model\Order;
 use Dynamic\FoxyStripe\Model\OrderDetail;
+use Dynamic\FoxyStripe\Page\ProductPage;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 
@@ -179,15 +181,16 @@ class FoxyStripeController extends \PageController
         foreach ($orders->transactions->transaction as $order) {
             // Associate ProductPages, Options, Quanity with Order
             foreach ($order->transaction_details->transaction_detail as $product) {
-                $this->orderDetailFromProduct($product);
+                $this->orderDetailFromProduct($product, $transaction);
             }
         }
     }
 
     /**
      * @param $product
+     * @param $transaction
      */
-    public function orderDetailFromProduct($product)
+    public function orderDetailFromProduct($product, $transaction)
     {
         $OrderDetail = OrderDetail::create();
         $OrderDetail->Quantity = (int)$product->product_quantity;
@@ -195,7 +198,8 @@ class FoxyStripeController extends \PageController
         // Find product via product_id custom variable
 
         foreach ($product->transaction_detail_options->transaction_detail_option as $productID) {
-            $this->modifyOrderDetailPrice($OrderDetail, $productID);
+            $productPage = $this->getProductPageByID($productID);
+            $this->modifyOrderDetailPrice($productPage, $OrderDetail, $product);
             // associate with this order
             $OrderDetail->OrderID = $transaction->ID;
             // extend OrderDetail parsing, allowing for recording custom fields from FoxyCart
@@ -206,21 +210,30 @@ class FoxyStripeController extends \PageController
     }
 
     /**
-     * @param OrderDetail $OrderDetail
-     * @param $productID
+     * @param $product
+     * @return bool|ProductPage
      */
-    public function modifyOrderDetailPrice($OrderDetail, $productID)
+    public function getProductPageByID($product)
     {
-        if ($productID->product_option_name != 'product_id') {
-            return;
+        if ($product->product_option_name != 'product_id') {
+            return false;
         }
-        $OrderProduct = ProductPage::get()
-            ->filter('ID', (int)$productID->product_option_value)
-            ->First();
 
+        return ProductPage::get()
+            ->filter('ID', (int)$product->product_option_value)
+            ->First();
+    }
+
+    /**
+     * @param bool|ProductPage $OrderProduct
+     * @param OrderDetail $OrderDetail
+     */
+    public function modifyOrderDetailPrice($OrderProduct, $OrderDetail, $product)
+    {
         if (!$OrderProduct) {
             return;
         }
+
         $OrderDetail->ProductID = $OrderProduct->ID;
 
         foreach ($product->transaction_detail_options->transaction_detail_option as $option) {
@@ -233,7 +246,7 @@ class FoxyStripeController extends \PageController
                 continue;
             }
 
-            $OrderDetail->Options()->add($OptionItem);
+            $OrderDetail->OptionItems()->add($OptionItem);
             // modify product price
             if ($priceMod = $option->price_mod) {
                 $OrderDetail->Price += $priceMod;
