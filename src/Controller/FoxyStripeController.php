@@ -5,6 +5,7 @@ namespace Dynamic\FoxyStripe\Controller;
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use Dynamic\FoxyStripe\Model\Order;
+use Dynamic\FoxyStripe\Model\OrderDetail;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 
@@ -194,36 +195,49 @@ class FoxyStripeController extends \PageController
         // Find product via product_id custom variable
 
         foreach ($product->transaction_detail_options->transaction_detail_option as $productID) {
-            if ($productID->product_option_name == 'product_id') {
-                $OrderProduct = ProductPage::get()
-                    ->filter('ID', (int)$productID->product_option_value)
-                    ->First();
-                // if product could be found, then set Option Items
-                if ($OrderProduct) {
-                    $OrderDetail->ProductID = $OrderProduct->ID;
-
-                    foreach ($product->transaction_detail_options->transaction_detail_option as $option) {
-                        $OptionItem = OptionItem::get()->filter(array(
-                            'ProductID' => (string)$OrderProduct->ID,
-                            'Title' => (string)$option->product_option_value
-                        ))->First();
-                        if (!$OptionItem) {
-                            continue;
-                        }
-                        $OrderDetail->Options()->add($OptionItem);
-                        // modify product price
-                        if ($priceMod = $option->price_mod) {
-                            $OrderDetail->Price += $priceMod;
-                        }
-                    }
-                }
-            }
+            $this->modifyOrderDetailPrice($OrderDetail, $productID);
             // associate with this order
             $OrderDetail->OrderID = $transaction->ID;
             // extend OrderDetail parsing, allowing for recording custom fields from FoxyCart
             $this->extend('handleOrderItem', $decrypted, $product, $OrderDetail);
             // write
             $OrderDetail->write();
+        }
+    }
+
+    /**
+     * @param OrderDetail $OrderDetail
+     * @param $productID
+     */
+    public function modifyOrderDetailPrice($OrderDetail, $productID)
+    {
+        if ($productID->product_option_name != 'product_id') {
+            return;
+        }
+        $OrderProduct = ProductPage::get()
+            ->filter('ID', (int)$productID->product_option_value)
+            ->First();
+
+        if (!$OrderProduct) {
+            return;
+        }
+        $OrderDetail->ProductID = $OrderProduct->ID;
+
+        foreach ($product->transaction_detail_options->transaction_detail_option as $option) {
+            $OptionItem = OptionItem::get()->filter(array(
+                'ProductID' => (string)$OrderProduct->ID,
+                'Title' => (string)$option->product_option_value
+            ))->First();
+
+            if (!$OptionItem) {
+                continue;
+            }
+
+            $OrderDetail->Options()->add($OptionItem);
+            // modify product price
+            if ($priceMod = $option->price_mod) {
+                $OrderDetail->Price += $priceMod;
+            }
         }
     }
 
