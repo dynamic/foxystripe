@@ -213,7 +213,8 @@ class FoxyStripeController extends \PageController
      * @param $product
      * @return \Generator
      */
-    public function getTransactionOptions($product) {
+    public function getTransactionOptions($product)
+    {
         foreach ($product->transaction_detail_options->transaction_detail_option as $productOption) {
             yield $productOption;
         }
