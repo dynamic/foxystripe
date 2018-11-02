@@ -1,11 +1,7 @@
-<%-- redeclare Simple theme includes to keep correct inclusion order --%>
-<% require themedCSS('reset') %>
-<% require themedCSS('typography') %>
-<% require themedCSS('layout') %>
-<%-- FoxyStripe requirements --%>
-<% require css('foxystripe/css/foxycart.css') %>
+<% require css('dynamic/foxystripe: css/foxycart.css') %>
 
-<% include SideBar %>
+<% include Dynamic\\FoxyStripe\\SideBar %>
+
 <div class="content-container unit size3of4 lastUnit">
 	<section>
 	    <h1>$Title</h1>
@@ -37,7 +33,7 @@
 
             <% end_loop %>
 			<% with $ProductList %>
-				<% include Pagination %>
+                <% include Dynamic\\FoxyStripe\\Pagination %>
 			<% end_with %>
         <% else %>
             <p>No results</p>

@@ -1,15 +1,11 @@
-<%-- redeclare Simple theme includes to keep correct inclusion order --%>
-<% require themedCSS('reset') %>
-<% require themedCSS('typography') %>
-<% require themedCSS('layout') %>
 <%-- FoxyStripe requirements --%>
-<% require css('foxystripe/css/foxycart.css') %>
+<% require css('dynamic/foxystripe: css/foxycart.css') %>
 
 
 <div class="content-container unit ProductPage">
 	<article>
 		<h1>$Title</h1>
-		
+
 		<% if $Content %><div class="typography">$Content</div><% end_if %>
 
         <% if $Orders %>
