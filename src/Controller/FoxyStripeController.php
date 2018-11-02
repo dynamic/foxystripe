@@ -197,8 +197,8 @@ class FoxyStripeController extends \PageController
         $OrderDetail->Price = (float)$product->product_price;
         // Find product via product_id custom variable
 
-        foreach ($product->transaction_detail_options->transaction_detail_option as $productID) {
-            $productPage = $this->getProductPageByID($productID);
+        foreach ($this->getTransactionOptions($product) as $productID) {
+            $productPage = $this->getProductPage($product);
             $this->modifyOrderDetailPrice($productPage, $OrderDetail, $product);
             // associate with this order
             $OrderDetail->OrderID = $transaction->ID;
@@ -211,17 +211,29 @@ class FoxyStripeController extends \PageController
 
     /**
      * @param $product
+     * @return \Generator
+     */
+    public function getTransactionOptions($product) {
+        foreach ($product->transaction_detail_options->transaction_detail_option as $productOption) {
+            yield $productOption;
+        }
+    }
+
+    /**
+     * @param $product
      * @return bool|ProductPage
      */
-    public function getProductPageByID($product)
+    public function getProductPage($product)
     {
-        if ($product->product_option_name != 'product_id') {
-            return false;
-        }
+        foreach ($this->getTransactionOptions($product) as $productOptions) {
+            if ($productOptions->product_option_name != 'product_id') {
+                continue;
+            }
 
-        return ProductPage::get()
-            ->filter('ID', (int)$product->product_option_value)
-            ->First();
+            return ProductPage::get()
+                ->filter('ID', (int) $productOptions->product_option_value)
+                ->First();
+        }
     }
 
     /**
@@ -236,7 +248,7 @@ class FoxyStripeController extends \PageController
 
         $OrderDetail->ProductID = $OrderProduct->ID;
 
-        foreach ($product->transaction_detail_options->transaction_detail_option as $option) {
+        foreach ($this->getTransactionOptions($product) as $option) {
             $OptionItem = OptionItem::get()->filter(array(
                 'ProductID' => (string)$OrderProduct->ID,
                 'Title' => (string)$option->product_option_value
