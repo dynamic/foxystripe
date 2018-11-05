@@ -467,7 +467,7 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
     public static function get_template_global_variables()
     {
         return [
-            'FoxyStripe' => 'current_foxystripe_config',
+            'FoxyStripe' => 'current_foxystripe_setting',
         ];
     }
 
