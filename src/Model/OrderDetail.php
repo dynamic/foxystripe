@@ -21,10 +21,12 @@ use SilverStripe\Security\Permission;
  * @property \SilverStripe\ORM\FieldType\DBVarchar ProductCategory
  *
  * @property int ProductID
+ * @method ProductPage Product()
  * @property int OrderID
+ * @method Order Order()
  *
- * @method \SilverStripe\ORM\HasManyList OrderOptions
- * @method \SilverStripe\ORM\ManyManyList OptionItems
+ * @method \SilverStripe\ORM\HasManyList OrderOptions()
+ * @method \SilverStripe\ORM\ManyManyList OptionItems()
  */
 class OrderDetail extends DataObject
 {
