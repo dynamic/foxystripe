@@ -90,6 +90,7 @@ class FoxyCart
      */
     public static function FormActionURL()
     {
+        $config = FoxyStripeSetting::current_foxystripe_setting();
         if ($config->CustomSSL) {
             return sprintf('https://%s/cart', self::getFoxyCartStoreName());
         } else {
