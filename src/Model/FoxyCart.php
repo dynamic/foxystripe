@@ -76,7 +76,7 @@ class FoxyCart
                 return $config->RemoteDomain;
             }
         } else {
-            if ($config->StoreName){
+            if ($config->StoreName) {
                 return $config->StoreName;
             }
         }
@@ -91,7 +91,7 @@ class FoxyCart
     public static function FormActionURL()
     {
         if ($config->CustomSSL) {
-            return sprintf('https://%s/cart', self::getFoxyCartStoreName() );
+            return sprintf('https://%s/cart', self::getFoxyCartStoreName());
         } else {
             return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName());
         }
