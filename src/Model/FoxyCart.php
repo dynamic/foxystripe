@@ -58,7 +58,7 @@ class FoxyCart
     {
         $warning = null;
         if (self::getFoxyCartStoreName() === null) {
-            $warning = 'Must define FoxyCart Store Name in your site settings in the cms';
+            $warning = 'Must define FoxyCart Store Name or Store Remote Domain in your site settings in the cms';
         }
 
         return $warning;
@@ -71,8 +71,14 @@ class FoxyCart
     public static function getFoxyCartStoreName()
     {
         $config = FoxyStripeSetting::current_foxystripe_setting();
-        if ($config->StoreName) {
-            return $config->StoreName;
+        if ($config->CustomSSL) {
+            if ($config->RemoteDomain) {
+                return $config->RemoteDomain;
+            }
+        } else {
+            if ($config->StoreName){
+                return $config->StoreName;
+            }
         }
 
         return false;
@@ -84,7 +90,11 @@ class FoxyCart
      */
     public static function FormActionURL()
     {
-        return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName());
+        if ($config->CustomSSL) {
+            return sprintf('https://%s/cart', self::getFoxyCartStoreName() );
+        } else {
+            return sprintf('https://%s.foxycart.com/cart', self::getFoxyCartStoreName());
+        }
     }
 
     /**

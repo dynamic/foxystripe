@@ -81,6 +81,8 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
     private static $db = [
         'StoreTitle' => 'Varchar(255)',
         'StoreName' => 'Varchar(255)',
+        'CustomSSL' => 'Boolean',
+        'RemoteDomain' => 'Varchar(255)',
         'StoreURL' => 'Varchar(255)',
         'ReceiptURL' => 'Varchar(255)',
         'StoreEmail' => 'Varchar(255)',
@@ -161,12 +163,21 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
                     'FoxyStripeSiteConfig.StoreTitleDescription',
                     'The name of your store as you\'d like it displayed to your customers'
                 )),
+            CheckboxField::create('CustomSSL', 'Use custom SSL'),
+            TextField::create('RemoteDomain')
+                ->setTitle(_t('FoxyStripeSiteConfig.RemoteDomain', 'Store Remote Domain'))
+                ->setDescription(_t(
+                    'FoxyStripeSiteConfig.RemoteDomainDescription',
+                    'custom subdomain for FoxyCart'
+                ))
+                ->displayIf('CustomSSL')->isChecked()->end(),
             TextField::create('StoreName')
                 ->setTitle(_t('FoxyStripeSiteConfig.StoreName', 'Store Domain'))
                 ->setDescription(_t(
                     'FoxyStripeSiteConfig.StoreNameDescription',
                     'This is a unique FoxyCart subdomain for your cart, checkout, and receipt'
-                )),
+                ))
+                ->hideIf('CustomSSL')->isChecked()->end(),
             TextField::create('StoreURL')
                 ->setTitle(_t('FoxyStripeSiteConfig.StoreURL', 'Store URL'))
                 ->setDescription(_t(
