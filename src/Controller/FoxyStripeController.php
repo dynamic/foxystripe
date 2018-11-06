@@ -296,8 +296,8 @@ class FoxyStripeController extends \PageController
             $link = FoxyCart::getFoxyCartStoreName() . '.foxycart.com';
         }
 
-        $redirect_complete = 'https://'.$link.'.foxycart.com/checkout?fc_auth_token='.
-            $auth_token.'&fcsid='.$fcsid.'&fc_customer_id='.$Member->Customer_ID.'&timestamp='.$timestampNew;
+        $redirect_complete = 'https://'.$link.'/checkout?fc_auth_token='.$auth_token.'&fcsid='.$fcsid.
+            '&fc_customer_id='.$Member->Customer_ID.'&timestamp='.$timestampNew;
 
         $this->redirect($redirect_complete);
     }
