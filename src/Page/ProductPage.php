@@ -263,7 +263,8 @@ class ProductPage extends \Page implements PermissionProvider
                 ->setDescription(_t(
                     'ProductPage.WeightDescription',
                     'Base weight for this product in lbs. Can be modified using Product Options'
-                )),
+                ))
+                ->setScale(2),
             CheckboxField::create('Featured')
                 ->setTitle(_t('ProductPage.Featured', 'Featured Product')),
             TextField::create('ReceiptTitle')
