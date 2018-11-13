@@ -11,12 +11,15 @@
         refreshAddToCartPrice();
     });
 
-    function refreshAddToCartPrice() {
+    function refreshAddToCartPrice()
+    {
         var amount = $(trigger).val().replace('$', '');
         $(shownPrice).html('$' + parseFloat(amount).toFixed(2));
     }
 
-    if ($(trigger).length > 0) refreshAddToCartPrice();
+    if ($(trigger).length > 0) {
+        refreshAddToCartPrice();
+    }
 
     $(form).validate({
         rules: {
