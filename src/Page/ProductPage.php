@@ -373,13 +373,6 @@ class ProductPage extends \Page implements PermissionProvider
                     $option->delete();
                 }
             }
-            if ($this->Images()) {
-                //delete product image dataobjects, not the images themselves.
-                $images = $this->getComponents('Images');
-                foreach ($images as $image) {
-                    $image->delete();
-                }
-            }
         }
         parent::onBeforeDelete();
     }
