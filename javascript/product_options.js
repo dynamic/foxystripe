@@ -10,7 +10,8 @@
         refreshCartPrice();
     });
 
-    var refreshCartPrice = function refreshAddToCartPrice() {
+    var refreshCartPrice = function refreshAddToCartPrice()
+    {
         var price = $(shownPrice).html();
         var newProductPrice = parseFloat(initialPrice);
 
@@ -18,7 +19,6 @@
 
             if ($(this).attr('id') == 'qty') {
                 // todo: modify newProductPrice by Quantity?
-
             } else {
                 var currentOption = $(this).val();
                 //get an array of the modifiers
@@ -46,5 +46,7 @@
         $(shownPrice).html('$' + newProductPrice.toFixed(2));
     };
 
-    if ($(trigger).length > 0) refreshCartPrice();
+    if ($(trigger).length > 0) {
+        refreshCartPrice();
+    }
 })(jQuery);

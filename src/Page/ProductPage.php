@@ -314,15 +314,18 @@ class ProductPage extends \Page implements PermissionProvider
     }
 
     /**
-     * @return bool
+     * @return mixed
      */
     public function getImage()
     {
         if ($this->Images()->count() > 0) {
             return $this->Images()->first();
         }
+    }
 
-        return false;
+    public function Image()
+    {
+        return $this->getImage();
     }
 
     /**

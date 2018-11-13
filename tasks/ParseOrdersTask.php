@@ -8,7 +8,8 @@ class ParseOrdersTask extends BuildTask
     protected $description = 'Generate new order information from the FoxyCart Datafeed XML';
 
 
-    public function run($request) {
+    public function run($request)
+    {
 
         $ct = 0;
         foreach (Order::get() as $order) {
@@ -18,7 +19,5 @@ class ParseOrdersTask extends BuildTask
             }
         }
         echo $ct . ' orders updated';
-
     }
-
 }

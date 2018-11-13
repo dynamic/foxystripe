@@ -6,8 +6,10 @@ use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use Dynamic\FoxyStripe\Model\OptionGroup;
 use Dynamic\FoxyStripe\Model\OptionItem;
+use Dynamic\FoxyStripe\ORM\ProductPageLegacy;
 use Dynamic\FoxyStripe\Page\ProductPage;
 use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -173,15 +175,23 @@ class FoxyStripePurchaseForm extends Form
                 $this->product->Weight
             ))->setValue($this->product->Weight));
 
-            if ($this->product->PreviewImage()->exists()) {
-                $fields->push(
-                    HiddenField::create(ProductPage::getGeneratedValue(
-                        $code,
-                        'image',
-                        $this->product->PreviewImage()->Pad(80, 80)->absoluteURL
-                    ))
-                        ->setValue($this->product->PreviewImage()->Pad(80, 80)->absoluteURL)
-                );
+            $image = null;
+            if ($this->product->Image() || ProductPage::has_extension(ProductPageLegacy::class)) {
+                if ($this->product->Image()) {
+                    $image = $this->product->Image()->Pad(80, 80)->absoluteURL;
+                } elseif (ProductPage::has_extension(ProductPageLegacy::class) &&
+                    $this->product->PreviewImage()->exists()) {
+                    $image = $this->product->PreviewImage()->Pad(80, 80)->absoluteURL;
+                }
+                if ($image) {
+                    $fields->push(
+                        HiddenField::create(ProductPage::getGeneratedValue(
+                            $code,
+                            'image',
+                            $image
+                        ))->setValue($image)
+                    );
+                }
             }
 
             $optionsSet = $this->getProductOptionSet();
