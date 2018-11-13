@@ -2,6 +2,7 @@
 
 namespace Dynamic\FoxyStripe\Page;
 
+use Bummzack\SortableFile\Forms\SortableUploadField;
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use Dynamic\FoxyStripe\Model\OptionItem;
@@ -14,7 +15,10 @@ use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\NumericField;
@@ -53,11 +57,6 @@ class ProductPage extends \Page implements PermissionProvider
     /**
      * @var string
      */
-    //private static $allowed_children = [];
-
-    /**
-     * @var string
-     */
     private static $default_parent = ProductHolder::class;
 
     /**
@@ -73,7 +72,6 @@ class ProductPage extends \Page implements PermissionProvider
         'Weight' => 'Decimal',
         'Code' => 'Varchar(100)',
         'ReceiptTitle' => 'HTMLVarchar(255)',
-        'Featured' => 'Boolean',
         'Available' => 'Boolean',
     ];
 
@@ -81,7 +79,6 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $has_one = [
-        'PreviewImage' => Image::class,
         'Category' => ProductCategory::class,
     ];
 
@@ -89,9 +86,31 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $has_many = [
-        'ProductImages' => ProductImage::class,
         'ProductOptions' => OptionItem::class,
         'OrderDetails' => OrderDetail::class,
+    ];
+
+    /**
+     * @var array
+     */
+    private static $many_many = [
+        'Images' => Image::class,
+    ];
+
+    /**
+     * @var array
+     */
+    private static $many_many_extraFields = [
+        'Images' => [
+            'SortOrder' => 'Int',
+        ],
+    ];
+
+    /**
+     * @var array
+     */
+    private static $owns = [
+        'Images',
     ];
 
     /**
@@ -136,6 +155,7 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $summary_fields = [
+        'Image.CMSThumbnail',
         'Title',
         'Code',
         'Price.Nice',
@@ -148,7 +168,6 @@ class ProductPage extends \Page implements PermissionProvider
     private static $searchable_fields = [
         'Title',
         'Code',
-        'Featured',
         'Available',
         'Category.ID',
     ];
@@ -170,10 +189,10 @@ class ProductPage extends \Page implements PermissionProvider
         $labels['Title'] = _t('ProductPage.TitleLabel', 'Name');
         $labels['Code'] = _t('ProductPage.CodeLabel', 'Code');
         $labels['Price.Nice'] = _t('ProductPage.PriceLabel', 'Price');
-        $labels['Featured.Nice'] = _t('ProductPage.NiceLabel', 'Featured');
         $labels['Available.Nice'] = _t('ProductPage.AvailableLabel', 'Available');
         $labels['Category.ID'] = _t('ProductPage.IDLabel', 'Category');
         $labels['Category.Title'] = _t('ProductPage.CategoryTitleLabel', 'Category');
+        $labels['Image.CMSThumbnail'] = _t('ProductPage.ImageLabel', 'Image');
 
         return $labels;
     }
@@ -184,14 +203,6 @@ class ProductPage extends \Page implements PermissionProvider
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-
-        // allow extensions of ProductPage to override the PreviewImage field description
-        $previewDescription = ($this->config()->get('customPreviewDescription')) ?
-            $this->config()->get('customPreviewDescription') :
-            _t(
-                'ProductPage.PreviewImageDescription',
-                'Image used throughout site to represent this product'
-            );
 
         // Cateogry Dropdown field w/ add new
         $source = function () {
@@ -214,21 +225,31 @@ class ProductPage extends \Page implements PermissionProvider
             $catField->useAddNew('ProductCategory', $source);
         }
 
-        // Product Images gridfield
-        $config = GridFieldConfig_RelationEditor::create();
-        $config->addComponent(new GridFieldOrderableRows('SortOrder'));
-        $prodImagesField = GridField::create(
-            'ProductImages',
-            _t('ProductPage.ProductImages', 'Images'),
-            $this->ProductImages(),
-            $config
+        $fields->addFieldsToTab(
+            'Root.Main',
+            [
+                TextField::create('Code')
+                    ->setTitle(_t('ProductPage.Code', 'Product Code'))
+                    ->setDescription(_t(
+                        'ProductPage.CodeDescription',
+                        'Required, must be unique. Product identifier used by FoxyCart in transactions'
+                    )),
+                CurrencyField::create('Price')
+                    ->setTitle(_t('ProductPage.Price', 'Price'))
+                    ->setDescription(_t(
+                        'ProductPage.PriceDescription',
+                        'Base price for this product. Can be modified using Product Options'
+                    )),
+                $catField,
+            ],
+            'Content'
         );
 
         // Product Options field
         $config = GridFieldConfig_RelationEditor::create();
         $config->addComponent(new GridFieldOrderableRows('SortOrder'));
         $products = $this->ProductOptions()->sort('SortOrder');
-        $config->removeComponentsByType('GridFieldAddExistingAutocompleter');
+        $config->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
         $prodOptField = GridField::create(
             'ProductOptions',
             _t('ProductPage.ProductOptions', 'Options'),
@@ -238,25 +259,11 @@ class ProductPage extends \Page implements PermissionProvider
 
         // Details tab
         $fields->addFieldsToTab('Root.Details', [
-            HeaderField::create('DetailHD', 'Product Details', 2),
             CheckboxField::create('Available')
                 ->setTitle(_t('ProductPage.Available', 'Available for purchase'))
                 ->setDescription(_t(
                     'ProductPage.AvailableDescription',
                     'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
-                )),
-            TextField::create('Code')
-                ->setTitle(_t('ProductPage.Code', 'Product Code'))
-                ->setDescription(_t(
-                    'ProductPage.CodeDescription',
-                    'Required, must be unique. Product identifier used by FoxyCart in transactions'
-                )),
-            $catField,
-            CurrencyField::create('Price')
-                ->setTitle(_t('ProductPage.Price', 'Price'))
-                ->setDescription(_t(
-                    'ProductPage.PriceDescription',
-                    'Base price for this product. Can be modified using Product Options'
                 )),
             NumericField::create('Weight')
                 ->setTitle(_t('ProductPage.Weight', 'Weight'))
@@ -265,8 +272,6 @@ class ProductPage extends \Page implements PermissionProvider
                     'Base weight for this product in lbs. Can be modified using Product Options'
                 ))
                 ->setScale(2),
-            CheckboxField::create('Featured')
-                ->setTitle(_t('ProductPage.Featured', 'Featured Product')),
             TextField::create('ReceiptTitle')
                 ->setTitle(_t('ProductPage.ReceiptTitle', 'Product Title for Receipt'))
                 ->setDescription(_t(
@@ -275,30 +280,26 @@ class ProductPage extends \Page implements PermissionProvider
                 )),
         ]);
 
-        // Images tab
-        $fields->addFieldsToTab('Root.Images', [
-            HeaderField::create('MainImageHD', _t('ProductPage.MainImageHD', 'Product Image'), 2),
-            UploadField::create('PreviewImage', '')
-                ->setDescription($previewDescription)
-                ->setFolderName('Uploads/Products')
-                ->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']),
-            HeaderField::create('ProductImagesHD', _t('ProductPage.ProductImagesHD', 'Product Image Gallery'), 2),
-            $prodImagesField
+        // Options Tab
+        $fields->addFieldsToTab('Root.Options', [
+            $prodOptField
                 ->setDescription(_t(
-                    'ProductPage.ProductImagesDescription',
-                    'Additional Product Images, shown in gallery on Product page'
+                    'Page.OptionsDescrip',
+                    '<p>Product Options allow products to be customized by attributes such as size or color.
+                    Options can also modify the product\'s price, weight or code.<br></p>'
                 )),
         ]);
 
-        // Options Tab
-        $fields->addFieldsToTab('Root.Options', [
-            HeaderField::create('OptionsHD', _t('ProductPage.OptionsHD', 'Product Options'), 2),
-            LiteralField::create('OptionsDescrip', _t(
-                'Page.OptionsDescrip',
-                '<p>Product Options allow products to be customized by attributes such as size or color.
-                    Options can also modify the product\'s price, weight or code.</p>'
-            )),
-            $prodOptField,
+        // Images tab
+        $images = SortableUploadField::create('Images')
+            ->setSortColumn('SortOrder')
+            ->setIsMultiUpload(true)
+            ->setAllowedFileCategories('image')
+            ->setFolderName('Uploads/Products/Images')
+        ;
+
+        $fields->addFieldsToTab('Root.Images', [
+            $images,
         ]);
 
         if (FoxyCart::store_name_warning() !== null) {
@@ -310,6 +311,18 @@ class ProductPage extends \Page implements PermissionProvider
         }
 
         return $fields;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getImage()
+    {
+        if ($this->Images()->count() > 0) {
+            return $this->Images()->first();
+        }
+
+        return false;
     }
 
     /**
