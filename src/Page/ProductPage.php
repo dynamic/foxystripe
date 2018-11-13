@@ -341,9 +341,9 @@ class ProductPage extends \Page implements PermissionProvider
             $holders->add($currentParent);
         }
 
-        $title = ltrim($this->Title);
-        $title = rtrim($title);
-        $this->Title = $title;
+        $this->Title = trim($this->Title);
+        $this->Code = trim($this->Code);
+        $this->ReceiptTitle = trim($this->ReceiptTitle);
     }
 
     public function onAfterWrite()
