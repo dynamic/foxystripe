@@ -141,7 +141,7 @@ class FoxyStripePurchaseForm extends Form
      */
     protected function getProductFields(FieldList $fields)
     {
-        Requirements::javascript('dynamic/foxystripe: client/dist/javascript/scripts.min.js');
+        //Requirements::javascript('dynamic/foxystripe: client/dist/javascript/scripts.min.js');
         $hiddenTitle = ($this->product->ReceiptTitle) ?
             htmlspecialchars($this->product->ReceiptTitle) :
             htmlspecialchars($this->product->Title);

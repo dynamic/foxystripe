@@ -11,6 +11,8 @@ use Dynamic\FoxyStripe\Model\ProductCategory;
 use Dynamic\FoxyStripe\Model\ProductImage;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
+use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Control\Controller;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -27,6 +29,7 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
+use SilverStripe\View\Requirements;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
@@ -178,6 +181,26 @@ class ProductPage extends \Page implements PermissionProvider
     private static $table_name = 'ProductPage';
 
     /**
+     * Construct a new ProductPage.
+     *
+     * @param array|null $record Used internally for rehydrating an object from database content.
+     *                           Bypasses setters on this class, and hence should not be used
+     *                           for populating data on new records.
+     * @param boolean $isSingleton This this to true if this is a singleton() object, a stub for calling methods.
+     *                             Singletons don't have their defaults set.
+     * @param array $queryParams List of DataQuery params necessary to lazy load, or load related objects.
+     */
+    public function __construct($record = null, $isSingleton = false, $queryParams = [])
+    {
+        parent::__construct($record, $isSingleton, $queryParams);
+
+        if (Controller::curr() instanceof ContentController) {
+            Requirements::javascript('dynamic/foxystripe: javascript/quantity.js');
+            Requirements::css('dynamic/foxystripe: client/dist/css/quantityfield.css');
+        }
+    }
+
+    /**
      * @param bool $includerelations
      *
      * @return array
@@ -295,8 +318,7 @@ class ProductPage extends \Page implements PermissionProvider
             ->setSortColumn('SortOrder')
             ->setIsMultiUpload(true)
             ->setAllowedFileCategories('image')
-            ->setFolderName('Uploads/Products/Images')
-        ;
+            ->setFolderName('Uploads/Products/Images');
 
         $fields->addFieldsToTab('Root.Images', [
             $images,
