@@ -44,7 +44,8 @@
         "expose": [
             "thirdparty",
             "css",
-            "javascript"
+            "javascript",
+			"client/dist"
         ],
         "installer-name": "foxystripe",
         "branch-alias": {

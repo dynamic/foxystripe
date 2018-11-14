@@ -28,7 +28,8 @@ class QuantityField extends NumericField
      */
     public function Field($properties = [])
     {
-        Requirements::javascript('dynamic/foxystripe: javascript/quantity.js');
+        //Requirements::javascript('dynamic/foxystripe: javascript/quantity.js');
+        Requirements::css('dynamic/foxystripe: client/dist/css/quantityfield.css');
 
 
         $this->setAttribute('data-link', $this->Link('newvalue'));

@@ -21,6 +21,7 @@ use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\GroupedList;
 use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\View\Requirements;
 
 /**
  * Class FoxyStripePurchaseForm.
@@ -140,6 +141,7 @@ class FoxyStripePurchaseForm extends Form
      */
     protected function getProductFields(FieldList $fields)
     {
+        Requirements::javascript('dynamic/foxystripe: client/dist/javascript/scripts.min.js');
         $hiddenTitle = ($this->product->ReceiptTitle) ?
             htmlspecialchars($this->product->ReceiptTitle) :
             htmlspecialchars($this->product->Title);

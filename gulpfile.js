@@ -40,15 +40,15 @@ var favicons = require("gulp-favicons"),
 
 
 var paths = {
-    css: './src/css',
-    cssany: ['./src/css/*.css'],
-    sass: './src/css/scss',
-    sassany: ['./src/css/scss/**/*.scss'],
-    sassdist: './dist/css',
-    jsany: ['./src/javascript/*.js'],
-    jssrc: './src/javascript',
-    jsdist: './dist/javascript',
-    jsdistany: './dist/javascript/**/*.js'
+    css: './client/src/css',
+    cssany: ['./client/src/css/*.css'],
+    sass: './client/src/css/scss',
+    sassany: ['./client/src/css/scss/**/*.scss'],
+    sassdist: './client/dist/css',
+    jsany: ['./client/src/javascript/*.js'],
+    jssrc: './client/src/javascript',
+    jsdist: './client/dist/javascript',
+    jsdistany: './client/dist/javascript/**/*.js'
 };
 
 var autoprefixerOptions = {
@@ -101,13 +101,13 @@ gulp.task('copy', function () {
 
 // compress all images in images folder (and subfolders)
 gulp.task('images', function() {
-    gulp.src('./src/images/**/*')
+    gulp.src('./client/src/images/**/*')
     .pipe(imagemin({
         progressive: true,
         interlaced: true,
         svgoPlugins: [{removeUnknownsAndDefaults: false}]
     }))
-    .pipe(gulp.dest('./dist/images'))
+    .pipe(gulp.dest('./client/dist/images'))
 });
 
 // create docs site for css used in site
@@ -122,23 +122,23 @@ gulp.task('sassdoc', function () {
 
 gulp.task('watch', function() {
     gulp.watch(paths.sassany, ['sass']);
-    //gulp.watch('./src/images/**/*', ['images']);
+    //gulp.watch('./client/src/images/**/*', ['images']);
     gulp.watch(paths.jsany, ['lint']);
     gulp.watch(paths.sassany, ['sassdoc']);
 
-    //gulp.watch(paths.jsdistany).on('change', browserSync.reload);
-    //gulp.watch('./dist/images/**/*').on('change', browserSync.reload);
-    //gulp.watch('./**/*.{ss,php}').on('change', browserSync.reload);
+    gulp.watch(paths.jsdistany).on('change', browserSync.reload);
+    //gulp.watch('./client/dist/images/**/*').on('change', browserSync.reload);
+    gulp.watch('./**/*.{ss,php}').on('change', browserSync.reload);
 });
 
 gulp.task("icons", function () {
-    return gulp.src("./dist/images/DynamicLogo.png").pipe(favicons({
+    return gulp.src("./client/dist/images/DynamicLogo.png").pipe(favicons({
         appName: "My App",
         appDescription: "This is my application",
         developerName: "Dynamic, Inc.",
         developerURL: "http://dynamicagency.com/",
         background: "#FFFFFF",
-        path: "./src/images/favicons",
+        path: "./client/src/images/favicons",
         url: "http://dynamicagency.com/",
         display: "standalone",
         orientation: "portrait",
@@ -151,7 +151,7 @@ gulp.task("icons", function () {
         replace: true
     }))
     .on("error", gutil.log)
-    .pipe(gulp.dest("./src/images/favicons"));
+    .pipe(gulp.dest("./client/src/images/favicons"));
 });
 
 

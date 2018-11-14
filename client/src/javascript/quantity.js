@@ -27,7 +27,7 @@
 				url: link + '?' + $.param(quantData),
 			}).done(function (response) {
 				quantityField.val(response);
-				enableSubmit(clicked)
+				enableSubmit(clicked);
 			}).fail(function (xhr) {
 				console.log('Error: ' + xhr.responseText);
 			});//*/
