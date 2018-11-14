@@ -23,7 +23,8 @@
         "dynamic/silverstripe-country-dropdown-field": "^1.0@dev",
         "foxycart/foxyclient": "^2.0",
         "silverstripe/vendor-plugin": "^1.0",
-        "unclecheese/display-logic": "^2.0@dev"
+        "unclecheese/display-logic": "^2.0@dev",
+		"bummzack/sortablefile": "^2.1"
     },
     "require-dev": {
         "phpunit/PHPUnit": "^5.7",
