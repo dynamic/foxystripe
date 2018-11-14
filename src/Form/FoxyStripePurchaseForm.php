@@ -21,6 +21,7 @@ use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\GroupedList;
 use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\View\Requirements;
 
 /**
  * Class FoxyStripePurchaseForm.
@@ -129,6 +130,8 @@ class FoxyStripePurchaseForm extends Form
         //have to call after parent::__construct()
         $this->setAttribute('action', FoxyCart::FormActionURL());
         $this->disableSecurityToken();
+
+        $this->setHTMLID($this->getTemplateHelper()->generateFormID($this) . "_{$product->ID}");
     }
 
     /**
@@ -138,6 +141,7 @@ class FoxyStripePurchaseForm extends Form
      */
     protected function getProductFields(FieldList $fields)
     {
+        //Requirements::javascript('dynamic/foxystripe: client/dist/javascript/scripts.min.js');
         $hiddenTitle = ($this->product->ReceiptTitle) ?
             htmlspecialchars($this->product->ReceiptTitle) :
             htmlspecialchars($this->product->Title);
@@ -198,25 +202,23 @@ class FoxyStripePurchaseForm extends Form
             $fields->push($optionsSet);
 
             $quantityMax = ($this->site_config->MaxQuantity) ? $this->site_config->MaxQuantity : 10;
-            $count = 1;
-            $quantity = array();
-            while ($count <= $quantityMax) {
-                $countVal = ProductPage::getGeneratedValue(
-                    $this->product->Code,
-                    'quantity',
-                    $count,
-                    'value'
-                );
-                $quantity[$countVal] = $count;
-                ++$count;
-            }
 
-            $fields->push(DropdownField::create('quantity', 'Quantity', $quantity));
+            $fields->push(QuantityField::create('x:visibleQuantity')->setTitle('Quantity')->setValue(1));
+            $fields->push(
+                HiddenField::create('quantity')
+                    ->setValue(
+                        ProductPage::getGeneratedValue($this->Code, 'quantity', 1, 'value')
+                    )
+            );
 
-            $fields->push(HeaderField::create('submitPrice', '$'.$this->product->Price, 4)
-                ->addExtraClass('submit-price'));
-            $fields->push(HeaderField::create('unavailableText', 'Selection unavailable', 4)
-                ->addExtraClass('hidden unavailable-text'));
+            $fields->push(
+                HeaderField::create('submitPrice', '$' . $this->product->Price, 4)
+                    ->addExtraClass('submit-price')
+            );
+            $fields->push(
+                HeaderField::create('unavailableText', 'Selection unavailable', 4)
+                    ->addExtraClass('hidden unavailable-text')
+            );
 
             $this->extend('updatePurchaseFormFields', $fields);
         } else {
@@ -246,7 +248,7 @@ class FoxyStripePurchaseForm extends Form
                 'Submit',
                 _t('ProductForm.AddToCart', 'Add to Cart')
             )
-        );
+        )->addExtraClass('fs-add-to-cart-button');
         if (!$this->site_config->StoreName ||
             $this->site_config->StoreName == '' ||
             !isset($this->site_config->StoreName) ||
@@ -284,8 +286,8 @@ class FoxyStripePurchaseForm extends Form
             $title = $group->Title;
             $name = preg_replace('/\s/', '_', $title);
             $set->each($assignAvailable);
-            $disabled = array();
-            $fullOptions = array();
+            $disabled = [];
+            $fullOptions = [];
             foreach ($set as $item) {
                 $fullOptions[ProductPage::getGeneratedValue(
                     $this->product->Code,
