@@ -120,22 +120,15 @@ gulp.task('sassdoc', function () {
     .pipe(sassdoc(options));
 });
 
-gulp.task('browser-sync', function() {
-    browserSync.init({
-        proxy: "http://little2big.test",
-        ghostMode: false
-    });
-});
-
-gulp.task('watch', ['browser-sync'], function() {
+gulp.task('watch', function() {
     gulp.watch(paths.sassany, ['sass']);
     //gulp.watch('./src/images/**/*', ['images']);
     gulp.watch(paths.jsany, ['lint']);
     gulp.watch(paths.sassany, ['sassdoc']);
 
-    gulp.watch(paths.jsdistany).on('change', browserSync.reload);
+    //gulp.watch(paths.jsdistany).on('change', browserSync.reload);
     //gulp.watch('./dist/images/**/*').on('change', browserSync.reload);
-    gulp.watch('./**/*.{ss,php}').on('change', browserSync.reload);
+    //gulp.watch('./**/*.{ss,php}').on('change', browserSync.reload);
 });
 
 gulp.task("icons", function () {
