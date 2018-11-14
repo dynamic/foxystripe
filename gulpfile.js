@@ -126,9 +126,9 @@ gulp.task('watch', function() {
     gulp.watch(paths.jsany, ['lint']);
     gulp.watch(paths.sassany, ['sassdoc']);
 
-    gulp.watch(paths.jsdistany).on('change', browserSync.reload);
+    //gulp.watch(paths.jsdistany).on('change', browserSync.reload);
     //gulp.watch('./client/dist/images/**/*').on('change', browserSync.reload);
-    gulp.watch('./**/*.{ss,php}').on('change', browserSync.reload);
+    //gulp.watch('./**/*.{ss,php}').on('change', browserSync.reload);
 });
 
 gulp.task("icons", function () {
