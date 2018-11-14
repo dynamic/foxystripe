@@ -204,13 +204,21 @@ class FoxyStripePurchaseForm extends Form
             $quantityMax = ($this->site_config->MaxQuantity) ? $this->site_config->MaxQuantity : 10;
 
             $fields->push(QuantityField::create('x:visibleQuantity')->setTitle('Quantity')->setValue(1));
-            $fields->push(HiddenField::create('quantity')->setValue(ProductPage::getGeneratedValue($this->Code,
-                'quantity', 1, 'value')));
+            $fields->push(
+                HiddenField::create('quantity')
+                    ->setValue(
+                        ProductPage::getGeneratedValue($this->Code, 'quantity', 1, 'value')
+                    )
+            );
 
-            $fields->push(HeaderField::create('submitPrice', '$' . $this->product->Price, 4)
-                ->addExtraClass('submit-price'));
-            $fields->push(HeaderField::create('unavailableText', 'Selection unavailable', 4)
-                ->addExtraClass('hidden unavailable-text'));
+            $fields->push(
+                HeaderField::create('submitPrice', '$' . $this->product->Price, 4)
+                    ->addExtraClass('submit-price')
+            );
+            $fields->push(
+                HeaderField::create('unavailableText', 'Selection unavailable', 4)
+                    ->addExtraClass('hidden unavailable-text')
+            );
 
             $this->extend('updatePurchaseFormFields', $fields);
         } else {
