@@ -73,13 +73,16 @@ class FoxyStripeController extends \PageController
         foreach ($orders->transactions->transaction as $transaction) {
             // if FoxyCart order id, then parse order
             if (isset($transaction->id)) {
-                ($order = Order::get()->filter('Order_ID', (int)$transaction->id)->First()) ?
-                    $order = Order::get()->filter('Order_ID', (int)$transaction->id)->First() :
+                $order = Order::get()->filter('Order_ID', (int)$transaction->id)->First();
+                if (!$order) {
                     $order = Order::create();
+                }
 
                 // save base order info
                 $order->Order_ID = (int)$transaction->id;
                 $order->Response = urlencode($encrypted);
+                // first write needed otherwise it creates a duplicates
+                $order->write();
                 $this->parseOrder($orders, $order);
                 $order->write();
             }
