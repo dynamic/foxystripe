@@ -160,8 +160,11 @@ class FoxyStripeController extends \PageController
         $password_encryption_algorithm = Security::config()->get('password_encryption_algorithm');
         Security::config()->update('password_encryption_algorithm', 'none');
 
-        $customer->PasswordEncryption = $this->getEncryption($order->customer_password_hash_type);
+        $customer->PasswordEncryption = 'none';
         $customer->Password = (string) $order->customer_password;
+        $customer->write();
+
+        $customer->PasswordEncryption = $this->getEncryption((string) $order->customer_password_hash_type);
         $customer->Salt = (string) $order->customer_password_salt;
 
         Security::config()->update('password_encryption_algorithm', $password_encryption_algorithm);
