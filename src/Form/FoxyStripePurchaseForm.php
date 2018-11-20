@@ -257,7 +257,7 @@ class FoxyStripePurchaseForm extends Form
             $submit->setAttribute('Disabled', true);
         }
 
-        $this->extend('updateFoxyStripePurchaseFormActions', $fields);
+        $this->extend('updateFoxyStripePurchaseFormActions', $actions);
 
         return $actions;
     }
