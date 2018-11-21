@@ -2,7 +2,6 @@
 
 namespace Dynamic\FoxyStripe\Controller;
 
-
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\Order;
 use SilverStripe\Control\Controller;
@@ -19,10 +18,14 @@ use SilverStripe\Security\Member;
 class DataTestController extends Controller
 {
 
+    /**
+     * @var array
+     */
     private static $data = [
         "TransactionDate" => "now",
         "OrderID" => "auto",
         "Email"=> "auto",
+        "OrderDetails" => [],
     ];
 
     /**
@@ -61,7 +64,7 @@ class DataTestController extends Controller
         $view = Injector::inst()->create(DebugView::class);
         echo $view->renderHeader();
         echo '<div class="info">';
-        echo "<h2>Data: </h2><pre>{$configString}</pre>";
+        echo "<h2>Data: </h2><pre>$configString</pre>";
         echo "<h2>Response: </h2><pre>$response</pre>";
         echo '<p></p>';
         echo '</div>';
@@ -107,10 +110,11 @@ class DataTestController extends Controller
             $email = $emails[count($emails) - 1];
             return preg_replace_callback(
                 "|(\d+)|",
-                function($mathces) {
+                function ($mathces) {
                     return ++$mathces[1];
                 },
-                $email);
+                $email
+            );
         }
         return 'example0@example.com';
     }
