@@ -52,9 +52,9 @@
 			<order_total>24.38</order_total>
 			<payment_gateway_type>authorize</payment_gateway_type>
 			<status>approved</status>
-			<customer_password>1aab23051b24582c5dc8e23fc595d505</customer_password>
-			<customer_password_salt>SSCtVKDnH1vAwuLyY2XHziIFv3fN5laN8DbYiIcUDBkZW2pP</customer_password_salt>
-			<customer_password_hash_type>sha256_salted_suffix</customer_password_hash_type>
+			<customer_password>$HashedPassword</customer_password>
+			<customer_password_salt>$Salt</customer_password_salt>
+			<customer_password_hash_type>$HashType</customer_password_hash_type>
 			<customer_password_hash_config>48</customer_password_hash_config>
 			<custom_fields>
 				<custom_field>

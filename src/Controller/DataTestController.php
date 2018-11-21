@@ -10,6 +10,8 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\DebugView;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\PasswordEncryptor;
+use SilverStripe\View\ArrayData;
 
 /**
  * Class DataTestController
@@ -25,6 +27,7 @@ class DataTestController extends Controller
         "TransactionDate" => "now",
         "OrderID" => "auto",
         "Email" => "auto",
+        "Password" => "password",
         "OrderDetails" => [],
     ];
 
@@ -39,10 +42,8 @@ class DataTestController extends Controller
         $myKey = FoxyCart::getStoreKey();
 
         $this->updateConfig();
-        $preProcessConfig = static::config()->get('data');
-        $this->updateOrderDetails();
-
         $config = static::config()->get('data');
+        $config['OrderDetails'] = ArrayList::create($config['OrderDetails']);
         $xml = $this->renderWith('TestData', $config);
         $XMLOutput = $xml->RAW();
 
@@ -59,7 +60,7 @@ class DataTestController extends Controller
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        $configString = print_r($preProcessConfig, true);
+        $configString = print_r(static::config()->get('data'), true);
         /** @var DebugView $view */
         $view = Injector::inst()->create(DebugView::class);
         echo $view->renderHeader();
@@ -79,12 +80,13 @@ class DataTestController extends Controller
      */
     private function updateConfig()
     {
-        $transactionDate = static::config()->get('data')['TransactionDate'];
+        $data = static::config()->get('data');
+        $transactionDate = $data['TransactionDate'];
         static::config()->merge('data', [
             'TransactionDate' => strtotime($transactionDate),
         ]);
 
-        $order_id = static::config()->get('data')['OrderID'];
+        $order_id = $data['OrderID'];
         if ($order_id === 'auto' || $order_id < 1) {
             $lastOrderID = Order::get()->sort('Order_ID')->last()->Order_ID;
             static::config()->merge('data', [
@@ -92,19 +94,39 @@ class DataTestController extends Controller
             ]);
         }
 
-        $email = static::config()->get('data')['Email'];
+        $email = $data['Email'];
         if ($email === 'auto') {
             static::config()->merge('data', [
                 'Email' => $this->generateEmail(),
             ]);
         }
 
-        $orderDetails = static::config()->get('data')['OrderDetails'];
+        $orderDetails = $data['OrderDetails'];
         if (count($orderDetails) === 0) {
             static::config()->merge('data', [
                 'OrderDetails' => [
                     $this->generateOrderDetail()
                 ],
+            ]);
+        }
+
+        if (!array_key_exists('Salt', $data)) {
+            static::config()->merge('data', [
+                'Salt' => 'faGgWXUTdZ7i42lpA6cljzKeGBeUwShBSNHECwsJmt',
+            ]);
+        }
+
+        if (!array_key_exists('HashType', $data)) {
+            static::config()->merge('data', [
+                'HashType' => 'sha1_v2.4',
+            ]);
+        }
+
+        $data = static::config()->get('data');
+        if (!array_key_exists('HashedPassword', $data)) {
+            $encryptor = PasswordEncryptor::create_for_algorithm($data['HashType']);
+            static::config()->merge('data', [
+                'HashedPassword' => $encryptor->encrypt($data['Password'], $data['Salt']),
             ]);
         }
     }
@@ -131,6 +153,9 @@ class DataTestController extends Controller
         return 'example0@example.com';
     }
 
+    /**
+     * @return array
+     */
     private function generateOrderDetail()
     {
         return [
@@ -148,16 +173,5 @@ class DataTestController extends Controller
                 'WeightMod' => '',
             ],
         ];
-    }
-
-    /**
-     *
-     */
-    private function updateOrderDetails()
-    {
-        $config = static::config()->get('data');
-        static::config()->set('data', [
-            'OrderDetails' => ArrayList::create($config['OrderDetails'])
-        ]);
     }
 }
