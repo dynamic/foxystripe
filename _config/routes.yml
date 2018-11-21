@@ -5,3 +5,11 @@ After: framework/routes#coreroutes
 SilverStripe\Control\Director:
   rules:
     'foxystripe//$Action/$ID/$Name': Dynamic\FoxyStripe\Controller\FoxyStripeController
+
+---
+Only:
+  environment: 'dev'
+---
+SilverStripe\Control\Director:
+  rules:
+    'foxytest//$Action/$ID/$Name': Dynamic\FoxyStripe\Controller\DataTestController
