@@ -3,15 +3,14 @@
 	<datafeed_version>XML FoxyCart Version 0.6</datafeed_version>
 	<transactions>
 		<transaction>
-			<id>$order_id</id>
+			<id>$OrderID</id>
 			<store_id>9</store_id>
 			<store_version>2.0</store_version>
 			<is_test>1</is_test>
 			<is_hidden>0</is_hidden>
 			<data_is_fed>0</data_is_fed>
-			<transaction_date>2010-08-19 13:50:00</transaction_date>
+			<transaction_date>$TransactionDate</transaction_date>
 			<processor_response>Authorize.net Transaction ID:2154082729</processor_response>
-			<transaction_date>$transaction_date</transaction_date>
 			<customer_id>122</customer_id>
 			<is_anonymous>0</is_anonymous>
 			<minfraud_score>0</minfraud_score>
@@ -25,7 +24,7 @@
 			<customer_postal_code>37013</customer_postal_code>
 			<customer_country>US</customer_country>
 			<customer_phone>(123) 456-7890</customer_phone>
-			<customer_email>someone@somewhere.com</customer_email>
+			<customer_email>$Email</customer_email>
 			<customer_ip>71.228.237.177</customer_ip>
 			<shipping_first_name>John</shipping_first_name>
 			<shipping_last_name>Doe</shipping_last_name>

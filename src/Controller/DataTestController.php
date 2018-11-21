@@ -8,6 +8,9 @@ use Dynamic\FoxyStripe\Model\Order;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\DebugView;
+use SilverStripe\Security\Member;
 
 /**
  * Class DataTestController
@@ -16,23 +19,17 @@ use SilverStripe\Core\Config\Config;
 class DataTestController extends Controller
 {
 
-    /**
-     * @var string
-     */
-    private static $transaction_date = "now";
-
-    /**
-     * @var string|int
-     */
-    private static $order_id = "auto";
-
-
+    private static $data = [
+        "TransactionDate" => "now",
+        "OrderID" => "auto",
+        "Email"=> "auto",
+    ];
 
     /**
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public function index() {
-
+    public function index()
+    {
         $rules = Director::config()->get('rules');
         $rule = array_search(FoxyStripeController::class, $rules);
         $myURL = Director::absoluteBaseURL() . explode('//', $rule)[0];
@@ -40,9 +37,10 @@ class DataTestController extends Controller
 
         $this->updateConfig();
 
+        $config = static::config()->get('data');
         $XMLOutput = $this->renderWith(
             'TestData',
-            Config::inst()->get(static::class)
+            $config
         )->RAW();
 
         $XMLOutput_encrypted = \rc4crypt::encrypt($myKey, $XMLOutput);
@@ -58,10 +56,16 @@ class DataTestController extends Controller
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($responseCode <= 400) {
-            header("content-type:text/plain");
-        }
-        print $response;
+        $configString = print_r($config, true);
+        /** @var DebugView $view */
+        $view = Injector::inst()->create(DebugView::class);
+        echo $view->renderHeader();
+        echo '<div class="info">';
+        echo "<h2>Data: </h2><pre>{$configString}</pre>";
+        echo "<h2>Response: </h2><pre>$response</pre>";
+        echo '<p></p>';
+        echo '</div>';
+        echo $view->renderFooter();
     }
 
     /**
@@ -69,15 +73,45 @@ class DataTestController extends Controller
      */
     private function updateConfig()
     {
-        $transaction_date = static::config()->get('transaction_date');
-        static::config()->update('transaction_date', strtotime($transaction_date));
+        $transaction_date = static::config()->get('data')['TransactionDate'];
+        static::config()->merge('data', [
+            'TransactionDate' => strtotime($transaction_date),
+        ]);
 
-        $order_id = static::config()->get('order_id');
+        $order_id = static::config()->get('data')['OrderID'];
         if ($order_id === 'auto' || $order_id < 1) {
             $lastOrderID = Order::get()->sort('Order_ID')->last()->Order_ID;
-            static::config()->update('order_id', $lastOrderID + 1);
+            static::config()->merge('data', [
+                'OrderID' => $lastOrderID + 1,
+            ]);
         }
 
+        $email = static::config()->get('data')['Email'];
+        if ($email === 'auto') {
+            static::config()->merge('data', [
+                'Email' => $this->generateEmail(),
+            ]);
+        }
+    }
 
+    /**
+     * @return string
+     */
+    private function generateEmail()
+    {
+        $emails = Member::get()->filter([
+            'Email:EndsWith' => '@example.com',
+        ])->column('Email');
+
+        if ($emails && count($emails)) {
+            $email = $emails[count($emails) - 1];
+            return preg_replace_callback(
+                "|(\d+)|",
+                function($mathces) {
+                    return ++$mathces[1];
+                },
+                $email);
+        }
+        return 'example0@example.com';
     }
 }
