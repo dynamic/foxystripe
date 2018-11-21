@@ -69,38 +69,46 @@
 				</custom_field>
 			</custom_fields>
 			<transaction_details>
-				<transaction_detail>
-					<product_name>foo</product_name>
-					<product_price>20.00</product_price>
-					<product_quantity>1</product_quantity>
-					<product_weight>0.10</product_weight>
-					<product_code></product_code>
-					<parent_code></parent_code>
-					<image></image>
-					<url></url>
-					<length></length>
-					<width></width>
-					<height></height>
-					<expires></expires>
-					<sub_token_url></sub_token_url>
-					<subscription_nextdate>0000-00-00</subscription_nextdate>
-					<subscription_enddate>0000-00-00</subscription_enddate>
-					<is_future_line_item>0</is_future_line_item>
-					<subscription_frequency>1m</subscription_frequency>
-					<subscription_startdate>2007-07-07</subscription_startdate>
-					<shipto>John Doe</shipto>
-					<category_description>Default for all products</category_description>
-					<category_code>DEFAULT</category_code>
-					<product_delivery_type>shipped</product_delivery_type>
-					<transaction_detail_options>
-						<transaction_detail_option>
-							<product_option_name>color</product_option_name>
-							<product_option_value>blue</product_option_value>
-							<price_mod></price_mod>
-							<weight_mod></weight_mod>
-						</transaction_detail_option>
-					</transaction_detail_options>
-				</transaction_detail>
+				<% if $OrderDetails %>
+					<% loop $OrderDetails %>
+						<transaction_detail>
+							<product_name>$Title</product_name>
+							<product_price>$Price</product_price>
+							<product_quantity>$Quantity</product_quantity>
+							<product_weight>$Weight</product_weight>
+							<product_code></product_code>
+							<parent_code></parent_code>
+							<image></image>
+							<url></url>
+							<length>$Length</length>
+							<width>$Width</width>
+							<height>$Height</height>
+							<expires></expires>
+							<sub_token_url></sub_token_url>
+							<subscription_nextdate>0000-00-00</subscription_nextdate>
+							<subscription_enddate>0000-00-00</subscription_enddate>
+							<is_future_line_item>0</is_future_line_item>
+							<subscription_frequency>1m</subscription_frequency>
+							<subscription_startdate>2007-07-07</subscription_startdate>
+							<shipto>John Doe</shipto>
+							<category_description>$CategoryDescription</category_description>
+							<category_code>$CategoryCode</category_code>
+							<product_delivery_type>$DeliveryType</product_delivery_type>
+							<transaction_detail_options>
+								<% if $Options %>
+									<% loop $Options %>
+										<transaction_detail_option>
+											<product_option_name>$Name</product_option_name>
+											<product_option_value>$OptionValue</product_option_value>
+											<price_mod>$PriceMod</price_mod>
+											<weight_mod>$WeightMod</weight_mod>
+										</transaction_detail_option>
+									<% end_loop %>
+								<% end_if %>
+							</transaction_detail_options>
+						</transaction_detail>
+					<% end_loop %>
+				<% end_if %>
 			</transaction_details>
 			<shipto_addresses>
 				<shipto_address>

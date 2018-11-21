@@ -6,9 +6,9 @@ use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\Order;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\DebugView;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\Member;
 
 /**
@@ -24,7 +24,7 @@ class DataTestController extends Controller
     private static $data = [
         "TransactionDate" => "now",
         "OrderID" => "auto",
-        "Email"=> "auto",
+        "Email" => "auto",
         "OrderDetails" => [],
     ];
 
@@ -39,12 +39,12 @@ class DataTestController extends Controller
         $myKey = FoxyCart::getStoreKey();
 
         $this->updateConfig();
+        $preProcessConfig = static::config()->get('data');
+        $this->updateOrderDetails();
 
         $config = static::config()->get('data');
-        $XMLOutput = $this->renderWith(
-            'TestData',
-            $config
-        )->RAW();
+        $xml = $this->renderWith('TestData', $config);
+        $XMLOutput = $xml->RAW();
 
         $XMLOutput_encrypted = \rc4crypt::encrypt($myKey, $XMLOutput);
         $XMLOutput_encrypted = urlencode($XMLOutput_encrypted);
@@ -59,13 +59,16 @@ class DataTestController extends Controller
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        $configString = print_r($config, true);
+        $configString = print_r($preProcessConfig, true);
         /** @var DebugView $view */
         $view = Injector::inst()->create(DebugView::class);
         echo $view->renderHeader();
         echo '<div class="info">';
-        echo "<h2>Data: </h2><pre>$configString</pre>";
-        echo "<h2>Response: </h2><pre>$response</pre>";
+        echo "<h2>Config:</h2><pre>$configString</pre>";
+        if ($this->getRequest()->getVar('data')) {
+            echo "<h2>Data:</h2><pre>{$xml->HTML()}</pre>";
+        }
+        echo "<h2>Response:</h2><pre>$response</pre>";
         echo '<p></p>';
         echo '</div>';
         echo $view->renderFooter();
@@ -76,9 +79,9 @@ class DataTestController extends Controller
      */
     private function updateConfig()
     {
-        $transaction_date = static::config()->get('data')['TransactionDate'];
+        $transactionDate = static::config()->get('data')['TransactionDate'];
         static::config()->merge('data', [
-            'TransactionDate' => strtotime($transaction_date),
+            'TransactionDate' => strtotime($transactionDate),
         ]);
 
         $order_id = static::config()->get('data')['OrderID'];
@@ -93,6 +96,15 @@ class DataTestController extends Controller
         if ($email === 'auto') {
             static::config()->merge('data', [
                 'Email' => $this->generateEmail(),
+            ]);
+        }
+
+        $orderDetails = static::config()->get('data')['OrderDetails'];
+        if (count($orderDetails) === 0) {
+            static::config()->merge('data', [
+                'OrderDetails' => [
+                    $this->generateOrderDetail()
+                ],
             ]);
         }
     }
@@ -117,5 +129,35 @@ class DataTestController extends Controller
             );
         }
         return 'example0@example.com';
+    }
+
+    private function generateOrderDetail()
+    {
+        return [
+            'Title' => 'foo',
+            'Price' => 20.00,
+            'Quantity' => 1,
+            'Weight' => 0.1,
+            'DeliveryType' => 'shipped',
+            'CategoryDescription' => 'Default cateogry',
+            'CategoryCode' => 'DEFAULT',
+            'Options' => [
+                'Name' => 'color',
+                'OptionValue' => 'blue',
+                'PriceMod' => '',
+                'WeightMod' => '',
+            ],
+        ];
+    }
+
+    /**
+     *
+     */
+    private function updateOrderDetails()
+    {
+        $config = static::config()->get('data');
+        static::config()->set('data', [
+            'OrderDetails' => ArrayList::create($config['OrderDetails'])
+        ]);
     }
 }
