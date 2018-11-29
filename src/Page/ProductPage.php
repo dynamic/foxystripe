@@ -37,24 +37,22 @@ use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
  * Class ProductPage
  * @package Dynamic\FoxyStripe\Page
  *
- * @property \SilverStripe\ORM\FieldType\DBCurrency Price
- * @property \SilverStripe\ORM\FieldType\DBDecimal Weight
- * @property \SilverStripe\ORM\FieldType\DBVarchar Code
- * @property \SilverStripe\ORM\FieldType\DBVarchar ReceiptTitle
- * @property \SilverStripe\ORM\FieldType\DBBoolean Featured
- * @property \SilverStripe\ORM\FieldType\DBBoolean Available
+ * @property \SilverStripe\ORM\FieldType\DBCurrency $Price
+ * @property \SilverStripe\ORM\FieldType\DBDecimal $Weight
+ * @property \SilverStripe\ORM\FieldType\DBVarchar $Code
+ * @property \SilverStripe\ORM\FieldType\DBVarchar $ReceiptTitle
+ * @property \SilverStripe\ORM\FieldType\DBBoolean $Featured
+ * @property \SilverStripe\ORM\FieldType\DBBoolean $Available
  *
- * @property int PreviewImageID
- * @method Image PreviewImage
- * @property int CategoryID
- * @method ProductCategory Category
+ * @property int $CategoryID
+ * @method ProductCategory Category()
  *
+ * @method \SilverStripe\ORM\HasManyList ProductOptions()
+ * @method \SilverStripe\ORM\HasManyList OrderDetails()
  *
- * @method \SilverStripe\ORM\HasManyList ProductImages
- * @method \SilverStripe\ORM\HasManyList ProductOptions
- * @method \SilverStripe\ORM\HasManyList OrderDetails
+ * @method \SilverStripe\ORM\ManyManyList Images()
  *
- * @method \SilverStripe\ORM\ManyManyList ProductHolders
+ * @method \SilverStripe\ORM\ManyManyList ProductHolders()
  */
 class ProductPage extends \Page implements PermissionProvider
 {
@@ -337,15 +335,35 @@ class ProductPage extends \Page implements PermissionProvider
     }
 
     /**
-     * @return mixed
+     * @return \SilverStripe\ORM\ManyManyList
+     */
+    public function getSortedImages()
+    {
+        return $this->Images()->Sort('SortOrder');
+    }
+
+    /**
+     * @return \SilverStripe\ORM\ManyManyList
+     */
+    public function SortedImages()
+    {
+        return $this->getSortedImages();
+    }
+
+    /**
+     * @return Image|bool
      */
     public function getImage()
     {
-        if ($this->Images()->count() > 0) {
-            return $this->Images()->first();
+        if ($this->getSortedImages()->count() > 0) {
+            return $this->getSortedImages()->first();
         }
+        return false;
     }
 
+    /**
+     * @return Image|bool
+     */
     public function Image()
     {
         return $this->getImage();
