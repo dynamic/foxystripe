@@ -107,7 +107,6 @@ class ProductPageTest extends FS_Test
     {
         $this->logInWithPermission('Product_CANCRUD');
         $category = $this->objFromFixture(ProductCategory::class, 'apparel');
-        $category->write();
         $categoryID = $category->ID;
 
         $productCategory = ProductCategory::get()->filter(array('Code' => 'APPAREL'))->first();
@@ -120,12 +119,10 @@ class ProductPageTest extends FS_Test
         $this->logInWithPermission('Product_CANCRUD');
 
         $category = $this->objFromFixture(ProductCategory::class, 'default');
-        $category->write();
 
         $this->assertFalse($category->canDelete());
 
         $category2 = $this->objFromFixture(ProductCategory::class, 'apparel');
-        $category2->write();
         $category2ID = $category2->ID;
 
         $this->assertTrue($category2->canDelete());

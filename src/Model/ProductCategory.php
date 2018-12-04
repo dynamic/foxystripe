@@ -192,10 +192,11 @@ class ProductCategory extends DataObject
     /**
      * @return \SilverStripe\ORM\ValidationResult
      */
-    public function validate() {
+    public function validate()
+    {
         $result = parent::validate();
 
-        if(ProductCategory::get()->filter('Code', $this->Code)->first()) {
+        if (ProductCategory::get()->filter('Code', $this->Code)->first()) {
             $result->addError('Code must be unique for each category.');
         }
 
