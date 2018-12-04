@@ -141,7 +141,10 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $indexes = [
-        'Code' => true, // make unique
+        'Code' => [
+            'type' => 'unique',
+            'columns' => ['Code'],
+        ],
     ];
 
     /**
@@ -150,7 +153,7 @@ class ProductPage extends \Page implements PermissionProvider
     private static $defaults = [
         'ShowInMenus' => false,
         'Available' => true,
-        'Weight' => '1.0',
+        'Weight' => '0.0',
     ];
 
     /**
@@ -261,6 +264,13 @@ class ProductPage extends \Page implements PermissionProvider
                             'ProductPage.PriceDescription',
                             'Base price for this product. Can be modified using Product Options'
                         )),
+                    NumericField::create('Weight')
+                        ->setTitle(_t('ProductPage.Weight', 'Weight'))
+                        ->setDescription(_t(
+                            'ProductPage.WeightDescription',
+                            'Base weight for this product in lbs. Can be modified using Product Options'
+                        ))
+                        ->setScale(2),
                     $catField,
                 ],
                 'Content'
@@ -286,13 +296,6 @@ class ProductPage extends \Page implements PermissionProvider
                         'ProductPage.AvailableDescription',
                         'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
                     )),
-                NumericField::create('Weight')
-                    ->setTitle(_t('ProductPage.Weight', 'Weight'))
-                    ->setDescription(_t(
-                        'ProductPage.WeightDescription',
-                        'Base weight for this product in lbs. Can be modified using Product Options'
-                    ))
-                    ->setScale(2),
                 TextField::create('ReceiptTitle')
                     ->setTitle(_t('ProductPage.ReceiptTitle', 'Product Title for Receipt'))
                     ->setDescription(_t(
@@ -332,6 +335,40 @@ class ProductPage extends \Page implements PermissionProvider
         });
 
         return parent::getCMSFields();
+    }
+
+    /**
+     * @return RequiredFields
+     */
+    public function getCMSValidator()
+    {
+        return new RequiredFields(['CategoryID', 'Price', 'Weight', 'Code']);
+    }
+
+    /**
+     * @return \SilverStripe\ORM\ValidationResult
+     */
+    public function validate()
+    {
+        $result = parent::validate();
+
+        if (ProductPage::get()->filter('Code', $this->Code)->exclude('ID', $this->ID)->first()) {
+            $result->addError('Code must be unique for each product.');
+        }
+
+        /*if($this->ID>0){
+            if ($this->Price <= 0) {
+                $result->addError('Price must be a positive value');
+            }
+            if($this->Weight <= 0){
+                $result->error('Must set a positive weight value');
+            }
+            if($this->Code == ''){
+                $result->error('Must set a product code');
+            }
+        }*/
+
+        return $result;
     }
 
     /**
@@ -419,30 +456,6 @@ class ProductPage extends \Page implements PermissionProvider
             }
         }
         parent::onBeforeDelete();
-    }
-
-    public function validate()
-    {
-        $result = parent::validate();
-
-        /*if($this->ID>0){
-            if($this->Price <= 0) {
-                $result->error('Must set a positive price value');
-            }
-            if($this->Weight <= 0){
-                $result->error('Must set a positive weight value');
-            }
-            if($this->Code == ''){
-                $result->error('Must set a product code');
-            }
-        }*/
-
-        return $result;
-    }
-
-    public function getCMSValidator()
-    {
-        return new RequiredFields(['CategoryID', 'Price', 'Weight', 'Code']);
     }
 
     /**
