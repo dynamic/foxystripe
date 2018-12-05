@@ -86,7 +86,10 @@ class ProductCategory extends DataObject
      * @var array
      */
     private static $indexes = [
-        'Code' => true,
+        'Code' => [
+            'type' => 'unique',
+            'columns' => ['Code'],
+        ],
     ];
 
     /**
@@ -183,37 +186,21 @@ class ProductCategory extends DataObject
             ->setDescription('Enter a dollar amount here for the declared customs value for international 
             shipments. If you leave this blank, the sale price of the item will be used.');
 
-        /*
-        $fields = FieldList::create(
-            LiteralField::create(
-                'PCIntro',
-                _t(
-                    'ProductCategory.PCIntro',
-                    '<p>Categories must be created in your
-                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories"
-                            target="_blank">
-                            FoxyCart Product Categories
-                        </a>, and also manually created in FoxyStripe.
-                    </p>'
-                )
-            ),
-            TextField::create('Code')
-                ->setTitle(_t('ProductCategory.Code', 'Category Code'))
-                ->setDescription(_t('ProductCategory.CodeDescription', 'copy/paste from FoxyCart')),
-            TextField::create('Title')
-                ->setTitle(_t('ProductCategory.Title', 'Category Title'))
-                ->setDescription(_t('ProductCategory.TitleDescription', 'copy/paste from FoxyCart')),
-            DropdownField::create(
-                'DeliveryType',
-                'Delivery Type',
-                singleton('ProductCategory')->dbObject('DeliveryType')->enumValues()
-            )->setEmptyString('')
-        );
-
-        $this->extend('updateCMSFields', $fields);
-        */
-
         return $fields;
+    }
+
+    /**
+     * @return \SilverStripe\ORM\ValidationResult
+     */
+    public function validate()
+    {
+        $result = parent::validate();
+
+        if (ProductCategory::get()->filter('Code', $this->Code)->exclude('ID', $this->ID)->first()) {
+            $result->addError('Code must be unique for each category.');
+        }
+
+        return $result;
     }
 
     /**
