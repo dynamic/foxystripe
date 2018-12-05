@@ -187,7 +187,9 @@ class ProductPage extends \Page implements PermissionProvider
      */
     public function populateDefaults()
     {
-        $this->CategoryID = ProductCategory::get()->filter('Code', 'DEFAULT')->first()->ID;
+        if ($cat = ProductCategory::get()->filter('Code', 'DEFAULT')->first()) {
+            $this->CategoryID = $cat->ID;
+        }
 
         parent::populateDefaults();
     }
