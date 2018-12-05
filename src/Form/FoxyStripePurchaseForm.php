@@ -173,11 +173,13 @@ class FoxyStripePurchaseForm extends Form
                 'price',
                 $this->product->Price
             ))->setValue($this->product->Price));//can't override id
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
-                $code,
-                'weight',
-                $this->product->Weight
-            ))->setValue($this->product->Weight));
+            if ($this->product->Weight > 0) {
+                $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
+                    $code,
+                    'weight',
+                    $this->product->Weight
+                ))->setValue($this->product->Weight));
+            }
 
             $image = null;
             if ($this->product->Image() || ProductPage::has_extension(ProductPageLegacy::class)) {
