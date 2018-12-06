@@ -4,6 +4,16 @@ Name: foxystripeconfig
 SilverStripe\Security\Member:
   extensions:
     - Dynamic\FoxyStripe\ORM\CustomerExtension
+  customer_map:
+    int:
+      customer_id: 'Customer_ID'
+    string:
+      customer_first_name: 'FirstName'
+      customer_last_name: 'Surname'
+      customer_email: 'Email'
+      customer_password: 'Password'
+      customer_password_salt: 'Salt'
+      customer_password_hash_type: 'PasswordEncryption'
 
 PageController:
   extensions:
