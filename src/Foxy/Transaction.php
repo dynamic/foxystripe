@@ -72,6 +72,6 @@ class Transaction
      */
     private function getDecryptedData($data)
     {
-        return new \SimpleXMLElement(\rc4crypt::decrypt(FoxyCart::getStoreKey(), urldecode($data)));
+        return new \SimpleXMLElement(\rc4crypt::decrypt(FoxyCart::getStoreKey(), $data));
     }
 }

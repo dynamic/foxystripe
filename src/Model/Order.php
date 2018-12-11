@@ -209,7 +209,7 @@ class Order extends DataObject implements PermissionProvider
     protected function setTransaction()
     {
         if ($this->Response) {
-            $this->transaction = Transaction::create($this->Order_ID, $this->Response);
+            $this->transaction = Transaction::create($this->Order_ID, urldecode($this->Response));
         } else {
             $this->transaction = false;
         }

@@ -46,8 +46,6 @@ class FoxyStripeController extends \PageController
     {
         $request = $this->getRequest();
 
-        $this->processFoxyRequest($request);
-
         if ($request->postVar('FoxyData') || $request->postVar('FoxySubscriptionData')) {
             $this->processFoxyRequest($request);
 
@@ -64,7 +62,7 @@ class FoxyStripeController extends \PageController
      */
     protected function processFoxyRequest(HTTPRequest $request)
     {
-        $encryptedData = $request->postVar('FoxyData') ?: $request->postVar('FoxySubscriptionData');
+        $encryptedData = $request->postVar('FoxyData') ? urldecode($request->postVar('FoxyData')) : urldecode($request->postVar('FoxySubscriptionData'));
         $decryptedData = $this->decryptFeedData($encryptedData);
 
         $this->parseFeedData($encryptedData, $decryptedData);
@@ -117,8 +115,9 @@ class FoxyStripeController extends \PageController
             $order = Order::create();
             $order->Order_ID = (int)$transaction->id;
             $order->Response = urlencode($encryptedData);
-            $order->write();
         }
+
+        $order->write();
     }
 
     /**
