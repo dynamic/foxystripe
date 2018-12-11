@@ -4,3 +4,4 @@ node_modules/
 /clover-coverage-report
 /coverage-report
 /sassdoc
+/package-lock.json

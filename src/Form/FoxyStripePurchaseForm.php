@@ -209,7 +209,7 @@ class FoxyStripePurchaseForm extends Form
             $fields->push(
                 HiddenField::create('quantity')
                     ->setValue(
-                        ProductPage::getGeneratedValue($this->Code, 'quantity', 1, 'value')
+                        ProductPage::getGeneratedValue($code, 'quantity', 1, 'value')
                     )
             );
 
