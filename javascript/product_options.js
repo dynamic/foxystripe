@@ -1,8 +1,8 @@
 ;(function ($) {
 
-    var trigger = '.foxycartOptionsContainer .dropdown .middleColumn select',
+    var trigger = 'select.product-options',
         formName = "#$FormName",
-        shownPrice = '#$FormName_submitPrice',
+        shownPrice = '[id*="_submitPrice"]',
         selects = '#$FormName select',
         initialPrice = $(shownPrice).html().replace('$', '');
 
