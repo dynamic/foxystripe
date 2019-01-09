@@ -148,37 +148,44 @@ class FoxyStripePurchaseForm extends Form
         $code = $this->product->Code;
 
         if ($this->product->Available) {
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
-                $code,
-                'name',
-                $hiddenTitle
-            ))->setValue($hiddenTitle));
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
-                $code,
-                'category',
-                $this->product->Category()->Code
-            ))->setValue($this->product->Category()->Code));
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
-                $code,
-                'code',
-                $this->product->Code
-            ))->setValue($this->product->Code));
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
-                $code,
-                'product_id',
-                $this->product->ID
-            ))->setValue($this->product->ID));
-            $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
-                $code,
-                'price',
-                $this->product->Price
-            ))->setValue($this->product->Price));//can't override id
+            $fields->push(
+                HiddenField::create('name')
+                    ->setValue(
+                        ProductPage::getGeneratedValue($code, 'name', $hiddenTitle, 'value')
+                    )
+            );
+            $fields->push(
+                HiddenField::create('category')
+                    ->setValue(
+                        ProductPage::getGeneratedValue($code, 'category', $this->product->Category()->Code, 'value')
+                    )
+            );
+            $fields->push(
+                HiddenField::create('code')
+                    ->setValue(
+                        ProductPage::getGeneratedValue($code, 'code', $this->product->Code, 'value')
+                    )
+            );
+            $fields->push(
+                HiddenField::create(
+                    'product_id'
+                )->setValue(
+                    ProductPage::getGeneratedValue($code, 'product_id', $this->product->ID, 'value')
+                )
+            );
+            $fields->push(
+                HiddenField::create('price')
+                    ->setValue(
+                        ProductPage::getGeneratedValue($code, 'price', $this->product->Price, 'value')
+                    )
+            );//can't override id
             if ($this->product->Weight > 0) {
-                $fields->push(HiddenField::create(ProductPage::getGeneratedValue(
-                    $code,
-                    'weight',
-                    $this->product->Weight
-                ))->setValue($this->product->Weight));
+                $fields->push(
+                    HiddenField::create('weight')
+                        ->setValue(
+                            ProductPage::getGeneratedValue($code, 'weight', $this->product->Weight, 'value')
+                        )
+                );
             }
 
             $image = null;
@@ -189,13 +196,13 @@ class FoxyStripePurchaseForm extends Form
                     $this->product->PreviewImage()->exists()) {
                     $image = $this->product->PreviewImage()->Pad(80, 80)->absoluteURL;
                 }
+
                 if ($image) {
                     $fields->push(
-                        HiddenField::create(ProductPage::getGeneratedValue(
-                            $code,
-                            'image',
-                            $image
-                        ))->setValue($image)
+                        HiddenField::create('image')
+                            ->setValue(
+                                ProductPage::getGeneratedValue($code, 'image', $image, 'value')
+                            )
                     );
                 }
             }
@@ -316,6 +323,7 @@ class FoxyStripePurchaseForm extends Form
         }
 
         $optionsSet->addExtraClass('foxycartOptionsContainer');
+        $dropdown->addExtraClass("product-options product-options-{$name}");
 
         return $optionsSet;
     }
