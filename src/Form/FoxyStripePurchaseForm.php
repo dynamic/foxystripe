@@ -320,10 +320,11 @@ class FoxyStripePurchaseForm extends Form
                 $dropdown = DropdownField::create($name, $title, $fullOptions)->setTitle($title)
             );
             $dropdown->setDisabledItems($disabled);
+
+            $dropdown->addExtraClass("product-options product-options-{$name}");
         }
 
         $optionsSet->addExtraClass('foxycartOptionsContainer');
-        $dropdown->addExtraClass("product-options product-options-{$name}");
 
         return $optionsSet;
     }
