@@ -225,9 +225,13 @@ class FoxyStripePurchaseForm extends Form
                     ->addExtraClass('submit-price')
             );
             $fields->push(
-                HeaderField::create('unavailableText', 'Selection unavailable', 4)
-                    ->addExtraClass('hidden unavailable-text')
+                $unavailable = HeaderField::create('unavailableText', 'Selection unavailable', 4)
+                    ->addExtraClass('unavailable-text')
             );
+
+            if (!empty(trim($this->getSiteConfig()->StoreName)) && $this->getProduct()->getIsAvailable()) {
+                $unavailable->addExtraClass('hidden');
+            }
 
             $this->extend('updatePurchaseFormFields', $fields);
         } else {
@@ -246,24 +250,13 @@ class FoxyStripePurchaseForm extends Form
      */
     protected function getProductActions(FieldList $actions)
     {
-        $actions->push($submit = FormAction::create(
-            '',
-            _t('ProductForm.AddToCart', 'Add to Cart')
-        ));
-        $submit->setAttribute(
-            'name',
-            ProductPage::getGeneratedValue(
-                $this->product->Code,
-                'Submit',
-                _t('ProductForm.AddToCart', 'Add to Cart')
-            )
-        )->addExtraClass('fs-add-to-cart-button');
-        if (!$this->site_config->StoreName ||
-            $this->site_config->StoreName == '' ||
-            !isset($this->site_config->StoreName) ||
-            !$this->product->Available
-        ) {
-            $submit->setAttribute('Disabled', true);
+        if (!empty(trim($this->getSiteConfig()->StoreName)) && $this->getProduct()->getIsAvailable()) {
+            $actions->push(
+                $submit = FormAction::create(
+                    'x:submit',
+                    _t('ProductForm.AddToCart', 'Add to Cart')
+                )->addExtraClass('fs-add-to-cart-button')
+            );
         }
 
         $this->extend('updateFoxyStripePurchaseFormActions', $actions);
@@ -276,12 +269,6 @@ class FoxyStripePurchaseForm extends Form
      */
     protected function getProductOptionSet()
     {
-        $assignAvailable = function ($self) {
-            /** @var OptionItem $self */
-            $this->extend('updateFoxyStripePurchaseForm', $form);
-            $self->Available = ($self->getAvailability()) ? true : false;
-        };
-
         $options = $this->product->ProductOptions();
         $groupedOptions = new GroupedList($options);
         $groupedBy = $groupedOptions->groupBy('ProductOptionGroupID');
@@ -294,38 +281,49 @@ class FoxyStripePurchaseForm extends Form
             $group = OptionGroup::get()->byID($id);
             $title = $group->Title;
             $name = preg_replace('/\s/', '_', $title);
-            $set->each($assignAvailable);
             $disabled = [];
             $fullOptions = [];
+
             foreach ($set as $item) {
-                $fullOptions[ProductPage::getGeneratedValue(
+                $item = $this->setAvailability($item);
+
+                $name = ProductPage::getGeneratedValue(
                     $this->product->Code,
                     $group->Title,
                     $item->getGeneratedValue(),
                     'value'
-                )] = $item->getGeneratedTitle();
+                );
+
+                $fullOptions[$name] = $item->getGeneratedTitle();
                 if (!$item->Availability) {
-                    array_push(
-                        $disabled,
-                        ProductPage::getGeneratedValue(
-                            $this->product->Code,
-                            $group->Title,
-                            $item->getGeneratedValue(),
-                            'value'
-                        )
-                    );
+                    array_push($disabled, $name);
                 }
             }
+
             $optionsSet->push(
                 $dropdown = DropdownField::create($name, $title, $fullOptions)->setTitle($title)
             );
-            $dropdown->setDisabledItems($disabled);
 
-            $dropdown->addExtraClass("product-options product-options-{$name}");
+            if (!empty($disabled)) {
+                $dropdown->setDisabledItems($disabled);
+            }
+
+            $dropdown->addExtraClass("product-options");
         }
 
         $optionsSet->addExtraClass('foxycartOptionsContainer');
 
         return $optionsSet;
+    }
+
+    /**
+     * @param OptionItem $option
+     * @return OptionItem
+     */
+    protected function setAvailability(OptionItem $option)
+    {
+        $option->Available = ($option->getAvailability()) ? true : false;
+
+        return $option;
     }
 }

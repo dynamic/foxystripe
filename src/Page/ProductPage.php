@@ -514,4 +514,22 @@ class ProductPage extends \Page implements PermissionProvider
             'Product_CANCRUD' => 'Allow user to manage Products and related objects',
         ];
     }
+
+    /**
+     * @return bool
+     */
+    public function getIsAvailable()
+    {
+        if (!$this->Available) {
+            return false;
+        }
+
+        foreach ($this->ProductOptions() as $option) {
+            if ($option->Available) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
