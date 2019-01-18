@@ -32,8 +32,6 @@
 			}
 		});
 
-		console.log(selected in options);
-
 		if (selected in options) {
 			shownPrice.html('$' + Number.parseFloat(options[selected]).toFixed(2));
 		}
