@@ -25,7 +25,6 @@
 			if (currentOption.length) {
 				$.each(currentOption, function (k, v) {
 					if (v !== '') {
-						console.log(v.split(':')[1]);
 						options[v.split(':')[1]] = v.split(':')[1];
 					}
 				});
