@@ -147,7 +147,7 @@ class FoxyStripePurchaseForm extends Form
             htmlspecialchars($this->product->Title);
         $code = $this->product->Code;
 
-        if ($this->product->Available) {
+        if ($this->getProduct()->getIsAvailable()) {
             $fields->push(
                 HiddenField::create('name')
                     ->setValue(
@@ -235,7 +235,7 @@ class FoxyStripePurchaseForm extends Form
 
             $this->extend('updatePurchaseFormFields', $fields);
         } else {
-            $fields->push(HeaderField::create('submitPrice', 'Currently Out of Stock', 4));
+            $fields->push(HeaderField::create('unavailableText', 'Currently Out of Stock', 4));
         }
 
         $this->extend('updateFoxyStripePurchaseFormFields', $fields);
