@@ -280,7 +280,7 @@ class FoxyStripePurchaseForm extends Form
         foreach ($groupedBy as $id => $set) {
             $group = OptionGroup::get()->byID($id);
             $title = $group->Title;
-            $name = preg_replace('/\s/', '_', $title);
+            $fieldName = preg_replace('/\s/', '_', $title);
             $disabled = [];
             $fullOptions = [];
 
@@ -301,7 +301,7 @@ class FoxyStripePurchaseForm extends Form
             }
 
             $optionsSet->push(
-                $dropdown = DropdownField::create($name, $title, $fullOptions)->setTitle($title)
+                $dropdown = DropdownField::create($fieldName, $title, $fullOptions)->setTitle($title)
             );
 
             if (!empty($disabled)) {
