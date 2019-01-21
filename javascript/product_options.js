@@ -1,5 +1,5 @@
 ;(function ($) {
-	var shownPrice = $('[id*="_submitPrice"]'),
+	var shownPrice = $('[id*="submitPrice"]'),
 		trigger = $('.product-options'),
 		isAvailable = $('[name="action_x:submit"]').length ? true : false,
 		unavailable = trigger.closest('form').find('[id*="_unavailableText"]');
@@ -31,7 +31,7 @@
 			}
 		});
 
-		if (selected in options) {
+		if (selected in options && options[selected] !== undefined) {
 			shownPrice.html('$' + Number.parseFloat(options[selected]).toFixed(2));
 		}
 	});
