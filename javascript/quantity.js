@@ -10,11 +10,26 @@
 		getId = function (element) {
 			return element.parent().find("input[name='x:visibleQuantity']").data('id');
 		},
+		getLimit = function (element) {
+			return element.parent().find("input[name='x:visibleQuantity']").data('limit');
+		},
+		updateLimit = function (element, newLimit) {
+			return element.parent().find("input[name='x:visibleQuantity']").data('limit', newLimit);
+		},
+		disableIncreaseButton = function(element) {
+			element.parent().find("button.increase").attr('disabled', true);
+		},
+		enableIncreaseButton = function(element) {
+			element.parent().find("button.increase").attr('disabled', false);
+		},
 		disableSubmit = function (element) {
 			element.parent().parent().parent().find('.fs-add-to-cart-button').attr('disabled', true);
 		},
 		enableSubmit = function (element) {
 			element.parent().parent().parent().find('.fs-add-to-cart-button').attr('disabled', false);
+		},
+		responseToQuantity = function(response) {
+			return response.substr(0, response.indexOf('||'));
 		},
 		queryNewValue = function (code, newValue, link, id, clicked) {
 			var quantData = {
@@ -28,7 +43,24 @@
 				type: 'get',
 				url: link + '?' + $.param(quantData),
 			}).done(function (response) {
-				clicked.parent().parent().parent().parent().find("input[name='quantity']").val(response);
+				var quantityInput = clicked.parent().parent().parent().parent().find("input[name='quantity']");
+				var visibleQuantityInput = clicked.parent().parent().find("input[name='x:visibleQuantity']");
+
+				var oldQuantity = responseToQuantity(quantityInput.val());
+				var newQuantity = responseToQuantity(response);
+				if (oldQuantity == newQuantity && newQuantity != getLimit(clicked)) {
+					updateLimit(clicked, newQuantity);
+				}
+
+				var limit = getLimit(clicked);
+				if (limit != undefined && limit != -1 && visibleQuantityInput.val() >= limit) {
+					visibleQuantityInput.val(limit);
+					disableIncreaseButton(clicked);
+				} else {
+					enableIncreaseButton(clicked);
+				}
+
+				quantityInput.val(response);
 				enableSubmit(clicked);
 			}).fail(function (xhr) {
 				console.log('Error: ' + xhr.responseText);

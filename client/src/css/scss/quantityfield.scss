@@ -1,6 +1,16 @@
 form[id^="FoxyStripePurchaseForm_PurchaseForm_"] {
 	.quantityField {vertical-align: baseline; margin-bottom: 30px; line-height: 1;
 		button {-webkit-appearance: none; height: 37px; padding: 6px 12px; font-size: 14px;}
+		button:disabled,
+		button[disabled] {
+			color: grey;
+			background-color: darkgray;
+			&:hover, &:focus {
+				background-color: darkgray;
+				color: grey;
+			}
+
+		}
 		input, button { height: 37px; font-size: 20px; line-height: 1; display: inline-block; width: auto; vertical-align: baseline; border-radius: 0; border-color: #e6e7e8;  padding: 6px 12px; float: left;}
 		button {font-size: 20px; line-height: 1; padding: 6px 12px 10px;
 			&:hover, &:focus {background: #7ba6bb; color: #ffffff; outline: none;}

@@ -33,10 +33,18 @@ class QuantityField extends NumericField
 
 
         $this->setAttribute('data-link', $this->Link('newvalue'));
-        $this->setAttribute('data-code', $this->getForm()->getProduct()->Code);
-        $this->setAttribute('data-id', $this->getForm()->getProduct()->ID);
+        $this->setAttribute('data-code', $this->getProduct()->Code);
+        $this->setAttribute('data-id', $this->getProduct()->ID);
 
         return parent::Field($properties);
+    }
+
+    /**
+     * @return ProductPage
+     */
+    public function getProduct()
+    {
+        return $this->getForm()->getProduct();
     }
 
     /**
@@ -53,6 +61,7 @@ class QuantityField extends NumericField
             return '';
         }
 
+        $this->extend('updateValue', $value);
         return ProductPage::getGeneratedValue($code, 'quantity', $value, 'value');
     }
 }
