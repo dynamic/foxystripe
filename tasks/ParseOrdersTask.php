@@ -1,6 +1,7 @@
 <?php
 
 use SilverStripe\Dev\BuildTask;
+use Dynamic\FoxyStripe\Model\Order;
 
 class ParseOrdersTask extends BuildTask
 {
@@ -12,12 +13,23 @@ class ParseOrdersTask extends BuildTask
     {
 
         $ct = 0;
-        foreach (Order::get() as $order) {
+        foreach ($this->getOrders() as $order) {
             if ($order->parseOrder()) {
                 $order->write();
                 $ct++;
+                echo "Now updating order {$order->Order_ID} (DB ID: {$order->ID})" . PHP_EOL;
             }
         }
         echo $ct . ' orders updated';
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function getOrders()
+    {
+        foreach (Order::get() as $order) {
+            yield $order;
+        }
     }
 }

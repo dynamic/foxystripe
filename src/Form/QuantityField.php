@@ -61,7 +61,14 @@ class QuantityField extends NumericField
             return '';
         }
 
-        $this->extend('updateValue', $value);
-        return ProductPage::getGeneratedValue($code, 'quantity', $value, 'value');
+        $this->extend('updateQuantity', $value);
+
+        $data = array(
+            'quantity' => $value,
+            'quantityGenerated' => ProductPage::getGeneratedValue($code, 'quantity', $value, 'value'),
+        );
+
+        $this->extend('updateData', $data);
+        return json_encode($data);
     }
 }

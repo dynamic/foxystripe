@@ -22,14 +22,24 @@
 		enableIncreaseButton = function(element) {
 			element.parent().find("button.increase").attr('disabled', false);
 		},
+		hideButtons = function(element) {
+			element.parent().find("button.increase, button.reduced")
+				.attr('disabled', true)
+				.addClass('hidden');
+		},
+		outOfStock = function(element) {
+			var form = element.parents('form[id^=FoxyStripePurchaseForm_PurchaseForm_]')
+			var id = form.attr('id');
+
+			form.find('fieldset')
+				.html('<h4 id="' + id + '_unavailableText">Currently Out of Stock</h4>');
+			form.find('input[name=action_x\\:submit]').remove();
+		},
 		disableSubmit = function (element) {
 			element.parent().parent().parent().find('.fs-add-to-cart-button').attr('disabled', true);
 		},
 		enableSubmit = function (element) {
 			element.parent().parent().parent().find('.fs-add-to-cart-button').attr('disabled', false);
-		},
-		responseToQuantity = function(response) {
-			return response.substr(0, response.indexOf('||'));
 		},
 		queryNewValue = function (code, newValue, link, id, clicked) {
 			var quantData = {
@@ -43,28 +53,35 @@
 				type: 'get',
 				url: link + '?' + $.param(quantData),
 			}).done(function (response) {
-				var quantityInput = clicked.parent().parent().parent().parent().find("input[name='quantity']");
-				var visibleQuantityInput = clicked.parent().parent().find("input[name='x:visibleQuantity']");
+				var data = JSON.parse(response);
 
-				var oldQuantity = responseToQuantity(quantityInput.val());
-				var newQuantity = responseToQuantity(response);
-				if (oldQuantity == newQuantity && newQuantity != getLimit(clicked)) {
-					updateLimit(clicked, newQuantity);
+				if (data.hasOwnProperty('limit')) {
+					updateLimit(clicked, data.limit);
+
+					if (data.limit == 0) {
+						outOfStock(clicked);
+					} else if (data.limit == 1) {
+						hideButtons(clicked);
+					} else if (data.limit == data.quantity) {
+						disableIncreaseButton(clicked);
+					} else {
+						enableIncreaseButton(clicked);
+					}
 				}
 
-				var limit = getLimit(clicked);
-				if (limit != undefined && limit != -1 && visibleQuantityInput.val() >= limit) {
-					visibleQuantityInput.val(limit);
-					disableIncreaseButton(clicked);
-				} else {
-					enableIncreaseButton(clicked);
-				}
-
-				quantityInput.val(response);
+				clicked.parent().parent().parent().parent().find("input[name='quantity']")
+					.val(data.quantityGenerated);
 				enableSubmit(clicked);
 			}).fail(function (xhr) {
-				console.log('Error: ' + xhr.responseText);
-			});//*/
+				// because the form field no longer exists if it is out of stock
+				if (xhr.status == 404 &&
+					xhr.responseText == "I can't handle sub-URLs on class SilverStripe\\Forms\\FormRequestHandler."
+				) {
+					outOfStock(clicked);
+				} else {
+					console.log('Error: ' + xhr.responseText);
+				}
+			});
 		};
 
 	$(document).on('click', 'button.increase', function (event) {
@@ -87,5 +104,16 @@
 			queryNewValue(getCode($(this)), newValue, getLink($(this)), getId($(this)), $(this));
 			visibleQuantity.val(newValue);
 		}
+	});
+
+	$(document).ready(function() {
+		$('button.increase').each(function() {
+			var limit = getLimit($(this));
+			if (limit == 1) {
+				hideButtons($(this));
+			} else if (limit == 0) {
+				outOfStock($(this));
+			}
+		});
 	});
 }(jQuery));
