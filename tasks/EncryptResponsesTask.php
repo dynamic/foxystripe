@@ -1,6 +1,8 @@
 <?php
 
 use SilverStripe\Dev\BuildTask;
+use Dynamic\FoxyStripe\Model\Order;
+use Dynamic\FoxyStripe\Model\FoxyCart;
 
 class EncryptResponsesTask extends BuildTask
 {
