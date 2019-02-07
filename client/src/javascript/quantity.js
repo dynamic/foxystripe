@@ -4,6 +4,13 @@
 		getLink = function (element) {
 			return element.parent().find("input[name='x:visibleQuantity']").data('link');
 		},
+		getLinkURL = function (link, data) {
+			var delimiter = '?';
+			if (link.indexOf('?')) {
+				delimiter = '&';
+			}
+			return link + delimiter + $.param(data)
+		},
 		getCode = function (element) {
 			return element.parent().find("input[name='x:visibleQuantity']").data('code');
 		},
@@ -15,6 +22,9 @@
 		},
 		updateLimit = function (element, newLimit) {
 			return element.parent().find("input[name='x:visibleQuantity']").data('limit', newLimit);
+		},
+		getVisibleQuantityField = function (element) {
+			return element.parent().parent().find("input[name='x:visibleQuantity']");
 		},
 		disableIncreaseButton = function(element) {
 			element.parent().find("button.increase").attr('disabled', true);
@@ -51,12 +61,17 @@
 
 			$.ajax({
 				type: 'get',
-				url: link + '?' + $.param(quantData),
+				url: getLinkURL(link, quantData),
 			}).done(function (response) {
 				var data = JSON.parse(response);
 
 				if (data.hasOwnProperty('limit')) {
 					updateLimit(clicked, data.limit);
+
+					var visibleQuantity = getVisibleQuantityField(clicked);
+					if (data.limit < visibleQuantity.val()) {
+						visibleQuantity.val(data.limit);
+					}
 
 					if (data.limit == 0) {
 						outOfStock(clicked);
@@ -85,7 +100,7 @@
 		};
 
 	$(document).on('click', 'button.increase', function (event) {
-		var visibleQuantity = $(this).parent().parent().find("input[name='x:visibleQuantity']"),
+		var visibleQuantity = getVisibleQuantityField($(this)),
 			currentVal = visibleQuantity.val(),
 			newValue = parseInt(currentVal) + 1;
 
@@ -95,7 +110,7 @@
 	});
 
 	$(document).on('click', 'button.reduced', function (event) {
-		var visibleQuantity = $(this).parent().parent().find("input[name='x:visibleQuantity']"),
+		var visibleQuantity = getVisibleQuantityField($(this)),
 			currentVal = visibleQuantity.val(),
 			newValue = parseInt(currentVal) - 1;
 
