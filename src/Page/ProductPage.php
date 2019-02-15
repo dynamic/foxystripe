@@ -395,6 +395,7 @@ class ProductPage extends \Page implements PermissionProvider
         if ($this->getSortedImages()->count() > 0) {
             return $this->getSortedImages()->first();
         }
+
         return false;
     }
 
@@ -522,6 +523,10 @@ class ProductPage extends \Page implements PermissionProvider
     {
         if (!$this->Available) {
             return false;
+        }
+
+        if (!$this->ProductOptions()->exists()) {
+            return true;
         }
 
         foreach ($this->ProductOptions() as $option) {
