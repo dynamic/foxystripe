@@ -110,7 +110,13 @@ class FoxyCart
     private static function getAPIRequest($foxyData = array())
     {
         if (self::getStoreKey() && self::getFoxyCartStoreName()) {
-            $foxy_domain = self::getFoxyCartStoreName().'.foxycart.com';
+            $config = FoxyStripeSetting::current_foxystripe_setting();
+            if ($config->CustomSSL) {
+                $foxy_domain = self::getFoxyCartStoreName();
+            } else {
+                $foxy_domain = self::getFoxyCartStoreName().'.foxycart.com';
+            }
+
             $foxyData['api_token'] = self::getStoreKey();
 
             $ch = curl_init();
