@@ -196,9 +196,11 @@ class ProductPage extends \Page implements PermissionProvider
     {
         parent::__construct($record, $isSingleton, $queryParams);
 
-        if (Controller::curr() instanceof ContentController) {
-            Requirements::javascript('dynamic/foxystripe: javascript/quantity.js');
-            Requirements::css('dynamic/foxystripe: client/dist/css/quantityfield.css');
+        if (Controller::has_curr()) {
+            if (Controller::curr() instanceof ContentController) {
+                Requirements::javascript('dynamic/foxystripe: javascript/quantity.js');
+                Requirements::css('dynamic/foxystripe: client/dist/css/quantityfield.css');
+            }
         }
     }
 
