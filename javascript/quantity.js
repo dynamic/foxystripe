@@ -6,7 +6,7 @@
 		},
 		getLinkURL = function (link, data) {
 			var delimiter = '?';
-			if (link.indexOf('?')) {
+			if (link.indexOf('?') != -1) {
 				delimiter = '&';
 			}
 			return link + delimiter + $.param(data)
