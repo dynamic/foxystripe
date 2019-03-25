@@ -154,7 +154,7 @@ class FoxyStripeAdmin extends LeftAndMain
         try {
             $config->write();
         } catch (ValidationException $ex) {
-            $form->sessionMessage($ex->getResult()->message(), 'bad');
+            //$form->sessionMessage($ex->getResult()->getMessages(), 'bad');
 
             return $this->getResponseNegotiator()->respond($this->request);
         }

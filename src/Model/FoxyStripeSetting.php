@@ -66,10 +66,12 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
      * @var string
      */
     private static $singular_name = 'FoxyStripe Setting';
+
     /**
      * @var string
      */
     private static $plural_name = 'FoxyStripe Settings';
+
     /**
      * @var string
      */
@@ -536,11 +538,26 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
             'use_cart_validation' => $this->CartValidation,
             'use_single_sign_on' => $this->UseSingleSignOn,
             'single_sign_on_url' => $this->getSSOLink(),
-            'customer_password_hash_type' => 'sha1_salted_suffix',
-            'customer_password_hash_config' => 40,
+            //'customer_password_hash_type' => 'sha1_salted_suffix',
+            //'customer_password_hash_config' => 40,
             'features_multiship' => $this->AllowMultiship,
             //'timezone' => $this->StoreTimezone,
         ];
+    }
+
+    /**
+     * @return \SilverStripe\ORM\ValidationResult
+     * @throws ValidationException
+     */
+    public function validate()
+    {
+        $message = parent::validate();
+
+        /*if ($this->UseSingleSignOn && !FoxyStripeClient::is_valid()) {
+            $message->addError('You must provide the API Integration Settings before using Single Sign On');
+        }//*/
+
+        return $message;
     }
 
     /**
@@ -582,7 +599,7 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
 
         if (FoxyStripeClient::is_valid() && $this->isChanged()) {
             if ($fc = new FoxyStripeClient()) {
-                $fc->updateStore($this->getDataMap());
+                //$fc->updateStore($this->getDataMap());
             }
         }
     }

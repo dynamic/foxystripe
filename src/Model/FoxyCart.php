@@ -4,6 +4,7 @@ namespace Dynamic\FoxyStripe\Model;
 
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Security\Member;
 
