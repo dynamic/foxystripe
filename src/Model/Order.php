@@ -2,6 +2,7 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
+use Dynamic\FoxyStripe\Foxy\Transaction;
 use Dynamic\FoxyStripe\Page\ProductPage;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\DateField;
@@ -36,7 +37,7 @@ class Order extends DataObject implements PermissionProvider
     /**
      * @var array
      */
-    private static $db = array(
+    private static $db = [
         'Order_ID' => 'Int',
         'TransactionDate' => 'DBDatetime',
         'ProductTotal' => 'Currency',
@@ -46,21 +47,21 @@ class Order extends DataObject implements PermissionProvider
         'ReceiptURL' => 'Varchar(255)',
         'OrderStatus' => 'Varchar(255)',
         'Response' => 'Text',
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $has_one = array(
+    private static $has_one = [
         'Member' => Member::class,
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $has_many = array(
+    private static $has_many = [
         'Details' => OrderDetail::class,
-    );
+    ];
 
     /**
      * @var string
@@ -85,7 +86,7 @@ class Order extends DataObject implements PermissionProvider
     /**
      * @var array
      */
-    private static $summary_fields = array(
+    private static $summary_fields = [
         'Order_ID',
         'TransactionDate.Nice',
         'Member.Name',
@@ -94,40 +95,45 @@ class Order extends DataObject implements PermissionProvider
         'TaxTotal.Nice',
         'OrderTotal.Nice',
         'ReceiptLink',
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $searchable_fields = array(
+    private static $searchable_fields = [
         'Order_ID',
-        'TransactionDate' => array(
+        'TransactionDate' => [
             'field' => DateField::class,
             'filter' => 'PartialMatchFilter',
-        ),
+        ],
         'Member.ID',
         'OrderTotal',
         'Details.ProductID',
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $casting = array(
+    private static $casting = [
         'ReceiptLink' => 'HTMLVarchar',
-    );
+    ];
 
     /**
      * @var array
      */
-    private static $indexes = array(
+    private static $indexes = [
         'Order_ID' => true, // make unique
-    );
+    ];
 
     /**
      * @var string
      */
     private static $table_name = 'Order';
+
+    /**
+     * @var Transaction
+     */
+    private $transaction;
 
     /**
      * @param bool $includerelations
@@ -169,31 +175,46 @@ class Order extends DataObject implements PermissionProvider
     {
         $obj = DBHTMLVarchar::create();
         $obj->setValue(
-            '<a href="'.$this->ReceiptURL.'" target="_blank" class="cms-panel-link action external-link">view</a>'
+            '<a href="' . $this->ReceiptURL . '" target="_blank" class="cms-panel-link action external-link">view</a>'
         );
 
         return $obj;
     }
 
     /**
-     * @return bool|string
+     * @throws \SilverStripe\ORM\ValidationException
      */
-    public function getDecryptedResponse()
+    protected function onBeforeWrite()
     {
-        $decrypted = urldecode($this->Response);
-        if (FoxyCart::getStoreKey()) {
-            return \rc4crypt::decrypt(FoxyCart::getStoreKey(), $decrypted);
-        }
-        return false;
+        parent::onBeforeWrite();
+
+        $this->parseOrder();
     }
 
     /**
-     * @throws \SilverStripe\ORM\ValidationException
+     * @return mixed
      */
-    public function onBeforeWrite()
+    protected function getTransaction()
     {
-        $this->parseOrder();
-        parent::onBeforeWrite();
+        if (!$this->transaction) {
+            $this->setTransaction();
+        }
+
+        return $this->transaction;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function setTransaction()
+    {
+        if ($this->Response) {
+            $this->transaction = Transaction::create($this->Order_ID, urldecode($this->Response));
+        } else {
+            $this->transaction = false;
+        }
+
+        return $this;
     }
 
     /**
@@ -203,75 +224,70 @@ class Order extends DataObject implements PermissionProvider
      */
     public function parseOrder()
     {
-        if ($this->getDecryptedResponse()) {
-            $response = new \SimpleXMLElement($this->getDecryptedResponse());
-
-            $this->parseOrderInfo($response);
-            $this->parseOrderCustomer($response);
-            $this->parseOrderDetails($response);
-
-            return true;
-        } else {
-            return false;
+        if ($this->getTransaction() && $this->getTransaction()->exists()) {
+            $this->parseOrderInfo();
+            $this->parseOrderCustomer();
+            $this->parseOrderDetails();
         }
+    }
+
+    /**
+     * @return bool|string
+     */
+    private function getDecryptedResponse()
+    {
+        if (FoxyCart::getStoreKey() && $this->Response) {
+            return \rc4crypt::decrypt(FoxyCart::getStoreKey(), urldecode($this->Response));
+        }
+
+        return false;
     }
 
     /**
      * @param $response
      */
-    public function parseOrderInfo($response)
+    public function parseOrderInfo()
     {
-        foreach ($response->transactions->transaction as $transaction) {
-            // Record transaction data from FoxyCart Datafeed:
-            $this->Store_ID = (int) $transaction->store_id;
-            $this->TransactionDate = (string) $transaction->transaction_date;
-            $this->ProductTotal = (float) $transaction->product_total;
-            $this->TaxTotal = (float) $transaction->tax_total;
-            $this->ShippingTotal = (float) $transaction->shipping_total;
-            $this->OrderTotal = (float) $transaction->order_total;
-            $this->ReceiptURL = (string) $transaction->receipt_url;
-            $this->OrderStatus = (string) $transaction->status;
+        $transaction = $this->getTransaction()->getTransaction();
 
-            $this->extend('handleOrderInfo', $order, $response);
-        }
+        // Record transaction data from FoxyCart Datafeed:
+        $this->Store_ID = (int)$transaction->store_id;
+        $this->TransactionDate = (string)$transaction->transaction_date;
+        $this->ProductTotal = (float)$transaction->product_total;
+        $this->TaxTotal = (float)$transaction->tax_total;
+        $this->ShippingTotal = (float)$transaction->shipping_total;
+        $this->OrderTotal = (float)$transaction->order_total;
+        $this->ReceiptURL = (string)$transaction->receipt_url;
+        $this->OrderStatus = (string)$transaction->status;
+
+        $this->extend('handleOrderInfo', $order, $response);
     }
 
     /**
      * @param $response
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public function parseOrderCustomer($response)
+    public function parseOrderCustomer()
     {
-        foreach ($response->transactions->transaction as $transaction) {
-            // if not a guest transaction in FoxyCart
-            if (isset($transaction->customer_email) && $transaction->is_anonymous == 0) {
-                // if Customer is existing member, associate with current order
-                if (Member::get()->filter('Email', $transaction->customer_email)->First()) {
-                    $customer = Member::get()->filter('Email', $transaction->customer_email)->First();
-                    // if new customer, create account with data from FoxyCart
-                } else {
-                    // set PasswordEncryption to 'none' so imported, encrypted password is not encrypted again
-                    Config::modify()->set(Security::class, 'password_encryption_algorithm', 'none');
+        $transaction = $this->getTransaction()->getTransaction();
 
-                    // create new Member, set password info from FoxyCart
-                    $customer = Member::create();
-                    $customer->Customer_ID = (int) $transaction->customer_id;
-                    $customer->FirstName = (string) $transaction->customer_first_name;
-                    $customer->Surname = (string) $transaction->customer_last_name;
-                    $customer->Email = (string) $transaction->customer_email;
-                    $customer->Password = (string) $transaction->customer_password;
-                    $customer->Salt = (string) $transaction->customer_password_salt;
-                    $customer->PasswordEncryption = 'none';
-
-                    // record member record
-                    $customer->write();
-                }
-
-                // set Order MemberID
-                $this->MemberID = $customer->ID;
-
-                $this->extend('handleOrderCustomer', $order, $response, $customer);
+        // if not a guest transaction in FoxyCart
+        if (isset($transaction->customer_email) && $transaction->is_anonymous == 0) {
+            if (!$customer = Member::get()->filter('Email', $transaction->customer_email)->first()) {
+                $customer = Member::create();
             }
+
+            $customer->FromDataFeed = true;
+
+            $customer = $customer->setDataFromTransaction($transaction);
+
+            $customer->write();
+            $customer = Member::get()->byID($customer->ID);
+
+            // set Order MemberID
+            $this->MemberID = $customer->ID;
+
+            $this->extend('handleOrderCustomer', $order, $response, $customer);
         }
     }
 
@@ -280,9 +296,8 @@ class Order extends DataObject implements PermissionProvider
      *
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public function parseOrderDetails($response)
+    public function parseOrderDetails()
     {
-
         // remove previous OrderDetails and OrderOptions so we don't end up with duplicates
         foreach ($this->Details() as $detail) {
             /** @var OrderOption $orderOption */
@@ -292,49 +307,49 @@ class Order extends DataObject implements PermissionProvider
             $detail->delete();
         }
 
-        foreach ($response->transactions->transaction as $transaction) {
-            // Associate ProductPages, Options, Quantity with Order
-            foreach ($transaction->transaction_details->transaction_detail as $detail) {
-                $OrderDetail = OrderDetail::create();
+        $transaction = $this->getTransaction()->getTransaction();
 
-                $OrderDetail->Quantity = (int) $detail->product_quantity;
-                $OrderDetail->ProductName = (string) $detail->product_name;
-                $OrderDetail->ProductCode = (string) $detail->product_code;
-                $OrderDetail->ProductImage = (string) $detail->image;
-                $OrderDetail->ProductCategory = (string) $detail->category_code;
-                $priceModifier = 0;
+        // Associate ProductPages, Options, Quantity with Order
+        foreach ($transaction->transaction_details->transaction_detail as $detail) {
+            $OrderDetail = OrderDetail::create();
 
-                // parse OrderOptions
-                foreach ($detail->transaction_detail_options->transaction_detail_option as $option) {
-                    // Find product via product_id custom variable
-                    if ($option->product_option_name == 'product_id') {
-                        // if product is found, set relation to OrderDetail
-                        $OrderProduct = ProductPage::get()->byID((int) $option->product_option_value);
-                        if ($OrderProduct) {
-                            $OrderDetail->ProductID = $OrderProduct->ID;
-                        }
-                    } else {
-                        $OrderOption = OrderOption::create();
-                        $OrderOption->Name = (string) $option->product_option_name;
-                        $OrderOption->Value = (string) $option->product_option_value;
-                        $OrderOption->write();
-                        $OrderDetail->OrderOptions()->add($OrderOption);
+            $OrderDetail->Quantity = (int)$detail->product_quantity;
+            $OrderDetail->ProductName = (string)$detail->product_name;
+            $OrderDetail->ProductCode = (string)$detail->product_code;
+            $OrderDetail->ProductImage = (string)$detail->image;
+            $OrderDetail->ProductCategory = (string)$detail->category_code;
+            $priceModifier = 0;
 
-                        $priceModifier += $option->price_mod;
+            // parse OrderOptions
+            foreach ($detail->transaction_detail_options->transaction_detail_option as $option) {
+                // Find product via product_id custom variable
+                if ($option->product_option_name == 'product_id') {
+                    // if product is found, set relation to OrderDetail
+                    $OrderProduct = ProductPage::get()->byID((int)$option->product_option_value);
+                    if ($OrderProduct) {
+                        $OrderDetail->ProductID = $OrderProduct->ID;
                     }
+                } else {
+                    $OrderOption = OrderOption::create();
+                    $OrderOption->Name = (string)$option->product_option_name;
+                    $OrderOption->Value = (string)$option->product_option_value;
+                    $OrderOption->write();
+                    $OrderDetail->OrderOptions()->add($OrderOption);
+
+                    $priceModifier += $option->price_mod;
                 }
-
-                $OrderDetail->Price = (float) $detail->product_price + (float) $priceModifier;
-
-                // extend OrderDetail parsing, allowing for recording custom fields from FoxyCart
-                $this->extend('handleOrderItem', $order, $response, $OrderDetail);
-
-                // write
-                $OrderDetail->write();
-
-                // associate with this order
-                $this->Details()->add($OrderDetail);
             }
+
+            $OrderDetail->Price = (float)$detail->product_price + (float)$priceModifier;
+
+            // extend OrderDetail parsing, allowing for recording custom fields from FoxyCart
+            $this->extend('handleOrderItem', $order, $response, $OrderDetail);
+
+            // write
+            $OrderDetail->write();
+
+            // associate with this order
+            $this->Details()->add($OrderDetail);
         }
     }
 
@@ -371,7 +386,7 @@ class Order extends DataObject implements PermissionProvider
     }
 
     /**
-     * @param null  $member
+     * @param null $member
      * @param array $context
      *
      * @return bool
@@ -386,8 +401,8 @@ class Order extends DataObject implements PermissionProvider
      */
     public function providePermissions()
     {
-        return array(
+        return [
             'Product_ORDERS' => 'Allow user to manage Orders and related objects',
-        );
+        ];
     }
 }
