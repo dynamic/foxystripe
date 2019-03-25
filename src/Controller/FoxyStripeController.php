@@ -62,7 +62,9 @@ class FoxyStripeController extends \PageController
      */
     protected function processFoxyRequest(HTTPRequest $request)
     {
-        $encryptedData = $request->postVar('FoxyData') ? urldecode($request->postVar('FoxyData')) : urldecode($request->postVar('FoxySubscriptionData'));
+        $encryptedData = $request->postVar('FoxyData')
+            ? urldecode($request->postVar('FoxyData'))
+            : urldecode($request->postVar('FoxySubscriptionData'));
         $decryptedData = $this->decryptFeedData($encryptedData);
 
         $this->parseFeedData($encryptedData, $decryptedData);
