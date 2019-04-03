@@ -28,10 +28,3 @@ SilverStripe\Core\Injector\Injector:
     properties:
       format: '%Region/%Name'
 
-SilverStripe\Security\Security:
-  password_encryption_algorithm: 'bcrypt'
-
-'SilverStripe\Security\PasswordEncryptor':
-  encryptors:
-    bcrypt:
-      'Dynamic\FoxyStripe\Security\PasswordEncryptor_BCrypt':
