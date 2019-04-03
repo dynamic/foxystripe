@@ -3,6 +3,7 @@
 namespace Dynamic\FoxyStripe\Security;
 
 use SilverStripe\Security\PasswordEncryptor;
+use SilverStripe\Security\PasswordEncryptor_EncryptionFailed;
 
 /**
  * Class PasswordEncryptor_BCrypt
@@ -46,8 +47,10 @@ class PasswordEncryptor_BCrypt extends PasswordEncryptor
 
     /**
      * @param String $password
+     * @param null $salt
      * @param null $member
-     * @return bool|string
+     * @return bool|String
+     * @throws PasswordEncryptor_EncryptionFailed
      */
     public function encrypt($password, $salt = null, $member = null)
     {
@@ -63,6 +66,8 @@ class PasswordEncryptor_BCrypt extends PasswordEncryptor
     /**
      * @param string $hash
      * @param string $password
+     * @param null $salt
+     * @param null $member
      * @return bool
      */
     public function check($hash, $password, $salt = null, $member = null)
