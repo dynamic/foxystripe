@@ -1,7 +1,7 @@
 ;(function ($) {
 	var shownPrice = $('[id*="submitPrice"]'),
 		trigger = $('.product-options'),
-		isAvailable = $('[name="action_x:submit"]').length ? true : false,
+		isAvailable = $('[name$="x:submit"]').length ? true : false,
 		unavailable = trigger.closest('form').find('[id*="_unavailableText"]');
 
 	$('option:disabled').each(function () {
