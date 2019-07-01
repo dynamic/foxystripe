@@ -5,7 +5,8 @@
  *
  */
 
-class FoxyCart extends Object {
+class FoxyCart
+{
 
 	private static $keyPrefix = 'dYnm1c';
 
