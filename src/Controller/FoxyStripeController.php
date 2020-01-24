@@ -20,10 +20,10 @@ class FoxyStripeController extends \PageController
     /**
      * @var array
      */
-    private static $allowed_actions = array(
+    private static $allowed_actions = [
         'index',
         'sso',
-    );
+    ];
 
     /**
      * @return string
@@ -155,20 +155,20 @@ class FoxyStripeController extends \PageController
     /**
      * Updates a customer's password. Sets password encryption to 'none' to avoid encryting it again.
      *
-     * @param Member $customer
+     * @param $customer
      * @param $order
      */
-    public function updatePasswordFromData($customer, $order)
+    public function updatePasswordFromData(&$customer, &$order)
     {
         $password_encryption_algorithm = Security::config()->get('password_encryption_algorithm');
         Security::config()->update('password_encryption_algorithm', 'none');
 
         $customer->PasswordEncryption = 'none';
-        $customer->Password = (string) $order->customer_password;
+        $customer->Password = (string)$order->customer_password;
         $customer->write();
 
-        $customer->PasswordEncryption = $this->getEncryption((string) $order->customer_password_hash_type);
-        $customer->Salt = (string) $order->customer_password_salt;
+        $customer->PasswordEncryption = $this->getEncryption((string)$order->customer_password_hash_type);
+        $customer->Salt = (string)$order->customer_password_salt;
         $customer->write();
 
         Security::config()->update('password_encryption_algorithm', $password_encryption_algorithm);
@@ -260,7 +260,7 @@ class FoxyStripeController extends \PageController
             }
 
             return ProductPage::get()
-                ->filter('ID', (int) $productOptions->product_option_value)
+                ->filter('ID', (int)$productOptions->product_option_value)
                 ->First();
         }
     }
@@ -278,10 +278,10 @@ class FoxyStripeController extends \PageController
         $OrderDetail->ProductID = $OrderProduct->ID;
 
         foreach ($this->getTransactionOptions($product) as $option) {
-            $OptionItem = OptionItem::get()->filter(array(
+            $OptionItem = OptionItem::get()->filter([
                 'ProductID' => (string)$OrderProduct->ID,
-                'Title' => (string)$option->product_option_value
-            ))->First();
+                'Title' => (string)$option->product_option_value,
+            ])->First();
 
             if (!$OptionItem) {
                 continue;
@@ -324,8 +324,8 @@ class FoxyStripeController extends \PageController
             $link = FoxyCart::getFoxyCartStoreName() . '.foxycart.com';
         }
 
-        $redirect_complete = 'https://'.$link.'/checkout?fc_auth_token='.$auth_token.'&fcsid='.$fcsid.
-            '&fc_customer_id='.$Member->Customer_ID.'&timestamp='.$timestampNew;
+        $redirect_complete = 'https://' . $link . '/checkout?fc_auth_token=' . $auth_token . '&fcsid=' . $fcsid .
+            '&fc_customer_id=' . $Member->Customer_ID . '&timestamp=' . $timestampNew;
 
         $this->redirect($redirect_complete);
     }
