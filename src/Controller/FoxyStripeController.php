@@ -98,6 +98,7 @@ class FoxyStripeController extends \PageController
         $this->parseOrderInfo($transactions, $order);
         $this->parseOrderCustomer($transactions, $order);
         $this->parseOrderDetails($transactions, $order);
+        $this->extend('updateParseOrder', $transactions, $order);
     }
 
     /**
@@ -124,7 +125,7 @@ class FoxyStripeController extends \PageController
      * @param Order $transaction
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public function parseOrderCustomer($orders, $transaction)
+    public function parseOrderCustomer(&$orders, &$transaction)
     {
         foreach ($orders->transactions->transaction as $order) {
             if (!isset($order->customer_email) || $order->is_anonymous != 0) {
@@ -167,7 +168,7 @@ class FoxyStripeController extends \PageController
         $customer->Password = (string)$order->customer_password;
         $customer->write();
 
-        $customer->PasswordEncryption = $this->getEncryption((string)$order->customer_password_hash_type);
+        $customer->PasswordEncryption = 'sha1_v2.4';
         $customer->Salt = (string)$order->customer_password_salt;
         $customer->write();
 
