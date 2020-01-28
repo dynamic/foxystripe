@@ -133,7 +133,7 @@ class FoxyStripeController extends \PageController
             }
 
             // if Customer is existing member, associate with current order
-            if (Member::get()->filter('Email', $order->customer_email)->First()) {
+            if (Member::get()->filter('Email', $order->customer_email)->first()) {
                 $customer = Member::get()->filter('Email', $order->customer_email)->First();
                 /* todo: make sure local password is updated if changed on FoxyCart
                 $this->updatePasswordFromData($customer, $order);
@@ -145,8 +145,8 @@ class FoxyStripeController extends \PageController
                 $customer->FirstName = (string)$order->customer_first_name;
                 $customer->Surname = (string)$order->customer_last_name;
                 $customer->Email = (string)$order->customer_email;
-                $this->updatePasswordFromData($customer, $order);
             }
+            $this->updatePasswordFromData($customer, $order);
             $customer->write();
             // set Order MemberID
             $transaction->MemberID = $customer->ID;
