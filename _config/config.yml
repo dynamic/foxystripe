@@ -4,7 +4,7 @@ Name: foxystripeconfig
 SilverStripe\Security\Member:
   extensions:
     - Dynamic\FoxyStripe\ORM\CustomerExtension
-  password_logging_enabled: true
+  password_logging_enabled: false
 
 PageController:
   extensions:
