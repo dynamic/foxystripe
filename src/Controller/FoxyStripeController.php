@@ -257,7 +257,7 @@ class FoxyStripeController extends \PageController
 
     /**
      * @param $product
-     * @return bool|ProductPage
+     * @return \SilverStripe\ORM\DataObject
      */
     public function getProductPage($product)
     {
