@@ -1,48 +1,50 @@
-;(function ($) {
-	var shownPrice = $('[id*="submitPrice"]'),
-		trigger = $('.product-options'),
-		isAvailable = $('[name$="x:submit"]').length ? true : false,
-		unavailable = trigger.closest('form').find('[id*="_unavailableText"]');
+$(window).on('load', function(){
+    var trigger = $('.product-options'),
+        formName = "#$FormName",
+        shownPrice = $('[id*="submitPrice"]'),
+        selects = trigger,
+        initialPrice = shownPrice.html().replace('$', '');
 
-	$('option:disabled').each(function () {
-		if ($(this).prop('disabled')) {
-			$(this).addClass('outOfStock').append(document.createTextNode(" (out of stock)"));
-		}
-	});
+    trigger.change(function () {
+        refreshCartPrice();
+    });
 
-	trigger.on('change', function () {
-		var options = [],
-			selected = $(this).val();
+    var refreshCartPrice = function refreshAddToCartPrice() {
+        var price = shownPrice.html();
+        var newProductPrice = parseFloat(initialPrice);
 
-		if (selected.length > 0) {
-			selected = selected.substring(selected.lastIndexOf('{') + 1, selected.lastIndexOf('}')).split('|')[0].split(':')[1];
-		}
+        trigger.each(function () {
 
-		$(this).each(function () {
-			var currentOption = $(this).val();
-			currentOption = currentOption.substring(currentOption.lastIndexOf('{') + 1, currentOption.lastIndexOf('}')).split('|');
+            if ($(this).attr('id') == 'qty') {
+                // todo: modify newProductPrice by Quantity?
 
-			if (currentOption.length) {
-				$.each(currentOption, function (k, v) {
-					if (v !== '') {
-						options[v.split(':')[1]] = v.split(':')[1];
-					}
-				});
-			}
-		});
+            } else {
+                var currentOption = $(this).val();
+                //get an array of the modifiers
+                console.log(currentOption);
+                currentOption = currentOption.substring(currentOption.lastIndexOf('{') + 1, currentOption.lastIndexOf('}')).split('|');
 
-		if (selected in options && options[selected] !== undefined) {
-			shownPrice.html('$' + Number.parseFloat(options[selected]).toFixed(2));
-		}
-	});
+                //build a different array of key-value pairs, options[p,c,w] = value
+                //more reliable than hoping price is the first array index of currentOption..
+                var options = [];
+                for (i = 0; i < currentOption.length; i++) {
+                    var k = currentOption[i].substr(0, 1);
+                    var val = currentOption[i].substr(1);
+                    options[k] = val;
+                }
 
-	if (isAvailable === false) {
-		shownPrice.addClass('hidden');
-		unavailable.removeClass('hidden');
-	} else {
-		if (trigger.length > 0) {
-			trigger.change();
-		}
+                if (typeof options['p'] != 'undefined') {
+                    var pricemodifier = options['p'].substr(0, 1); // return +,-,:
+                    if (pricemodifier == ':') {
+                        newProductPrice = parseFloat(options['p'].substr(1));
+                    } else {
+                        newProductPrice = newProductPrice + parseFloat(options['p']);
+                    }
+                }
+            }
+        });
+        shownPrice.html('$' + newProductPrice.toFixed(2));
+    };
 
-	}
-})(jQuery);
+    if (trigger.length > 0) refreshCartPrice();
+});
