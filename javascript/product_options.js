@@ -21,7 +21,6 @@ $(window).on('load', function(){
             } else {
                 var currentOption = $(this).val();
                 //get an array of the modifiers
-                console.log(currentOption);
                 currentOption = currentOption.substring(currentOption.lastIndexOf('{') + 1, currentOption.lastIndexOf('}')).split('|');
 
                 //build a different array of key-value pairs, options[p,c,w] = value

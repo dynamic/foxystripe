@@ -1,5 +1,7 @@
 <?php
 
+namespace Dynamic\FoxyStripe\Page;
+
 use Dynamic\FoxyStripe\Page\ProductPage;
 use Dynamic\FoxyStripe\Page\ProductPageController;
 use Dynamic\FoxyStripe\Form\FoxyStripePurchaseForm;
@@ -29,7 +31,7 @@ class DonationProductController extends ProductPageController
     public function init()
     {
         parent::init();
-        Requirements::javascript('framework/thirdparty/jquery/jquery.js');
+        //Requirements::javascript('framework/thirdparty/jquery/jquery.js');
     }
 
     /**
@@ -41,24 +43,27 @@ class DonationProductController extends ProductPageController
 
         $fields = $form->Fields();
 
-        $fields->replaceField(ProductPage::getGeneratedValue(
-            $this->Code,
-            'price',
-            $this->Price
-        ), $currencyField = CurrencyField::create('price', 'Amount'));
+        $fields->dataFieldByName('price')
+            ->setAttribute('id', 'price');
+
+        $fields->insertAfter('price', $currencyField = CurrencyField::create('x:visiblePrice', 'Amount'));
+
+        $currencyField->setAttribute('id', 'visiblePrice');
 
         $fields->removeByName([
-            'quantity',
+            'x:visibleQuantity',
             ProductPage::getGeneratedValue($this->Code, 'weight', $this->Weight),
         ]);
 
         if (FoxyStripeSetting::current_foxystripe_setting()->CartValidation) {
-            Requirements::javascript('framework/thirdparty/jquery-validate/jquery.validate.js');
-            Requirements::javascriptTemplate('foxystripe/javascript/donationProduct.js', [
+            Requirements::javascript("silverstripe/userforms:client/dist/js/jquery-validation/jquery.validate.min.js");
+            Requirements::javascriptTemplate('_resources/vendor/dynamic/foxystripe/javascript/donationProduct.js', [
                 'Trigger' => (string)$currencyField->getAttribute('id'),
                 'UpdateURL' => Director::absoluteURL($this->Link('updatevalue')),
             ]);
         }
+
+        $form->setAttribute('data-updateurl', $this->Link('updatevalue'));
 
         return $form;
     }
@@ -73,8 +78,8 @@ class DonationProductController extends ProductPageController
     public function updatevalue(\SilverStripe\Control\HTTPRequest $request)
     {
         if ($request->getVar('Price') && FoxyStripeSetting::current_foxystripe_setting()->CartValidation) {
-            $vars = $request->getVars();
-            $signedPrice = FoxyCart_Helper::fc_hash_value($this->Code, 'price', $vars['Price'], 'name', false);
+            $price = $request->getVar('Price');
+            $signedPrice = \FoxyCart_Helper::fc_hash_value($this->Code, 'price', $price, 'value', false);
             $json = json_encode(['Price' => $signedPrice]);
 
             $this->response->setBody($json);
