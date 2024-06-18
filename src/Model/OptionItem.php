@@ -41,6 +41,16 @@ use SilverStripe\Security\Permission;
 class OptionItem extends DataObject
 {
     /**
+     * @var string
+     */
+    private static $singular_name = 'Product Option';
+
+    /**
+     * @var string
+     */
+    private static $plural_name = 'Product Options';
+
+    /**
      * @var array
      */
     private static $db = array(
@@ -243,8 +253,8 @@ class OptionItem extends DataObject
             ->setEmptyString('')
             ->setDescription(_t(
                 'OptionItem.GroupDescription',
-                'Name of this group of options. Managed in <a href="admin/settings">
-                        Settings > FoxyStripe > Option Groups
+                'Name of this group of options. Managed in <a href="admin/foxystripe">
+                        FoxyStripe > Option Groups
                         </a>'
             ));
         if (class_exists('QuickAddNewExtension')) {

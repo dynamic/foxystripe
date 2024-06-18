@@ -150,15 +150,6 @@ class ProductPage extends \Page implements PermissionProvider
     /**
      * @var array
      */
-    private static $defaults = [
-        'ShowInMenus' => false,
-        'Available' => true,
-        'Weight' => '0.0',
-    ];
-
-    /**
-     * @var array
-     */
     private static $summary_fields = [
         'Image.CMSThumbnail',
         'Title',
@@ -181,6 +172,27 @@ class ProductPage extends \Page implements PermissionProvider
      * @var string
      */
     private static $table_name = 'ProductPage';
+
+    /**
+     * @var array
+     */
+    private static $defaults = [
+        'ShowInMenus' => false,
+        'Available' => true,
+        'Weight' => '0.0',
+    ];
+
+    /**
+     * @return \SilverStripe\ORM\DataObject|void
+     */
+    public function populateDefaults()
+    {
+        if ($cat = ProductCategory::get()->filter('Code', 'DEFAULT')->first()) {
+            $this->CategoryID = $cat->ID;
+        }
+
+        parent::populateDefaults();
+    }
 
     /**
      * Construct a new ProductPage.
@@ -213,7 +225,7 @@ class ProductPage extends \Page implements PermissionProvider
     {
         $labels = parent::fieldLabels();
 
-        $labels['Title'] = _t('ProductPage.TitleLabel', 'Name');
+        $labels['Title'] = _t('ProductPage.TitleLabel', 'Product Name');
         $labels['Code'] = _t('ProductPage.CodeLabel', 'Code');
         $labels['Price.Nice'] = _t('ProductPage.PriceLabel', 'Price');
         $labels['Available.Nice'] = _t('ProductPage.AvailableLabel', 'Available');
@@ -230,27 +242,6 @@ class ProductPage extends \Page implements PermissionProvider
     public function getCMSFields()
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
-            // Cateogry Dropdown field w/ add new
-            $source = function () {
-                return ProductCategory::get()->map()->toArray();
-            };
-            $catField = DropdownField::create('CategoryID', _t('ProductPage.Category', 'FoxyCart Category'), $source())
-                ->setEmptyString('')
-                ->setDescription(_t(
-                    'ProductPage.CategoryDescription',
-                    'Required, must also exist in 
-                    <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
-                        FoxyCart Categories
-                    </a>.
-                    Used to set category specific options like shipping and taxes. Managed in
-                        <a href="admin/settings">
-                            Settings > FoxyStripe > Categories
-                        </a>'
-                ));
-            if (class_exists('QuickAddNewExtension')) {
-                $catField->useAddNew('ProductCategory', $source);
-            }
-
             $fields->addFieldsToTab(
                 'Root.Main',
                 [
@@ -273,7 +264,22 @@ class ProductPage extends \Page implements PermissionProvider
                             'Base weight for this product in lbs. Can be modified using Product Options'
                         ))
                         ->setScale(2),
-                    $catField,
+                    DropdownField::create(
+                        'CategoryID',
+                        _t('ProductPage.Category', 'Product Category'),
+                        ProductCategory::get()->map()->toArray()
+                    )
+                        ->setDescription(_t(
+                            'ProductPage.CategoryDescription',
+                            'Required, must also exist in 
+                    <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
+                        FoxyCart Categories
+                    </a>.
+                    Used to set category specific options like shipping and taxes. Managed in
+                        <a href="admin/foxystripe">
+                            FoxyStripe > Categories
+                        </a>'
+                        )),
                 ],
                 'Content'
             );
@@ -336,7 +342,11 @@ class ProductPage extends \Page implements PermissionProvider
             }
         });
 
-        return parent::getCMSFields();
+        $fields = parent::getCMSFields();
+
+        $fields->dataFieldByName('Content')->setTitle('Description');
+
+        return $fields;
     }
 
     /**
@@ -344,7 +354,7 @@ class ProductPage extends \Page implements PermissionProvider
      */
     public function getCMSValidator()
     {
-        return new RequiredFields(['CategoryID', 'Price', 'Weight', 'Code']);
+        return new RequiredFields(['CategoryID', 'Price', 'Code']);
     }
 
     /**
