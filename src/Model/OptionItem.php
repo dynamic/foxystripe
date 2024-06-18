@@ -119,19 +119,117 @@ class OptionItem extends DataObject
             'OrderDetails',
             'SortOrder',
             'ProductID',
+            'WeightModifier',
+            'CodeModifier',
+            'PriceModifier',
+            'WeightModifierAction',
+            'CodeModifierAction',
+            'PriceModifierAction',
         ]);
 
-        // set variables from Product
-        $productID = ($this->ProductID != 0) ?
-            $this->ProductID :
-            Controller::curr()->getRequest()->getSession()->get('CMSMain.currentPage');
+        if ($this->ProductID) {
+            $product = ProductPage::get()->byID($this->ProductID);
 
-        /** @var ProductPage $product */
-        $product = ProductPage::get()->byID($productID);
+            $parentPrice = $product->obj('Price')->Nice();
+            $parentWeight = $product->Weight;
+            $parentCode = $product->Code;
 
-        $parentPrice = $product->obj('Price')->Nice();
-        $parentWeight = $product->Weight;
-        $parentCode = $product->Code;
+            $fields->addFieldsToTab('Root.Modifiers', [
+                HeaderField::create('ModifyHD', _t(
+                    'OptionItem.ModifyHD',
+                    'Product Option Modifiers'
+                ), 2),
+
+                // Weight Modifier Fields
+                HeaderField::create('WeightHD', _t('OptionItem.WeightHD', 'Modify Weight'), 3),
+                TextField::create('WeightModifier')
+                    ->setTitle(_t('OptionItem.WeightModifier', 'Weight')),
+                DropdownField::create(
+                    'WeightModifierAction',
+                    _t('OptionItem.WeightModifierAction', 'Weight Modification'),
+                    [
+                        'Add' => _t(
+                            'OptionItem.WeightAdd',
+                            'Add to Base Weight ({weight})',
+                            'Add to weight',
+                            ['weight' => $parentWeight]
+                        ),
+                        'Subtract' => _t(
+                            'OptionItem.WeightSubtract',
+                            'Subtract from Base Weight ({weight})',
+                            'Subtract from weight',
+                            ['weight' => $parentWeight]
+                        ),
+                        'Set' => _t('OptionItem.WeightSet', 'Set as a new Weight'),
+                    ]
+                )->setEmptyString('')
+                    ->setDescription(_t(
+                        'OptionItem.WeightDescription',
+                        'Does weight modify or replace base weight?'
+                    )),
+
+                // Price Modifier FIelds
+                HeaderField::create('PriceHD', _t('OptionItem.PriceHD', 'Modify Price'), 3),
+                CurrencyField::create('PriceModifier')
+                    ->setTitle(_t('OptionItem.PriceModifier', 'Price')),
+                DropdownField::create(
+                    'PriceModifierAction',
+                    _t('OptionItem.PriceModifierAction', 'Price Modification'),
+                    [
+                        'Add' => _t(
+                            'OptionItem.PriceAdd',
+                            'Add to Base Price ({price})',
+                            'Add to price',
+                            ['price' => $parentPrice]
+                        ),
+                        'Subtract' => _t(
+                            'OptionItem.PriceSubtract',
+                            'Subtract from Base Price ({price})',
+                            'Subtract from price',
+                            ['price' => $parentPrice]
+                        ),
+                        'Set' => _t('OptionItem.PriceSet', 'Set as a new Price'),
+                    ]
+                )->setEmptyString('')
+                    ->setDescription(_t('OptionItem.PriceDescription', 'Does price modify or replace base price?')),
+
+                // Code Modifier Fields
+                HeaderField::create('CodeHD', _t('OptionItem.CodeHD', 'Modify Code'), 3),
+                TextField::create('CodeModifier')
+                    ->setTitle(_t('OptionItem.CodeModifier', 'Code')),
+                DropdownField::create(
+                    'CodeModifierAction',
+                    _t('OptionItem.CodeModifierAction', 'Code Modification'),
+                    [
+                        'Add' => _t(
+                            'OptionItem.CodeAdd',
+                            'Add to Base Code ({code})',
+                            'Add to code',
+                            ['code' => $parentCode]
+                        ),
+                        'Subtract' => _t(
+                            'OptionItem.CodeSubtract',
+                            'Subtract from Base Code ({code})',
+                            'Subtract from code',
+                            ['code' => $parentCode]
+                        ),
+                        'Set' => _t('OptionItem.CodeSet', 'Set as a new Code'),
+                    ]
+                )->setEmptyString('')
+                    ->setDescription(_t('OptionItem.CodeDescription', 'Does code modify or replace base code?')),
+            ]);
+        } else {
+            $fields->addFieldsToTab(
+                'Root.Modifiers',
+                [
+                    HeaderField::create(
+                        'ModifyHeader',
+                        'Modifiers can be set when on a Product Page',
+                        3
+                    ),
+                ]
+            );
+        }
 
         // ProductOptionGroup Dropdown field w/ add new
         $groups = function () {
@@ -164,109 +262,6 @@ class OptionItem extends DataObject
                 )),
             $groupField,
         ));
-
-        $fields->addFieldsToTab('Root.Modifiers', array(
-            HeaderField::create('ModifyHD', _t(
-                'OptionItem.ModifyHD',
-                'Product Option Modifiers'
-            ), 2),
-
-            // Weight Modifier Fields
-            HeaderField::create('WeightHD', _t('OptionItem.WeightHD', 'Modify Weight'), 3),
-            TextField::create('WeightModifier')
-                ->setTitle(_t('OptionItem.WeightModifier', 'Weight')),
-            DropdownField::create(
-                'WeightModifierAction',
-                _t('OptionItem.WeightModifierAction', 'Weight Modification'),
-                array(
-                    'Add' => _t(
-                        'OptionItem.WeightAdd',
-                        'Add to Base Weight ({weight})',
-                        'Add to weight',
-                        array('weight' => $parentWeight)
-                    ),
-                    'Subtract' => _t(
-                        'OptionItem.WeightSubtract',
-                        'Subtract from Base Weight ({weight})',
-                        'Subtract from weight',
-                        array('weight' => $parentWeight)
-                    ),
-                    'Set' => _t('OptionItem.WeightSet', 'Set as a new Weight'),
-                )
-            )->setEmptyString('')
-            ->setDescription(_t(
-                'OptionItem.WeightDescription',
-                'Does weight modify or replace base weight?'
-            )),
-
-            // Price Modifier FIelds
-            HeaderField::create('PriceHD', _t('OptionItem.PriceHD', 'Modify Price'), 3),
-            CurrencyField::create('PriceModifier')
-                ->setTitle(_t('OptionItem.PriceModifier', 'Price')),
-            DropdownField::create(
-                'PriceModifierAction',
-                _t('OptionItem.PriceModifierAction', 'Price Modification'),
-                array(
-                    'Add' => _t(
-                        'OptionItem.PriceAdd',
-                        'Add to Base Price ({price})',
-                        'Add to price',
-                        array('price' => $parentPrice)
-                    ),
-                    'Subtract' => _t(
-                        'OptionItem.PriceSubtract',
-                        'Subtract from Base Price ({price})',
-                        'Subtract from price',
-                        array('price' => $parentPrice)
-                    ),
-                    'Set' => _t('OptionItem.PriceSet', 'Set as a new Price'),
-                )
-            )->setEmptyString('')
-            ->setDescription(_t('OptionItem.PriceDescription', 'Does price modify or replace base price?')),
-
-            // Code Modifier Fields
-            HeaderField::create('CodeHD', _t('OptionItem.CodeHD', 'Modify Code'), 3),
-            TextField::create('CodeModifier')
-                ->setTitle(_t('OptionItem.CodeModifier', 'Code')),
-            DropdownField::create(
-                'CodeModifierAction',
-                _t('OptionItem.CodeModifierAction', 'Code Modification'),
-                array(
-                    'Add' => _t(
-                        'OptionItem.CodeAdd',
-                        'Add to Base Code ({code})',
-                        'Add to code',
-                        array('code' => $parentCode)
-                    ),
-                    'Subtract' => _t(
-                        'OptionItem.CodeSubtract',
-                        'Subtract from Base Code ({code})',
-                        'Subtract from code',
-                        array('code' => $parentCode)
-                    ),
-                    'Set' => _t('OptionItem.CodeSet', 'Set as a new Code'),
-                )
-            )->setEmptyString('')
-            ->setDescription(_t('OptionItem.CodeDescription', 'Does code modify or replace base code?')),
-        ));
-
-        /*
-        // Cateogry Dropdown field w/ add new
-        // removed until relevance determined
-        $categories = function(){
-            return ProductCategory::get()->map()->toArray();
-        };
-
-        // to do - have OptionItem category override set ProductPage category if selected: issue #155
-        $categoryField = DropdownField::create('CategoryID', 'Category', $categories())
-            ->setEmptyString('')
-            ->setDescription('Categories can be managed in <a href="admin/settings">
-                Settings > FoxyStripe > Categories
-        </a>');
-        if (class_exists('QuickAddNewExtension')) $categoryField->useAddNew('ProductCategory', $categories);
-
-        $fields->insertAfter($categoryField, 'ProductOptionGroupID');
-        */
 
         return $fields;
     }

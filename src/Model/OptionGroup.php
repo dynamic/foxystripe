@@ -2,6 +2,8 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationResult;
@@ -50,6 +52,23 @@ class OptionGroup extends DataObject
      * @var string
      */
     private static $table_name = 'OptionGroup';
+
+    /**
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->removeByName('Options');
+
+            $fields->addFieldToTab(
+                'Root.Options',
+                HeaderField::create('OptionsHeader', 'Options can be added on Product Pages.', 3)
+            );
+        });
+
+        return parent::getCMSFields();
+    }
 
     /**
      * @throws \SilverStripe\ORM\ValidationException
