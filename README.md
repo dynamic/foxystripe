@@ -1,16 +1,9 @@
 # FoxyStripe
-[![Build Status](https://travis-ci.org/dynamic/foxystripe.svg?branch=master)](https://travis-ci.org/dynamic/foxystripe)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dynamic/foxystripe/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/dynamic/foxystripe/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/dynamic/foxystripe/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/dynamic/foxystripe/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/dynamic/foxystripe/badges/build.png?b=master)](https://scrutinizer-ci.com/g/dynamic/foxystripe/build-status/master)
-[![codecov](https://codecov.io/gh/dynamic/foxystripe/branch/master/graph/badge.svg)](https://codecov.io/gh/dynamic/foxystripe)
 
 [![Latest Stable Version](https://poser.pugx.org/dynamic/foxystripe/version)](https://packagist.org/packages/dynamic/foxystripe)
 [![Latest Unstable Version](https://poser.pugx.org/dynamic/foxystripe/v/unstable)](//packagist.org/packages/dynamic/foxystripe)
 [![Total Downloads](https://poser.pugx.org/dynamic/foxystripe/downloads)](https://packagist.org/packages/dynamic/foxystripe)
 [![License](https://poser.pugx.org/dynamic/foxystripe/license)](https://packagist.org/packages/dynamic/foxystripe)
-[![Monthly Downloads](https://poser.pugx.org/dynamic/foxystripe/d/monthly)](https://packagist.org/packages/dynamic/foxystripe)
-[![Daily Downloads](https://poser.pugx.org/dynamic/foxystripe/d/daily)](https://packagist.org/packages/dynamic/foxystripe)
 
 FoxyStripe is a [SilverStripe](http://silverstripe.org) ecommerce module designed to integrate with [FoxyCart](http://www.foxycart.com/).
 
