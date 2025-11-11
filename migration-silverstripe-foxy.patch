@@ -1,0 +1,26 @@
+From bba4ff3cf8ec22458ce8e1cd7f3e1f3c9797a933 Mon Sep 17 00:00:00 2001
+From: "copilot-swe-agent[bot]" <198982749+Copilot@users.noreply.github.com>
+Date: Tue, 11 Nov 2025 18:11:12 +0000
+Subject: [PATCH] Fix composer.json - change phpunit/PHPUnit to phpunit/phpunit
+ (lowercase)
+
+---
+ composer.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/composer.json b/composer.json
+index 5af34b3..50673a6 100644
+--- a/composer.json
++++ b/composer.json
+@@ -27,7 +27,7 @@
+ 		"bummzack/sortablefile": "^2.1"
+ 	},
+ 	"require-dev": {
+-		"phpunit/PHPUnit": "^5.7",
++		"phpunit/phpunit": "^5.7",
+ 		"squizlabs/php_codesniffer": "*"
+ 	},
+ 	"config": {
+-- 
+2.51.2
+
