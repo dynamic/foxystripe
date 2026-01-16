@@ -354,9 +354,9 @@ class ProductPage extends \Page implements PermissionProvider
     {
         $result = parent::validate();
 
-        if ($this->exists() && ProductPage::get()->filter('Code', $this->Code)->exclude('ID', $this->ID)->first()) {
+        /*if ($this->exists() && ProductPage::get()->filter('Code', $this->Code)->exclude('ID', $this->ID)->first()) {
             $result->addError('Code must be unique for each product.');
-        }
+        }*/
 
         /*if($this->ID>0){
             if ($this->Price <= 0) {

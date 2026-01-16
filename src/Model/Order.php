@@ -37,7 +37,7 @@ class Order extends DataObject implements PermissionProvider
      * @var array
      */
     private static $db = array(
-        'Order_ID' => 'Int',
+        'Order_ID' => 'BigInt',
         'TransactionDate' => 'DBDatetime',
         'ProductTotal' => 'Currency',
         'TaxTotal' => 'Currency',
@@ -169,7 +169,7 @@ class Order extends DataObject implements PermissionProvider
     {
         $obj = DBHTMLVarchar::create();
         $obj->setValue(
-            '<a href="'.$this->ReceiptURL.'" target="_blank" class="cms-panel-link action external-link">view</a>'
+            '<a href="' . $this->ReceiptURL . '" target="_blank" class="cms-panel-link action external-link">view</a>'
         );
 
         return $obj;
