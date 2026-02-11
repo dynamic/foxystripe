@@ -24,7 +24,7 @@ class FS_Test extends FunctionalTest
     /**
      *
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
