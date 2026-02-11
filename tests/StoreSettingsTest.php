@@ -16,7 +16,7 @@ class StoreSettingsTest extends FS_Test
     /**
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

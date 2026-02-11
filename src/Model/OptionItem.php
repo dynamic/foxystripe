@@ -307,7 +307,7 @@ class OptionItem extends DataObject
      */
     public function getWeightModifierWithSymbol()
     {
-        return self::getOptionModifierActionSymbol($this->WeightModifierAction).$this->WeightModifier;
+        return self::getOptionModifierActionSymbol($this->WeightModifierAction) . $this->WeightModifier;
     }
 
     /**
@@ -315,7 +315,7 @@ class OptionItem extends DataObject
      */
     public function getPriceModifierWithSymbol()
     {
-        return self::getOptionModifierActionSymbol($this->PriceModifierAction).$this->PriceModifier;
+        return self::getOptionModifierActionSymbol($this->PriceModifierAction) . $this->PriceModifier;
     }
 
     /**
@@ -323,7 +323,7 @@ class OptionItem extends DataObject
      */
     public function getCodeModifierWithSymbol()
     {
-        return self::getOptionModifierActionSymbol($this->CodeModifierAction).$this->CodeModifier;
+        return self::getOptionModifierActionSymbol($this->CodeModifierAction) . $this->CodeModifier;
     }
 
     /**
@@ -340,12 +340,12 @@ class OptionItem extends DataObject
     public function getGeneratedValue()
     {
         $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
-        $modPriceWithSymbol = self::getOptionModifierActionSymbol($this->PriceModifierAction).$modPrice;
+        $modPriceWithSymbol = self::getOptionModifierActionSymbol($this->PriceModifierAction) . $modPrice;
         $modWeight = ($this->WeightModifier) ? (string) $this->WeightModifier : '0';
-        $modWeight = self::getOptionModifierActionSymbol($this->WeightModifierAction).$modWeight;
-        $modCode = self::getOptionModifierActionSymbol($this->CodeModifierAction).$this->CodeModifier;
+        $modWeight = self::getOptionModifierActionSymbol($this->WeightModifierAction) . $modWeight;
+        $modCode = self::getOptionModifierActionSymbol($this->CodeModifierAction) . $this->CodeModifier;
 
-        return $this->Title.'{p'.$modPriceWithSymbol.'|w'.$modWeight.'|c'.$modCode.'}';
+        return $this->Title . '{p' . $modPriceWithSymbol . '|w' . $modWeight . '|c' . $modCode . '}';
     }
 
     /**
@@ -356,10 +356,10 @@ class OptionItem extends DataObject
         $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
         $title = $this->Title;
         $title .= ($this->PriceModifier != 0) ?
-            ': ('.self::getOptionModifierActionSymbol(
+            ': (' . self::getOptionModifierActionSymbol(
                 $this->PriceModifierAction,
                 $returnWithOnlyPlusMinus = true
-            ).'$'.$modPrice.')' :
+            ) . '$' . $modPrice . ')' :
             '';
 
         return $title;

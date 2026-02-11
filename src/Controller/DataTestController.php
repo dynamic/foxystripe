@@ -19,7 +19,6 @@ use SilverStripe\View\ArrayData;
  */
 class DataTestController extends Controller
 {
-
     /**
      * @var array
      */
