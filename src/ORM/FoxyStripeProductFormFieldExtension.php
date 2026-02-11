@@ -16,7 +16,8 @@ class FoxyStripeProductFormFieldExtension extends DataExtension
      */
     public function updateAttributes(&$attributes)
     {
-        if (Controller::curr() instanceof ContentController &&
+        if (
+            Controller::curr() instanceof ContentController &&
             Controller::curr()->data()->Classname == 'DonationProduct'
         ) {
             if (preg_match('/^(product_id)/', $this->owner->getName())) {

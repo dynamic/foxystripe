@@ -39,7 +39,7 @@ class FoxyCart_Helper
 
     public static function setCartURL($storeName = null)
     {
-        self::$cart_url = 'https://'.$storeName.'.faxycart.com/cart';
+        self::$cart_url = 'https://' . $storeName . '.faxycart.com/cart';
     }
 
     public static function setSecret($secret = null)
@@ -97,18 +97,18 @@ class FoxyCart_Helper
     public static function fc_hash_querystring($qs, $output = true)
     {
         self::$log[] = '<strong>Signing link</strong> with data: '
-            .htmlspecialchars(substr($qs, 0, 150)).'...';
-        $fail = self::$cart_url.'?'.$qs;
+            . htmlspecialchars(substr($qs, 0, 150)) . '...';
+        $fail = self::$cart_url . '?' . $qs;
 
         // If the link appears to be hashed already, don't bother
         if (strpos($qs, '||')) {
-            self::$log[] = '<strong>Link appears to be signed already</strong>: '.htmlspecialchars($code[0]);
+            self::$log[] = '<strong>Link appears to be signed already</strong>: ' . htmlspecialchars($code[0]);
 
             return $fail;
         }
 
         // Stick an ampersand on the beginning of the querystring to make matching the first element a little easier
-        $qs = '&'.urldecode($qs);
+        $qs = '&' . urldecode($qs);
 
         // Get all the prefixes, codes, and name=value pairs
         preg_match_all(
@@ -117,7 +117,7 @@ class FoxyCart_Helper
             $pairs,
             PREG_SET_ORDER
         );
-        self::$log[] = 'Found the following pairs to sign:<pre>'.htmlspecialchars(print_r($pairs, true)).'</pre>';
+        self::$log[] = 'Found the following pairs to sign:<pre>' . htmlspecialchars(print_r($pairs, true)) . '</pre>';
 
         // Get all the "code" values, set the matches in $codes
         $codes = array();
@@ -132,15 +132,17 @@ class FoxyCart_Helper
             return $fail;
         }
         self::$log[] = '<strong style="color:orange;">CODES found:</strong> '
-            .htmlspecialchars(print_r($codes, true));
+            . htmlspecialchars(print_r($codes, true));
 
         // Sign the name/value pairs
         foreach ($pairs as $pair) {
             // Skip the cart excludes
-            if (in_array($pair['name'], self::$cart_excludes)
-                || in_array($pair['prefix'], self::$cart_excludes_prefixes)) {
+            if (
+                in_array($pair['name'], self::$cart_excludes)
+                || in_array($pair['prefix'], self::$cart_excludes_prefixes)
+            ) {
                 self::$log[] = '<strong style="color:purple;">Skipping</strong> the reserved parameter or prefix "'
-                    .$pair['prefix'].$pair['name'].'" = '.$pair['value'];
+                    . $pair['prefix'] . $pair['name'] . '" = ' . $pair['value'];
                 continue;
             }
 
@@ -153,17 +155,17 @@ class FoxyCart_Helper
                 false,
                 'urlencode'
             );
-            $replacement = $pair['amp'].$pair['prefix'].urlencode($pair['name']).'='.$value;
+            $replacement = $pair['amp'] . $pair['prefix'] . urlencode($pair['name']) . '=' . $value;
             $qs = str_replace($pair[0], $replacement, $qs);
-            self::$log[] = 'Signed <strong>'.$pair['name'].'</strong> = <strong>'.$pair['value'].'</strong> with '
-                .$replacement.'.<br />Replacing: '.$pair[0].'<br />With... '.$replacement;
+            self::$log[] = 'Signed <strong>' . $pair['name'] . '</strong> = <strong>' . $pair['value'] . '</strong> with '
+                . $replacement . '.<br />Replacing: ' . $pair[0] . '<br />With... ' . $replacement;
         }
         $qs = ltrim($qs, '&'); // Get rid of that leading ampersand we added earlier
 
         if ($output) {
-            echo self::$cart_url.'?'.$qs;
+            echo self::$cart_url . '?' . $qs;
         } else {
-            return self::$cart_url.'?'.$qs;
+            return self::$cart_url . '?' . $qs;
         }
     }
 
@@ -184,14 +186,14 @@ class FoxyCart_Helper
             return false;
         }
         if ($option_value == '--OPEN--') {
-            $hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::getSecret());
-            $value = ($urlencode) ? urlencode($option_name).'||'.$hash.'||open' : $option_name.'||'.$hash.'||open';
+            $hash = hash_hmac('sha256', $product_code . $option_name . $option_value, self::getSecret());
+            $value = ($urlencode) ? urlencode($option_name) . '||' . $hash . '||open' : $option_name . '||' . $hash . '||open';
         } else {
-            $hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::getSecret());
+            $hash = hash_hmac('sha256', $product_code . $option_name . $option_value, self::getSecret());
             if ($method == 'name') {
-                $value = ($urlencode) ? urlencode($option_name).'||'.$hash : $option_name.'||'.$hash;
+                $value = ($urlencode) ? urlencode($option_name) . '||' . $hash : $option_name . '||' . $hash;
             } else {
-                $value = ($urlencode) ? urlencode($option_value).'||'.$hash : $option_value.'||'.$hash;
+                $value = ($urlencode) ? urlencode($option_value) . '||' . $hash : $option_value . '||' . $hash;
             }
         }
 
@@ -223,7 +225,7 @@ class FoxyCart_Helper
 
         // Find and sign all the links
         preg_match_all(
-            '%<a .*?href=[\'"]'.preg_quote(self::$cart_url).'(?:\.php)?\?(.+?)[\'"].*?>%i',
+            '%<a .*?href=[\'"]' . preg_quote(self::$cart_url) . '(?:\.php)?\?(.+?)[\'"].*?>%i',
             $html,
             $querystrings
         );
@@ -233,38 +235,40 @@ class FoxyCart_Helper
             if (preg_match('%&(?:amp;)?hash=%i', $querystring)) {
                 continue;
             }
-            $pattern = '%(href=[\'"])'.preg_quote(self::$cart_url, '%').'(?:\.php)?\?'
-                .preg_quote($querystring, '%').'([\'"])%i';
+            $pattern = '%(href=[\'"])' . preg_quote(self::$cart_url, '%') . '(?:\.php)?\?'
+                . preg_quote($querystring, '%') . '([\'"])%i';
             $signed = self::fc_hash_querystring($querystring, false);
-            $html = preg_replace($pattern, '$1'.$signed.'$2', $html, -1, $count['temp']);
+            $html = preg_replace($pattern, '$1' . $signed . '$2', $html, -1, $count['temp']);
             $count['links'] += $count['temp'];
         }
         unset($querystrings);
 
         // Find and sign all form values
         preg_match_all(
-            '%<form [^>]*?action=[\'"]'.preg_quote(self::$cart_url).'?[\'"].*?>(.+?)</form>%is',
+            '%<form [^>]*?action=[\'"]' . preg_quote(self::$cart_url) . '?[\'"].*?>(.+?)</form>%is',
             $html,
             $forms
         );
         foreach ($forms[1] as $form) {
             ++$count['forms'];
-            self::$log[] = '<strong>Signing form</strong> with data: '.htmlspecialchars(substr(
+            self::$log[] = '<strong>Signing form</strong> with data: ' . htmlspecialchars(substr(
                 $form,
                 0,
                 150
-            )).'...';
+            )) . '...';
 
             // Store the original form so we can replace it when we're done
             $form_original = $form;
 
             // Check for the "code" input, set the matches in $codes
-            if (!preg_match_all(
-                '%<[^>]*?name=([\'"])([0-9]{1,3}:)?code\1[^>]*?>%i',
-                $form,
-                $codes,
-                PREG_SET_ORDER
-            )) {
+            if (
+                !preg_match_all(
+                    '%<[^>]*?name=([\'"])([0-9]{1,3}:)?code\1[^>]*?>%i',
+                    $form,
+                    $codes,
+                    PREG_SET_ORDER
+                )
+            ) {
                 self::$log[] = '<strong style="color:#600;">No code found</strong> for the above form.';
                 continue;
             }
@@ -272,78 +276,82 @@ class FoxyCart_Helper
             foreach ($codes as $code) {
                 // If the form appears to be hashed already, don't bother
                 if (strpos($code[0], '||')) {
-                    self::$log[] = '<strong>Form appears to be signed already</strong>: '.htmlspecialchars($code[0]);
+                    self::$log[] = '<strong>Form appears to be signed already</strong>: ' . htmlspecialchars($code[0]);
                     continue;
                 }
                 // Get the code and the prefix
                 $prefix = (isset($code[2])) ? $code[2] : '';
                 preg_match('%<[^>]*?value=([\'"])(.+?)\1[^>]*?>%i', $code[0], $code);
                 $code = trim($code[2]);
-                self::$log[] = '<strong>Prefix for '.htmlspecialchars($code).'</strong>: '.htmlspecialchars($prefix);
+                self::$log[] = '<strong>Prefix for ' . htmlspecialchars($code) . '</strong>: ' . htmlspecialchars($prefix);
                 if (!$code) { // If the code is empty, skip this form or specific prefixed elements
                     continue;
                 }
 
                 // Sign all <input /> elements with matching prefix
                 preg_match_all(
-                    '%<input [^>]*?name=([\'"])'.preg_quote($prefix).'(?![0-9]{1,3})(?:.+?)\1[^>]*>%i',
+                    '%<input [^>]*?name=([\'"])' . preg_quote($prefix) . '(?![0-9]{1,3})(?:.+?)\1[^>]*>%i',
                     $form,
                     $inputs
                 );
                 foreach ($inputs[0] as $input) {
                     ++$count['inputs'];
                     // Test to make sure both name and value attributes are found
-                    if (preg_match(
-                        '%name=([\'"])'.preg_quote($prefix).'(?![0-9]{1,3})(.+?)\1%i',
-                        $input,
-                        $name
-                    ) > 0) {
+                    if (
+                        preg_match(
+                            '%name=([\'"])' . preg_quote($prefix) . '(?![0-9]{1,3})(.+?)\1%i',
+                            $input,
+                            $name
+                        ) > 0
+                    ) {
                         preg_match('%value=([\'"])(.*?)\1%i', $input, $value);
                         $value = (count($value) > 0) ? $value : array('', '', '');
                         preg_match('%type=([\'"])(.*?)\1%i', $input, $type);
                         $type = (count($type) > 0) ? $type : array('', '', '');
                         // Skip the cart excludes
-                        if (in_array(
-                            $prefix.$name[2],
-                            self::$cart_excludes
-                        ) || in_array(substr(
-                            $prefix.$name[2],
-                            0,
-                            2
-                        ), self::$cart_excludes_prefixes)) {
+                        if (
+                            in_array(
+                                $prefix . $name[2],
+                                self::$cart_excludes
+                            ) || in_array(substr(
+                                $prefix . $name[2],
+                                0,
+                                2
+                            ), self::$cart_excludes_prefixes)
+                        ) {
                             self::$log[] = '<strong style="color:purple;">Skipping</strong> 
-                                the reserved parameter or prefix "'.$prefix.$name[2].'" = '.$value[2];
+                                the reserved parameter or prefix "' . $prefix . $name[2] . '" = ' . $value[2];
                             continue;
                         }
-                        self::$log[] = '<strong>INPUT['.$type[2].']:</strong> Name: <strong>'
-                            .$prefix.htmlspecialchars(preg_quote($name[2])).'</strong>';
+                        self::$log[] = '<strong>INPUT[' . $type[2] . ']:</strong> Name: <strong>'
+                            . $prefix . htmlspecialchars(preg_quote($name[2])) . '</strong>';
                         self::$log[] = '<strong>Replacement Pattern:</strong> ([\'"])'
-                            .$prefix.preg_quote($name[2]).'\1';
+                            . $prefix . preg_quote($name[2]) . '\1';
                         $value[2] = ($value[2] == '') ? '--OPEN--' : $value[2];
                         if ($type[2] == 'radio') {
                             $input_signed = preg_replace('%([\'"])'
-                                .preg_quote($value[2]).'\1%', '${1}'
-                                .self::fc_hash_value($code, $name[2], $value[2], 'value', false)
-                                .'$1', $input);
+                                . preg_quote($value[2]) . '\1%', '${1}'
+                                . self::fc_hash_value($code, $name[2], $value[2], 'value', false)
+                                . '$1', $input);
                         } else {
-                            $input_signed = preg_replace('%([\'"])'.$prefix.preg_quote($name[2])
-                                .'\1%', '${1}'.$prefix
-                                .self::fc_hash_value($code, $name[2], $value[2], 'name', false)
-                                .'$1', $input);
+                            $input_signed = preg_replace('%([\'"])' . $prefix . preg_quote($name[2])
+                                . '\1%', '${1}' . $prefix
+                                . self::fc_hash_value($code, $name[2], $value[2], 'name', false)
+                                . '$1', $input);
                         }
-                        self::$log[] = '<strong>INPUT:</strong> Code: <strong>'.htmlspecialchars($prefix.$code).
-                           '</strong> :: Name: <strong>'.htmlspecialchars($prefix.$name[2]).
-                           '</strong> :: Value: <strong>'.htmlspecialchars($value[2]).
-                           '</strong><br />Initial input: '.htmlspecialchars($input).
-                           '<br />Signed: <span style="color:#060;">'.htmlspecialchars($input_signed).'</span>';
+                        self::$log[] = '<strong>INPUT:</strong> Code: <strong>' . htmlspecialchars($prefix . $code) .
+                           '</strong> :: Name: <strong>' . htmlspecialchars($prefix . $name[2]) .
+                           '</strong> :: Value: <strong>' . htmlspecialchars($value[2]) .
+                           '</strong><br />Initial input: ' . htmlspecialchars($input) .
+                           '<br />Signed: <span style="color:#060;">' . htmlspecialchars($input_signed) . '</span>';
                         $form = str_replace($input, $input_signed, $form);
                     }
                 }
-                self::$log[] = '<strong>FORM after INPUTS:</strong> <pre>'.htmlspecialchars($form).'</pre>';
+                self::$log[] = '<strong>FORM after INPUTS:</strong> <pre>' . htmlspecialchars($form) . '</pre>';
 
                 // Sign all <option /> elements
                 preg_match_all(
-                    '%<select [^>]*name=([\'"])'.preg_quote($prefix).'(?![0-9]{1,3})(.+?)\1[^>]*>(.+?)</select>%is',
+                    '%<select [^>]*name=([\'"])' . preg_quote($prefix) . '(?![0-9]{1,3})(.+?)\1[^>]*>(.+?)</select>%is',
                     $form,
                     $lists,
                     PREG_SET_ORDER
@@ -356,38 +364,38 @@ class FoxyCart_Helper
                         $options,
                         PREG_SET_ORDER
                     );
-                    self::$log[] = '<strong>Options:</strong> <pre>'.htmlspecialchars(print_r($options, true))
-                        .'</pre>';
+                    self::$log[] = '<strong>Options:</strong> <pre>' . htmlspecialchars(print_r($options, true))
+                        . '</pre>';
                     unset($form_part_signed);
                     foreach ($options as $option) {
                         if (!isset($form_part_signed)) {
                             $form_part_signed = $list[0];
                         }
                         $option_signed = preg_replace(
-                            '%'.preg_quote($option[1]).preg_quote($option[2]).preg_quote($option[1]).'%',
-                            $option[1].self::fc_hash_value(
+                            '%' . preg_quote($option[1]) . preg_quote($option[2]) . preg_quote($option[1]) . '%',
+                            $option[1] . self::fc_hash_value(
                                 $code,
                                 $list[2],
                                 $option[2],
                                 'value',
                                 false
-                            ).$option[1],
+                            ) . $option[1],
                             $option[0]
                         );
                         $form_part_signed = str_replace($option[0], $option_signed, $form_part_signed);
-                        self::$log[] = '<strong>OPTION:</strong> Code: <strong>'.htmlspecialchars($prefix.$code).
-                           '</strong> :: Name: <strong>'.htmlspecialchars($prefix.$list[2]).
-                           '</strong> :: Value: <strong>'.htmlspecialchars($option[2]).
-                           '</strong><br />Initial option: '.htmlspecialchars($option[0]).
-                           '<br />Signed: <span style="color:#060;">'.htmlspecialchars($option_signed).'</span>';
+                        self::$log[] = '<strong>OPTION:</strong> Code: <strong>' . htmlspecialchars($prefix . $code) .
+                           '</strong> :: Name: <strong>' . htmlspecialchars($prefix . $list[2]) .
+                           '</strong> :: Value: <strong>' . htmlspecialchars($option[2]) .
+                           '</strong><br />Initial option: ' . htmlspecialchars($option[0]) .
+                           '<br />Signed: <span style="color:#060;">' . htmlspecialchars($option_signed) . '</span>';
                     }
                     $form = str_replace($list[0], $form_part_signed, $form);
                 }
-                self::$log[] = '<strong>FORM after OPTIONS:</strong> <pre>'.htmlspecialchars($form).'</pre>';
+                self::$log[] = '<strong>FORM after OPTIONS:</strong> <pre>' . htmlspecialchars($form) . '</pre>';
 
                 // Sign all <textarea /> elements
                 preg_match_all(
-                    '%<textarea [^>]*name=([\'"])'.preg_quote($prefix).'(?![0-9]{1,3})(.+?)\1[^>]*>(.*?)</textarea>%is',
+                    '%<textarea [^>]*name=([\'"])' . preg_quote($prefix) . '(?![0-9]{1,3})(.+?)\1[^>]*>(.*?)</textarea>%is',
                     $form,
                     $textareas,
                     PREG_SET_ORDER
@@ -398,24 +406,24 @@ class FoxyCart_Helper
                     // Tackle implied "--OPEN--" first, if textarea is empty
                     $textarea[3] = ($textarea[3] == '') ? '--OPEN--' : $textarea[3];
                     $textarea_signed = preg_replace(
-                        '%([\'"])'.preg_quote($prefix.$textarea[2]).'\1%',
-                        '$1'.self::fc_hash_value(
+                        '%([\'"])' . preg_quote($prefix . $textarea[2]) . '\1%',
+                        '$1' . self::fc_hash_value(
                             $code,
                             $textarea[2],
                             $textarea[3],
                             'name',
                             false
-                        ).'$1',
+                        ) . '$1',
                         $textarea[0]
                     );
                     $form = str_replace($textarea[0], $textarea_signed, $form);
-                    self::$log[] = '<strong>TEXTAREA:</strong> Code: <strong>'.htmlspecialchars($prefix.$code).
-                       '</strong> :: Name: <strong>'.htmlspecialchars($prefix.$textarea[2]).
-                       '</strong> :: Value: <strong>'.htmlspecialchars($textarea[3]).
-                       '</strong><br />Initial textarea: '.htmlspecialchars($textarea[0]).
-                       '<br />Signed: <span style="color:#060;">'.htmlspecialchars($textarea_signed).'</span>';
+                    self::$log[] = '<strong>TEXTAREA:</strong> Code: <strong>' . htmlspecialchars($prefix . $code) .
+                       '</strong> :: Name: <strong>' . htmlspecialchars($prefix . $textarea[2]) .
+                       '</strong> :: Value: <strong>' . htmlspecialchars($textarea[3]) .
+                       '</strong><br />Initial textarea: ' . htmlspecialchars($textarea[0]) .
+                       '<br />Signed: <span style="color:#060;">' . htmlspecialchars($textarea_signed) . '</span>';
                 }
-                self::$log[] = '<strong>FORM after TEXTAREAS:</strong> <pre>'.htmlspecialchars($form).'</pre>';
+                self::$log[] = '<strong>FORM after TEXTAREAS:</strong> <pre>' . htmlspecialchars($form) . '</pre>';
 
                 // Exclude all <button> elements
                 $form = preg_replace(
@@ -425,8 +433,8 @@ class FoxyCart_Helper
                 );
             }
             // Replace the entire form
-            self::$log[] = '<strong>FORM after ALL:</strong> <pre>'.htmlspecialchars($form).'</pre>'
-                .'replacing <pre>'.htmlspecialchars($form_original).'</pre>';
+            self::$log[] = '<strong>FORM after ALL:</strong> <pre>' . htmlspecialchars($form) . '</pre>'
+                . 'replacing <pre>' . htmlspecialchars($form_original) . '</pre>';
             $html = str_replace($form_original, $form, $html);
             self::$log[] = '<strong>FORM end</strong><hr />';
         }
@@ -434,16 +442,16 @@ class FoxyCart_Helper
         // Return the signed output
         $output = '';
         if (self::$debug) {
-            self::$log['Summary'] = $count['links'].' links signed. '.$count['forms'].' forms signed. '
-                .$count['inputs'].' inputs signed. '.$count['lists'].' lists signed. '.$count['textareas']
-                .' textareas signed.';
+            self::$log['Summary'] = $count['links'] . ' links signed. ' . $count['forms'] . ' forms signed. '
+                . $count['inputs'] . ' inputs signed. ' . $count['lists'] . ' lists signed. ' . $count['textareas']
+                . ' textareas signed.';
             $output .= '<h3>FoxyCart HMAC Debugging:</h3><ul>';
             foreach (self::$log as $name => $value) {
-                $output .= '<li><strong>'.$name.':</strong> '.$value.'</li>';
+                $output .= '<li><strong>' . $name . ':</strong> ' . $value . '</li>';
             }
             $output .= '</ul><hr />';
         }
 
-        return $output.$html;
+        return $output . $html;
     }
 }

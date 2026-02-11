@@ -25,7 +25,7 @@ class FoxyCart
      */
     public static function setStoreKey($length = 54, $count = 0)
     {
-        $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.strtotime('now');
+        $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' . strtotime('now');
         $strLength = strlen($charset);
         $str = '';
         while ($count < $length) {
@@ -33,7 +33,7 @@ class FoxyCart
             ++$count;
         }
 
-        return self::getKeyPrefix().substr(base64_encode($str), 0, $length);
+        return self::getKeyPrefix() . substr(base64_encode($str), 0, $length);
     }
 
     /**
@@ -114,13 +114,13 @@ class FoxyCart
             if ($config->CustomSSL) {
                 $foxy_domain = self::getFoxyCartStoreName();
             } else {
-                $foxy_domain = self::getFoxyCartStoreName().'.foxycart.com';
+                $foxy_domain = self::getFoxyCartStoreName() . '.foxycart.com';
             }
 
             $foxyData['api_token'] = self::getStoreKey();
 
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://'.$foxy_domain.'/api');
+            curl_setopt($ch, CURLOPT_URL, 'https://' . $foxy_domain . '/api');
             curl_setopt($ch, CURLOPT_POSTFIELDS, $foxyData);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
