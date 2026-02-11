@@ -18,6 +18,7 @@
 	"type": "silverstripe-vendormodule",
 	"license": "BSD-3-Clause",
 	"require": {
+		"php": "^7.1",
 		"silverstripe/recipe-cms": "^1.0@dev || ^4.0@dev",
 		"symbiote/silverstripe-gridfieldextensions": "^3.1@dev",
 		"dynamic/silverstripe-country-dropdown-field": "^1.0@dev",
@@ -27,7 +28,7 @@
 		"bummzack/sortablefile": "^2.1"
 	},
 	"require-dev": {
-		"phpunit/pphpunit": "^5.7",
+		"phpunit/phpunit": "^5.7",
 		"squizlabs/php_codesniffer": "*"
 	},
 	"config": {
