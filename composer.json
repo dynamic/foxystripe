@@ -56,9 +56,6 @@
 			"javascript",
 			"client/dist"
 		],
-		"installer-name": "foxystripe",
-		"branch-alias": {
-			"dev-master": "4.0.x-dev"
-		}
+		"installer-name": "foxystripe"
 	}
 }
