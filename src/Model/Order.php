@@ -204,7 +204,16 @@ class Order extends DataObject implements PermissionProvider
     public function parseOrder()
     {
         if ($this->getDecryptedResponse()) {
-            $response = new \SimpleXMLElement($this->getDecryptedResponse());
+            $xml = $this->getDecryptedResponse();
+            if (!$xml) {
+                return false;
+            }
+            try {
+                $response = new \SimpleXMLElement($xml);
+            }
+            catch (\Throwable $e) {
+                return false;
+            }
 
             $this->parseOrderInfo($response);
             $this->parseOrderCustomer($response);
@@ -233,7 +242,7 @@ class Order extends DataObject implements PermissionProvider
             $this->ReceiptURL = (string)$transaction->receipt_url;
             $this->OrderStatus = (string)$transaction->status;
 
-            $this->extend('handleOrderInfo', $order, $response);
+            $this->extend('handleOrderInfo', $this, $response);
         }
     }
 

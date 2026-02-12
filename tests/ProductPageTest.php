@@ -36,7 +36,7 @@ class ProductPageTest extends FS_Test
         $holder = $this->objFromFixture(ProductHolder::class , 'default');
         $product1 = $this->objFromFixture(ProductPage::class , 'product1');
 
-        $product1->doPublish();
+        $product1->publishRecursive();
         $this->assertTrue($product1->isPublished());
     }
 

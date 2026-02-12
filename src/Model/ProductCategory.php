@@ -328,7 +328,7 @@ class ProductCategory extends DataObject
             'customs_value' => $this->CustomsValue,
             'default_weight' => $this->DefaultWeight,
             'default_weight_unit' => $this->DefaultWeightUnit,
-            'default_length_unit' => $this->DefautlLengthUnit,
+            'default_length_unit' => $this->DefaultLengthUnit,
             'shipping_flat_rate' => $this->ShippingFlatRate,
             'shipping_flat_rate_type' => $this->ShippingFlatRateType,
             'handling_fee_type' => $this->HandlingFeeType,
