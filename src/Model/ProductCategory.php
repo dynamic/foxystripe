@@ -118,7 +118,7 @@ class ProductCategory extends DataObject
             );
         }
 
-        $fields->insertBefore(HeaderField::create('DeliveryHD', 'Delivery Options', 3), 'DeliveryType');
+        $fields->insertBefore('DeliveryType', HeaderField::create('DeliveryHD', 'Delivery Options', 3));
 
         $fields->replaceField(
             'DeliveryType',
@@ -146,8 +146,8 @@ class ProductCategory extends DataObject
         $fields->replaceField(
             'ShippingFlatRateType',
             DropdownField::create('ShippingFlatRateType', 'Flat Rate Type', $this->getShippingFlatRateTypes())
-                ->setEmptyString('')
-                ->displayIf('DeliveryType')->isEqualTo('flat_rate')->end()
+            ->setEmptyString('')
+            ->displayIf('DeliveryType')->isEqualTo('flat_rate')->end()
         );
 
         $fields->insertBefore(HeaderField::create('HandlingHD', 'Handling Fees and Discounts', 3), 'HandlingFeeType');
@@ -155,8 +155,8 @@ class ProductCategory extends DataObject
         $fields->replaceField(
             'HandlingFeeType',
             DropdownField::create('HandlingFeeType', 'Handling Fee Type', $this->getHandlingFeeTypes())
-                ->setEmptyString('')
-                ->setDescription('This determines what type of Handling Fee you would like to use.')
+            ->setEmptyString('')
+            ->setDescription('This determines what type of Handling Fee you would like to use.')
         );
 
         $fields->dataFieldByName('HandlingFee')
@@ -172,8 +172,8 @@ class ProductCategory extends DataObject
         $fields->replaceField(
             'DiscountType',
             DropdownField::create('DiscountType', 'Discount Type', $this->getDiscountTypes())
-                ->setEmptyString('')
-                ->setDescription('This determines what type of per category discount you would like to use, if any.')
+            ->setEmptyString('')
+            ->setDescription('This determines what type of per category discount you would like to use, if any.')
         );
 
         $fields->dataFieldByName('DiscountName')

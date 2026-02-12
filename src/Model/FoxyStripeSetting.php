@@ -2,7 +2,7 @@
 
 namespace Dynamic\FoxyStripe\Model;
 
-use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
+
 use Dynamic\FoxyStripe\Admin\FoxyStripeAdmin;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Control\Director;
@@ -137,11 +137,11 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
     {
         $fields = FieldList::create(
             TabSet::create(
-                'Root',
-                $tabMain = Tab::create(
-                    'Main'
-                )
-            ),
+            'Root',
+            $tabMain = Tab::create(
+            'Main'
+        )
+        ),
             HiddenField::create('ID')
         );
         $tabMain->setTitle('Settings');
@@ -151,91 +151,91 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
             // Store Details
             HeaderField::create('StoreDetails', _t('FoxyStripeSiteConfig.StoreDetails', 'Store Settings'), 3),
             LiteralField::create('DetailsIntro', _t(
-                'FoxyStripeSiteConfig.DetailsIntro',
-                '<p>Maps to data in your 
+            'FoxyStripeSiteConfig.DetailsIntro',
+            '<p>Maps to data in your 
                         <a href="https://admin.foxycart.com/admin.php?ThisAction=EditStore" target="_blank">
                             FoxyCart store settings
                         </a>.'
-            )),
+        )),
             TextField::create('StoreTitle')
-                ->setTitle(_t('FoxyStripeSiteConfig.StoreTitle', 'Store Name'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.StoreTitleDescription',
-                    'The name of your store as you\'d like it displayed to your customers'
-                )),
+            ->setTitle(_t('FoxyStripeSiteConfig.StoreTitle', 'Store Name'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.StoreTitleDescription',
+            'The name of your store as you\'d like it displayed to your customers'
+        )),
             CheckboxField::create('CustomSSL', 'Use custom SSL'),
             TextField::create('RemoteDomain')
-                ->setTitle(_t('FoxyStripeSiteConfig.RemoteDomain', 'Store Remote Domain'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.RemoteDomainDescription',
-                    'custom subdomain for FoxyCart'
-                ))
-                ->displayIf('CustomSSL')->isChecked()->end(),
+            ->setTitle(_t('FoxyStripeSiteConfig.RemoteDomain', 'Store Remote Domain'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.RemoteDomainDescription',
+            'custom subdomain for FoxyCart'
+        ))
+            ->displayIf('CustomSSL')->isChecked()->end(),
             TextField::create('StoreName')
-                ->setTitle(_t('FoxyStripeSiteConfig.StoreName', 'Store Domain'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.StoreNameDescription',
-                    'This is a unique FoxyCart subdomain for your cart, checkout, and receipt'
-                ))
-                ->hideIf('CustomSSL')->isChecked()->end(),
+            ->setTitle(_t('FoxyStripeSiteConfig.StoreName', 'Store Domain'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.StoreNameDescription',
+            'This is a unique FoxyCart subdomain for your cart, checkout, and receipt'
+        ))
+            ->hideIf('CustomSSL')->isChecked()->end(),
             TextField::create('StoreURL')
-                ->setTitle(_t('FoxyStripeSiteConfig.StoreURL', 'Store URL'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.StoreURLDescription',
-                    'The URL of your online store'
-                )),
+            ->setTitle(_t('FoxyStripeSiteConfig.StoreURL', 'Store URL'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.StoreURLDescription',
+            'The URL of your online store'
+        )),
             TextField::create('ReceiptURL')
-                ->setTitle(_t('FoxyStripeSiteConfig.ReceiptURL', 'Receipt URL'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.ReceiptURLDescription',
-                    'By default, FoxyCart sends customers back to the page referrer after completing a purchase. 
+            ->setTitle(_t('FoxyStripeSiteConfig.ReceiptURL', 'Receipt URL'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.ReceiptURLDescription',
+            'By default, FoxyCart sends customers back to the page referrer after completing a purchase. 
                             Instead, you can set a specific URL here.'
-                )),
+        )),
             TextField::create('StoreEmail')
-                ->setTitle(_t('FoxyStripeSiteConfig.StoreEmail', 'Store Email'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.StoreEmailDescription',
-                    'This is the email address of your store. By default, this will be the from address for your 
+            ->setTitle(_t('FoxyStripeSiteConfig.StoreEmail', 'Store Email'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.StoreEmailDescription',
+            'This is the email address of your store. By default, this will be the from address for your 
                             store receipts. '
-                )),
+        )),
             TextField::create('FromEmail')
-                ->setTitle(_t('FoxyStripeSiteConfig.FromEmail', 'From Email'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.FromEmailDescription',
-                    'Used for when you want to specify a different from email than your store\'s email address'
-                )),
+            ->setTitle(_t('FoxyStripeSiteConfig.FromEmail', 'From Email'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.FromEmailDescription',
+            'Used for when you want to specify a different from email than your store\'s email address'
+        )),
             TextField::create('StorePostalCode', 'Postal Code'),
-            CountryDropdownField::create('StoreCountry', 'Country'),
+            DropdownField::create('StoreCountry', 'Country', \SilverStripe\i18n\i18n::getData()->getCountries()),
             TextField::create('StoreRegion', 'State/Region'),
             TextField::create('StoreLocaleCode', 'Locale Code')
-                ->setDescription('example: en_US'),
+            ->setDescription('example: en_US'),
             TextField::create('StoreTimezone', 'Store timezone'),
             TextField::create('StoreLogoURL', 'Logo URL')
-                ->setAttribute('placeholder', 'http://'),
+            ->setAttribute('placeholder', 'http://'),
         ]);
 
         $fields->addFieldsToTab('Root.Advanced', [
             HeaderField::create('AdvanceHeader', _t(
-                'FoxyStripeSiteConfig.AdvancedHeader',
-                'Advanced Settings'
-            ), 3),
+            'FoxyStripeSiteConfig.AdvancedHeader',
+            'Advanced Settings'
+        ), 3),
             LiteralField::create('AdvancedIntro', _t(
-                'FoxyStripeSiteConfig.AdvancedIntro',
-                '<p>Maps to data in your 
+            'FoxyStripeSiteConfig.AdvancedIntro',
+            '<p>Maps to data in your 
                     <a href="https://admin.foxycart.com/admin.php?ThisAction=EditAdvancedFeatures" target="_blank">
                         FoxyCart advanced store settings
                     </a>.</p>'
-            )),
+        )),
             DropdownField::create('CheckoutType', 'Checkout Type', $this->getCheckoutTypes()),
             CheckboxField::create('BccEmail', 'BCC Admin Email')
-                ->setDescription('bcc all receipts to store\'s email address'),
+            ->setDescription('bcc all receipts to store\'s email address'),
             CheckboxField::create('UseWebhook', 'Use Webhook')
-                ->setDescription('record order history in CMS, allows customers to view their order history'),
+            ->setDescription('record order history in CMS, allows customers to view their order history'),
             ReadonlyField::create('WebhookURL', 'Webhook URL', self::getDataFeedLink()),
             ReadonlyField::create('StoreKey', 'Webhook Key', self::getDataFeedLink()),
             CheckboxField::create('CartValidation', 'Use cart validation'),
             CheckboxField::create('UseSingleSignOn', 'Use single sign on')
-                ->setDescription('Sync user accounts between FoxyCart and your website'),
+            ->setDescription('Sync user accounts between FoxyCart and your website'),
             ReadonlyField::create('SingleSignOnURL', 'Single sign on URL', self::getSSOLink()),
             CheckboxField::create('AllowMultiship', 'Allow multiple shipments per order'),
         ]);
@@ -245,53 +245,53 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
             $fields->insertBefore(LiteralField::create(
                 'StoreSubDomainHeaderWarning',
                 _t(
-                    'FoxyStripeSiteConfig.StoreSubDomainHeadingWarning',
-                    '<p class="message error">Store Domain must be entered below
+                'FoxyStripeSiteConfig.StoreSubDomainHeadingWarning',
+                '<p class="message error">Store Domain must be entered below
                         </a></p>'
-                )
+            )
             ), 'StoreDetails');
         }
 
         // products tab
         $fields->addFieldsToTab('Root.Products', [
             HeaderField::create('ProductHeader', _t(
-                'FoxyStripeSiteConfig.ProductHeader',
-                'Products'
-            ), 3),
+            'FoxyStripeSiteConfig.ProductHeader',
+            'Products'
+        ), 3),
             CheckboxField::create('MultiGroup')
-                ->setTitle(_t('FoxyStripeSiteConfig.MultiGroup', 'Multiple Groups'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.MultiGroupDescription',
-                    'Allows products to be shown in multiple Product Groups'
-                )),
+            ->setTitle(_t('FoxyStripeSiteConfig.MultiGroup', 'Multiple Groups'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.MultiGroupDescription',
+            'Allows products to be shown in multiple Product Groups'
+        )),
             HeaderField::create('ProductGroupHD', _t(
-                'FoxyStripeSiteConfig.ProductGroupHD',
-                'Product Groups'
-            ), 3),
+            'FoxyStripeSiteConfig.ProductGroupHD',
+            'Product Groups'
+        ), 3),
             NumericField::create('ProductLimit')
-                ->setTitle(_t('FoxyStripeSiteConfig.ProductLimit', 'Products per Page'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.ProductLimitDescription',
-                    'Number of Products to show per page on a Product Group'
-                )),
+            ->setTitle(_t('FoxyStripeSiteConfig.ProductLimit', 'Products per Page'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.ProductLimitDescription',
+            'Number of Products to show per page on a Product Group'
+        )),
             HeaderField::create('ProductQuantityHD', _t(
-                'FoxyStripeSiteConfig.ProductQuantityHD',
-                'Product Form Max Quantity'
-            ), 3),
+            'FoxyStripeSiteConfig.ProductQuantityHD',
+            'Product Form Max Quantity'
+        ), 3),
             NumericField::create('MaxQuantity')
-                ->setTitle(_t('FoxyStripeSiteConfig.MaxQuantity', 'Max Quantity'))
-                ->setDescription(_t(
-                    'FoxyStripeSiteConfig.MaxQuantityDescription',
-                    'Sets max quantity for product form dropdown (add to cart form - default 10)'
-                )),
+            ->setTitle(_t('FoxyStripeSiteConfig.MaxQuantity', 'Max Quantity'))
+            ->setDescription(_t(
+            'FoxyStripeSiteConfig.MaxQuantityDescription',
+            'Sets max quantity for product form dropdown (add to cart form - default 10)'
+        )),
         ]);
 
         // categories tab
         $fields->addFieldsToTab('Root.Categories', [
             HeaderField::create('CategoryHD', _t('FoxyStripeSiteConfig.CategoryHD', 'FoxyStripe Categories'), 3),
             LiteralField::create('CategoryDescrip', _t(
-                'FoxyStripeSiteConfig.CategoryDescrip',
-                '<p>FoxyCart Categories offer a way to give products additional behaviors that cannot be 
+            'FoxyStripeSiteConfig.CategoryDescrip',
+            '<p>FoxyCart Categories offer a way to give products additional behaviors that cannot be 
                         accomplished by product options alone, including category specific coupon codes, 
                         shipping and handling fees, and email receipts. 
                         <a href="https://wiki.foxycart.com/v/2.0/categories" target="_blank">
@@ -300,28 +300,28 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
                         <p>Categories you\'ve created in FoxyStripe must also be created in your 
                             <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" 
                                 target="_blank">FoxyCart Categories</a> admin panel.</p>'
-            )),
+        )),
             GridField::create(
-                'ProductCategory',
-                _t('FoxyStripeSiteConfig.ProductCategory', 'FoxyCart Categories'),
-                ProductCategory::get(),
-                GridFieldConfig_RecordEditor::create()
-            ),
+            'ProductCategory',
+            _t('FoxyStripeSiteConfig.ProductCategory', 'FoxyCart Categories'),
+            ProductCategory::get(),
+            GridFieldConfig_RecordEditor::create()
+        ),
         ]);
 
         // option groups tab
         $fields->addFieldsToTab('Root.Groups', [
             HeaderField::create('OptionGroupsHead', _t('FoxyStripeSiteConfig', 'Product Option Groups'), 3),
             LiteralField::create('OptionGroupsDescrip', _t(
-                'FoxyStripeSiteConfig.OptionGroupsDescrip',
-                '<p>Product Option Groups allow you to name a set of product options.</p>'
-            )),
+            'FoxyStripeSiteConfig.OptionGroupsDescrip',
+            '<p>Product Option Groups allow you to name a set of product options.</p>'
+        )),
             GridField::create(
-                'OptionGroup',
-                _t('FoxyStripeSiteConfig.OptionGroup', 'Product Option Groups'),
-                OptionGroup::get(),
-                GridFieldConfig_RecordEditor::create()
-            ),
+            'OptionGroup',
+            _t('FoxyStripeSiteConfig.OptionGroup', 'Product Option Groups'),
+            OptionGroup::get(),
+            GridFieldConfig_RecordEditor::create()
+        ),
         ]);
 
         // api tab
@@ -339,7 +339,7 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
         $fields->addFieldsToTab('Root.Template', [
             HeaderField::create('TemplateHD', _t('FoxyStripeSiteConfig.TemplateHD', 'Template Options'), 3),
             CheckboxField::create('EnableSidecart')
-                ->setDescription('Turns on the Sidebar cart. Uncheck to use the full page cart.'),
+            ->setDescription('Turns on the Sidebar cart. Uncheck to use the full page cart.'),
         ]);
 
         $this->extend('updateCMSFields', $fields);
@@ -355,9 +355,10 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
         if (Permission::check('ADMIN') || Permission::check('EDIT_FOXYSTRIPE_SETTING')) {
             $actions = new FieldList(
                 FormAction::create('save_foxystripe_setting', _t('FoxyStripeSetting.SAVE', 'Save'))
-                    ->addExtraClass('btn-primary font-icon-save')
-            );
-        } else {
+                ->addExtraClass('btn-primary font-icon-save')
+                );
+        }
+        else {
             $actions = FieldList::create();
         }
         $this->extend('updateCMSActions', $actions);
@@ -424,17 +425,17 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
         return [
             'EDIT_FOXYSTRIPE_SETTING' => [
                 'name' => _t(
-                    'FoxyStripeSetting.EDIT_FOXYSTRIPE_SETTING',
-                    'Manage FoxyStripe settings'
-                ),
+                'FoxyStripeSetting.EDIT_FOXYSTRIPE_SETTING',
+                'Manage FoxyStripe settings'
+            ),
                 'category' => _t(
-                    'Permissions.PERMISSIONS_FOXYSTRIPE_SETTING',
-                    'FoxyStripe'
-                ),
+                'Permissions.PERMISSIONS_FOXYSTRIPE_SETTING',
+                'FoxyStripe'
+            ),
                 'help' => _t(
-                    'FoxyStripeSetting.EDIT_PERMISSION_FOXYSTRIPE_SETTING',
-                    'Ability to edit the settings of a FoxyStripe Store.'
-                ),
+                'FoxyStripeSetting.EDIT_PERMISSION_FOXYSTRIPE_SETTING',
+                'Ability to edit the settings of a FoxyStripe Store.'
+            ),
                 'sort' => 400,
             ],
         ];
@@ -466,7 +467,8 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
         $config = self::create();
         try {
             $config->write();
-        } catch (ValidationException $e) {
+        }
+        catch (ValidationException $e) {
         }
 
         return $config;
@@ -555,21 +557,19 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
         parent::onBeforeWrite();
 
         if ($this->ID && !$this->StoreTitle && $this->access_token) {
-            /*
-            if ($fc = new FoxyStripeClient()) {
-                $client = $fc->getClient();
-                $errors = [];
-
-                $result = $client->get($fc->getCurrentStore());
-                $this->owner->StoreTitle = $result['store_name'];
-
-                $errors = array_merge($errors, $client->getErrors($result));
-                if (count($errors)) {
-                    Injector::inst()->get(LoggerInterface::class)
-                        ->error('FoxyStripeSiteConfig::onBeforeWrite errors - ' . json_encode($errors));
-                }
-            }
-            */
+        /*
+         if ($fc = new FoxyStripeClient()) {
+         $client = $fc->getClient();
+         $errors = [];
+         $result = $client->get($fc->getCurrentStore());
+         $this->owner->StoreTitle = $result['store_name'];
+         $errors = array_merge($errors, $client->getErrors($result));
+         if (count($errors)) {
+         Injector::inst()->get(LoggerInterface::class)
+         ->error('FoxyStripeSiteConfig::onBeforeWrite errors - ' . json_encode($errors));
+         }
+         }
+         */
         }
     }
 

@@ -21,10 +21,7 @@
 		"php": "^8.1",
 		"silverstripe/recipe-cms": "^5.0",
 		"symbiote/silverstripe-gridfieldextensions": "^4.0",
-		"dynamic/silverstripe-country-dropdown-field": "^3.0",
-		"dynamic/foxyclient": "^3.0",
-		"unclecheese/display-logic": "^3.0",
-		"bummzack/sortablefile": "^3.0"
+		"dynamic/foxyclient": "^3.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^9.6",

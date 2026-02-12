@@ -221,7 +221,7 @@ class ProductPageTest extends FS_Test
         $holder->doPublish();
 
         $product = $this->objFromFixture(ProductPage::class , 'product1'); //build product page
-        $product->doPublish();
+        $product->publishRecursive();
 
         $productID = $product->ID;
 

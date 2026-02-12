@@ -52,14 +52,14 @@ class Order extends DataObject implements PermissionProvider
      * @var array
      */
     private static $has_one = array(
-        'Member' => Member::class,
+        'Member' => Member::class ,
     );
 
     /**
      * @var array
      */
     private static $has_many = array(
-        'Details' => OrderDetail::class,
+        'Details' => OrderDetail::class ,
     );
 
     /**
@@ -102,7 +102,7 @@ class Order extends DataObject implements PermissionProvider
     private static $searchable_fields = array(
         'Order_ID',
         'TransactionDate' => array(
-            'field' => DateField::class,
+            'field' => DateField::class ,
             'filter' => 'PartialMatchFilter',
         ),
         'Member.ID',
@@ -180,7 +180,7 @@ class Order extends DataObject implements PermissionProvider
      */
     public function getDecryptedResponse()
     {
-        $decrypted = urldecode($this->Response);
+        $decrypted = $this->Response ? urldecode($this->Response) : '';
         if (FoxyCart::getStoreKey()) {
             return \rc4crypt::decrypt(FoxyCart::getStoreKey(), $decrypted);
         }
@@ -211,7 +211,8 @@ class Order extends DataObject implements PermissionProvider
             $this->parseOrderDetails($response);
 
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -223,14 +224,14 @@ class Order extends DataObject implements PermissionProvider
     {
         foreach ($response->transactions->transaction as $transaction) {
             // Record transaction data from FoxyCart Datafeed:
-            $this->Store_ID = (int) $transaction->store_id;
-            $this->TransactionDate = (string) $transaction->transaction_date;
-            $this->ProductTotal = (float) $transaction->product_total;
-            $this->TaxTotal = (float) $transaction->tax_total;
-            $this->ShippingTotal = (float) $transaction->shipping_total;
-            $this->OrderTotal = (float) $transaction->order_total;
-            $this->ReceiptURL = (string) $transaction->receipt_url;
-            $this->OrderStatus = (string) $transaction->status;
+            $this->Store_ID = (int)$transaction->store_id;
+            $this->TransactionDate = (string)$transaction->transaction_date;
+            $this->ProductTotal = (float)$transaction->product_total;
+            $this->TaxTotal = (float)$transaction->tax_total;
+            $this->ShippingTotal = (float)$transaction->shipping_total;
+            $this->OrderTotal = (float)$transaction->order_total;
+            $this->ReceiptURL = (string)$transaction->receipt_url;
+            $this->OrderStatus = (string)$transaction->status;
 
             $this->extend('handleOrderInfo', $order, $response);
         }
@@ -248,19 +249,20 @@ class Order extends DataObject implements PermissionProvider
                 // if Customer is existing member, associate with current order
                 if (Member::get()->filter('Email', $transaction->customer_email)->First()) {
                     $customer = Member::get()->filter('Email', $transaction->customer_email)->First();
-                    // if new customer, create account with data from FoxyCart
-                } else {
+                // if new customer, create account with data from FoxyCart
+                }
+                else {
                     // set PasswordEncryption to 'none' so imported, encrypted password is not encrypted again
-                    Config::modify()->set(Security::class, 'password_encryption_algorithm', 'none');
+                    Config::modify()->set(Security::class , 'password_encryption_algorithm', 'none');
 
                     // create new Member, set password info from FoxyCart
                     $customer = Member::create();
-                    $customer->Customer_ID = (int) $transaction->customer_id;
-                    $customer->FirstName = (string) $transaction->customer_first_name;
-                    $customer->Surname = (string) $transaction->customer_last_name;
-                    $customer->Email = (string) $transaction->customer_email;
-                    $customer->Password = (string) $transaction->customer_password;
-                    $customer->Salt = (string) $transaction->customer_password_salt;
+                    $customer->Customer_ID = (int)$transaction->customer_id;
+                    $customer->FirstName = (string)$transaction->customer_first_name;
+                    $customer->Surname = (string)$transaction->customer_last_name;
+                    $customer->Email = (string)$transaction->customer_email;
+                    $customer->Password = (string)$transaction->customer_password;
+                    $customer->Salt = (string)$transaction->customer_password_salt;
                     $customer->PasswordEncryption = 'none';
 
                     // record member record
@@ -297,11 +299,11 @@ class Order extends DataObject implements PermissionProvider
             foreach ($transaction->transaction_details->transaction_detail as $detail) {
                 $OrderDetail = OrderDetail::create();
 
-                $OrderDetail->Quantity = (int) $detail->product_quantity;
-                $OrderDetail->ProductName = (string) $detail->product_name;
-                $OrderDetail->ProductCode = (string) $detail->product_code;
-                $OrderDetail->ProductImage = (string) $detail->image;
-                $OrderDetail->ProductCategory = (string) $detail->category_code;
+                $OrderDetail->Quantity = (int)$detail->product_quantity;
+                $OrderDetail->ProductName = (string)$detail->product_name;
+                $OrderDetail->ProductCode = (string)$detail->product_code;
+                $OrderDetail->ProductImage = (string)$detail->image;
+                $OrderDetail->ProductCategory = (string)$detail->category_code;
                 $priceModifier = 0;
 
                 // parse OrderOptions
@@ -309,14 +311,15 @@ class Order extends DataObject implements PermissionProvider
                     // Find product via product_id custom variable
                     if ($option->product_option_name == 'product_id') {
                         // if product is found, set relation to OrderDetail
-                        $OrderProduct = ProductPage::get()->byID((int) $option->product_option_value);
+                        $OrderProduct = ProductPage::get()->byID((int)$option->product_option_value);
                         if ($OrderProduct) {
                             $OrderDetail->ProductID = $OrderProduct->ID;
                         }
-                    } else {
+                    }
+                    else {
                         $OrderOption = OrderOption::create();
-                        $OrderOption->Name = (string) $option->product_option_name;
-                        $OrderOption->Value = (string) $option->product_option_value;
+                        $OrderOption->Name = (string)$option->product_option_name;
+                        $OrderOption->Value = (string)$option->product_option_value;
                         $OrderOption->write();
                         $OrderDetail->OrderOptions()->add($OrderOption);
 
@@ -324,7 +327,7 @@ class Order extends DataObject implements PermissionProvider
                     }
                 }
 
-                $OrderDetail->Price = (float) $detail->product_price + (float) $priceModifier;
+                $OrderDetail->Price = (float)$detail->product_price + (float)$priceModifier;
 
                 // extend OrderDetail parsing, allowing for recording custom fields from FoxyCart
                 $this->extend('handleOrderItem', $order, $response, $OrderDetail);
@@ -356,7 +359,7 @@ class Order extends DataObject implements PermissionProvider
     public function canEdit($member = null)
     {
         return false;
-        //return Permission::check('Product_ORDERS', 'any', $member);
+    //return Permission::check('Product_ORDERS', 'any', $member);
     }
 
     /**
@@ -367,7 +370,7 @@ class Order extends DataObject implements PermissionProvider
     public function canDelete($member = null)
     {
         return false;
-        //return Permission::check('Product_ORDERS', 'any', $member);
+    //return Permission::check('Product_ORDERS', 'any', $member);
     }
 
     /**
