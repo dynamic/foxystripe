@@ -2,10 +2,22 @@ name: CI
 
 on:
   push:
+<<<<<<< HEAD
   pull_request:
   workflow_dispatch:
+=======
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - master
+>>>>>>> bd6ed66 (feat: upgrade to Silverstripe 5 compatibility)
 
 jobs:
   ci:
     name: CI
+<<<<<<< HEAD
     uses: silverstripe/gha-ci/.github/workflows/ci.yml@v2
+=======
+    uses: dynamic/silverstripe-ci/.github/workflows/ci.yml@main
+>>>>>>> bd6ed66 (feat: upgrade to Silverstripe 5 compatibility)

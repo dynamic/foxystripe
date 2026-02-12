@@ -9,17 +9,17 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextField;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
 /**
  * Class SiteConfigMigration
  *
- * Apply this DataExtension to SiteConfig and hit Save. Data will be migrated to FoxyStripeSetting
+ * Apply this Extension to SiteConfig and hit Save. Data will be migrated to FoxyStripeSetting
  * via the onAfterWrite() function.
  *
  * @package Dynamic\FoxyStripe\ORM
  */
-class SiteConfigMigration extends DataExtension
+class SiteConfigMigration extends Extension
 {
     /**
      * @var array
@@ -40,7 +40,7 @@ class SiteConfigMigration extends DataExtension
      */
     public function onAfterWrite()
     {
-        parent::onAfterWrite();
+
 
         $config = FoxyStripeSetting::current_foxystripe_setting();
 
