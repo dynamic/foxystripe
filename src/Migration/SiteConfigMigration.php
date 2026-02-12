@@ -40,8 +40,6 @@ class SiteConfigMigration extends Extension
      */
     public function onAfterWrite()
     {
-
-
         $config = FoxyStripeSetting::current_foxystripe_setting();
 
         $config->StoreName = $this->owner->StoreName;
