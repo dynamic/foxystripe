@@ -13,8 +13,10 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
+use SilverStripe\Versioned\Versioned;
 
 /**
  * Class OptionItem
@@ -43,6 +45,12 @@ class OptionItem extends DataObject
     /**
      * @var array
      */
+    private static $extensions = [
+        Versioned::class ,
+    ];
+    /**
+     * @var array
+     */
     private static $db = array(
         'Title' => 'Text',
         'WeightModifier' => 'Decimal',
@@ -59,15 +67,15 @@ class OptionItem extends DataObject
      * @var array
      */
     private static $has_one = array(
-        'Product' => ProductPage::class,
-        'ProductOptionGroup' => OptionGroup::class,
+        'Product' => ProductPage::class ,
+        'ProductOptionGroup' => OptionGroup::class ,
     );
 
     /**
      * @var array
      */
     private static $belongs_many_many = array(
-        'OrderDetails' => OrderDetail::class,
+        'OrderDetails' => OrderDetail::class ,
     );
 
     /**
@@ -143,90 +151,90 @@ class OptionItem extends DataObject
                 // Weight Modifier Fields
                 HeaderField::create('WeightHD', _t('OptionItem.WeightHD', 'Modify Weight'), 3),
                 TextField::create('WeightModifier')
-                    ->setTitle(_t('OptionItem.WeightModifier', 'Weight')),
+                ->setTitle(_t('OptionItem.WeightModifier', 'Weight')),
                 DropdownField::create(
                     'WeightModifierAction',
                     _t('OptionItem.WeightModifierAction', 'Weight Modification'),
                     [
-                        'Add' => _t(
-                            'OptionItem.WeightAdd',
-                            'Add to Base Weight ({weight})',
-                            'Add to weight',
-                            ['weight' => $parentWeight]
-                        ),
-                        'Subtract' => _t(
-                            'OptionItem.WeightSubtract',
-                            'Subtract from Base Weight ({weight})',
-                            'Subtract from weight',
-                            ['weight' => $parentWeight]
-                        ),
-                        'Set' => _t('OptionItem.WeightSet', 'Set as a new Weight'),
+                    'Add' => _t(
+                        'OptionItem.WeightAdd',
+                        'Add to Base Weight ({weight})',
+                        'Add to weight',
+                        ['weight' => $parentWeight]
+                    ),
+                    'Subtract' => _t(
+                        'OptionItem.WeightSubtract',
+                        'Subtract from Base Weight ({weight})',
+                        'Subtract from weight',
+                        ['weight' => $parentWeight]
+                    ),
+                    'Set' => _t('OptionItem.WeightSet', 'Set as a new Weight'),
                     ]
                 )->setEmptyString('')
-                    ->setDescription(_t(
-                        'OptionItem.WeightDescription',
-                        'Does weight modify or replace base weight?'
-                    )),
+                ->setDescription(_t(
+                    'OptionItem.WeightDescription',
+                    'Does weight modify or replace base weight?'
+                )),
 
                 // Price Modifier FIelds
                 HeaderField::create('PriceHD', _t('OptionItem.PriceHD', 'Modify Price'), 3),
                 CurrencyField::create('PriceModifier')
-                    ->setTitle(_t('OptionItem.PriceModifier', 'Price')),
+                ->setTitle(_t('OptionItem.PriceModifier', 'Price')),
                 DropdownField::create(
                     'PriceModifierAction',
                     _t('OptionItem.PriceModifierAction', 'Price Modification'),
                     [
-                        'Add' => _t(
-                            'OptionItem.PriceAdd',
-                            'Add to Base Price ({price})',
-                            'Add to price',
-                            ['price' => $parentPrice]
-                        ),
-                        'Subtract' => _t(
-                            'OptionItem.PriceSubtract',
-                            'Subtract from Base Price ({price})',
-                            'Subtract from price',
-                            ['price' => $parentPrice]
-                        ),
-                        'Set' => _t('OptionItem.PriceSet', 'Set as a new Price'),
+                    'Add' => _t(
+                        'OptionItem.PriceAdd',
+                        'Add to Base Price ({price})',
+                        'Add to price',
+                        ['price' => $parentPrice]
+                    ),
+                    'Subtract' => _t(
+                        'OptionItem.PriceSubtract',
+                        'Subtract from Base Price ({price})',
+                        'Subtract from price',
+                        ['price' => $parentPrice]
+                    ),
+                    'Set' => _t('OptionItem.PriceSet', 'Set as a new Price'),
                     ]
                 )->setEmptyString('')
-                    ->setDescription(_t('OptionItem.PriceDescription', 'Does price modify or replace base price?')),
+                ->setDescription(_t('OptionItem.PriceDescription', 'Does price modify or replace base price?')),
 
                 // Code Modifier Fields
                 HeaderField::create('CodeHD', _t('OptionItem.CodeHD', 'Modify Code'), 3),
                 TextField::create('CodeModifier')
-                    ->setTitle(_t('OptionItem.CodeModifier', 'Code')),
+                ->setTitle(_t('OptionItem.CodeModifier', 'Code')),
                 DropdownField::create(
                     'CodeModifierAction',
                     _t('OptionItem.CodeModifierAction', 'Code Modification'),
                     [
-                        'Add' => _t(
-                            'OptionItem.CodeAdd',
-                            'Add to Base Code ({code})',
-                            'Add to code',
-                            ['code' => $parentCode]
-                        ),
-                        'Subtract' => _t(
-                            'OptionItem.CodeSubtract',
-                            'Subtract from Base Code ({code})',
-                            'Subtract from code',
-                            ['code' => $parentCode]
-                        ),
-                        'Set' => _t('OptionItem.CodeSet', 'Set as a new Code'),
+                    'Add' => _t(
+                        'OptionItem.CodeAdd',
+                        'Add to Base Code ({code})',
+                        'Add to code',
+                        ['code' => $parentCode]
+                    ),
+                    'Subtract' => _t(
+                        'OptionItem.CodeSubtract',
+                        'Subtract from Base Code ({code})',
+                        'Subtract from code',
+                        ['code' => $parentCode]
+                    ),
+                    'Set' => _t('OptionItem.CodeSet', 'Set as a new Code'),
                     ]
                 )->setEmptyString('')
-                    ->setDescription(_t('OptionItem.CodeDescription', 'Does code modify or replace base code?')),
+                ->setDescription(_t('OptionItem.CodeDescription', 'Does code modify or replace base code?')),
             ]);
         } else {
             $fields->addFieldsToTab(
                 'Root.Modifiers',
                 [
-                    HeaderField::create(
-                        'ModifyHeader',
-                        'Modifiers can be set when on a Product Page',
-                        3
-                    ),
+                HeaderField::create(
+                    'ModifyHeader',
+                    'Modifiers can be set when on a Product Page',
+                    3
+                ),
                 ]
             );
         }
@@ -253,13 +261,13 @@ class OptionItem extends DataObject
 
         $fields->addFieldsToTab('Root.Main', array(
             TextField::create('Title')
-                ->setTitle(_t('OptionItem.Title', 'Product Option Name')),
+            ->setTitle(_t('OptionItem.Title', 'Product Option Name')),
             CheckboxField::create('Available')
-                ->setTitle(_t('OptionItem.Available', 'Available for purchase'))
-                ->setDescription(_t(
-                    'OptionItem.AvailableDescription',
-                    'If unchecked, will disable this option in the drop down menu'
-                )),
+            ->setTitle(_t('OptionItem.Available', 'Available for purchase'))
+            ->setDescription(_t(
+                'OptionItem.AvailableDescription',
+                'If unchecked, will disable this option in the drop down menu'
+            )),
             $groupField,
         ));
 
@@ -339,9 +347,9 @@ class OptionItem extends DataObject
      */
     public function getGeneratedValue()
     {
-        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
+        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
         $modPriceWithSymbol = self::getOptionModifierActionSymbol($this->PriceModifierAction) . $modPrice;
-        $modWeight = ($this->WeightModifier) ? (string) $this->WeightModifier : '0';
+        $modWeight = ($this->WeightModifier) ? (string)$this->WeightModifier : '0';
         $modWeight = self::getOptionModifierActionSymbol($this->WeightModifierAction) . $modWeight;
         $modCode = self::getOptionModifierActionSymbol($this->CodeModifierAction) . $this->CodeModifier;
 
@@ -353,7 +361,7 @@ class OptionItem extends DataObject
      */
     public function getGeneratedTitle()
     {
-        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
+        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
         $title = $this->Title;
         $title .= ($this->PriceModifier != 0) ?
             ': (' . self::getOptionModifierActionSymbol(
@@ -417,6 +425,22 @@ class OptionItem extends DataObject
     public function canDelete($member = null)
     {
         return Permission::check('Product_CANCRUD');
+    }
+
+    /**
+     * Prevent deletion of OptionItems linked to historical orders.
+     *
+     * @throws ValidationException
+     */
+    public function onBeforeDelete()
+    {
+        parent::onBeforeDelete();
+
+        if ($this->OrderDetails()->exists()) {
+            throw new ValidationException(
+                'This option cannot be deleted as it is part of one or more past orders.'
+            );
+        }
     }
 
     /**

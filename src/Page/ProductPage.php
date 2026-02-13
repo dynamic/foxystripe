@@ -449,14 +449,6 @@ class ProductPage extends \Page implements PermissionProvider
 
     public function onBeforeDelete()
     {
-        if ($this->Status != 'Published') {
-            if ($this->ProductOptions()) {
-                $options = $this->getComponents('ProductOptions');
-                foreach ($options as $option) {
-                    $option->delete();
-                }
-            }
-        }
         parent::onBeforeDelete();
     }
 
@@ -481,7 +473,7 @@ class ProductPage extends \Page implements PermissionProvider
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
 
         return (FoxyStripeSetting::current_foxystripe_setting()->CartValidation)
-            ? \FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode) :
+            ?\FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode) :
             $optionValue;
     }
 
