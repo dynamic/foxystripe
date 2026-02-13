@@ -36,7 +36,7 @@ class ProductPageTest extends FS_Test
         $holder = $this->objFromFixture(ProductHolder::class , 'default');
         $product1 = $this->objFromFixture(ProductPage::class , 'product1');
 
-        $product1->doPublish();
+        $product1->publishRecursive();
         $this->assertTrue($product1->isPublished());
     }
 
@@ -218,10 +218,10 @@ class ProductPageTest extends FS_Test
 
         $holder = $this->objFromFixture(ProductHolder::class , 'default');
         //build holder page, ProductPage can't be on root level
-        $holder->doPublish();
+        $holder->publishRecursive();
 
         $product = $this->objFromFixture(ProductPage::class , 'product1'); //build product page
-        $product->doPublish();
+        $product->publishRecursive();
 
         $productID = $product->ID;
 

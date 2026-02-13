@@ -4,12 +4,12 @@ namespace Dynamic\FoxyStripe\ORM;
 
 use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Control\Controller;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
 /**
  * Class FoxyStripeProductFormFieldExtension.
  */
-class FoxyStripeProductFormFieldExtension extends DataExtension
+class FoxyStripeProductFormFieldExtension extends Extension
 {
     /**
      * @param $attributes
@@ -17,8 +17,8 @@ class FoxyStripeProductFormFieldExtension extends DataExtension
     public function updateAttributes(&$attributes)
     {
         if (
-            Controller::curr() instanceof ContentController &&
-            Controller::curr()->data()->Classname == 'DonationProduct'
+        Controller::curr() instanceof ContentController &&
+        Controller::curr()->data()->Classname == 'DonationProduct'
         ) {
             if (preg_match('/^(product_id)/', $this->owner->getName())) {
                 $attributes['h:name'] = $attributes['name'];
