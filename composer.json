@@ -47,7 +47,8 @@
 	"prefer-stable": true,
 	"extra": {
 		"expose": [
-			"thirdparty",
+			"thirdparty/flexslider",
+			"thirdparty/shadowbox",
 			"css",
 			"javascript",
 			"client/dist"
