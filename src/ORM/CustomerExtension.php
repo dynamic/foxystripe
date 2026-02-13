@@ -4,7 +4,7 @@ namespace Dynamic\FoxyStripe\ORM;
 
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\Order;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\Security\Member;
 
 /**
@@ -14,7 +14,7 @@ use SilverStripe\Security\Member;
  * @property Member $owner
  * @property \SilverStripe\ORM\FieldType\DBInt Customer_ID
  */
-class CustomerExtension extends DataExtension
+class CustomerExtension extends Extension
 {
     /**
      * @var array
@@ -27,7 +27,7 @@ class CustomerExtension extends DataExtension
      * @var array
      */
     private static $has_many = [
-        'Orders' => Order::class,
+        'Orders' => Order::class ,
     ];
 
     /**
@@ -42,13 +42,11 @@ class CustomerExtension extends DataExtension
      */
     public function onBeforeWrite()
     {
-        parent::onBeforeWrite();
-
         // if Member data was imported from FoxyCart, PasswordEncryption will be set to 'none'.
-        // Change to sh1_v2.4 to ensure SilverStripe is using the same hash as FoxyCart API 1.1
+        // Change to sha1_v2.4 to ensure SilverStripe is using the same hash as FoxyCart API 1.1
         if (
             !$this->owner->PasswordEncryption && (
-                $this->owner->PasswordEncryption == null || $this->owner->PasswordEncryption == 'none'
+            $this->owner->PasswordEncryption == null || $this->owner->PasswordEncryption == 'none'
             )
         ) {
             $this->owner->PasswordEncryption = 'sha1_v2.4';

@@ -32,11 +32,11 @@ class OptionGroupTest extends SapphireTest
     {
         $object = $this->objFromFixture(OptionGroup::class, 'size');
         $orig = $object->Title;
-        $object->Title = '2'.$orig;
+        $object->Title = '2' . $orig;
         $this->expectException(ValidationException::class);
         $object->write();
 
-        $object->Title = $orig.'&';
+        $object->Title = $orig . '&';
         $this->expectException(ValidationException::class);
         $object->write();
     }
