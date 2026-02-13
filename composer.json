@@ -37,6 +37,13 @@
 			"Dynamic\\FoxyStripe\\Test\\": "tests/"
 		}
 	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/dynamic/foxyclient-php",
+			"no-api": true
+		}
+	],
 	"prefer-stable": true,
 	"extra": {
 		"expose": [
