@@ -2,12 +2,20 @@
 <ruleset name="Silverstripe">
     <description>CodeSniffer ruleset for Silverstripe coding conventions.</description>
 
-	<file>src</file>
-	<file>tests</file>
+    <file>src</file>
+    <file>tests</file>
+
+    <!-- Exclude third-party code -->
+    <exclude-pattern>src/Model/foxycart.cart_validation.php</exclude-pattern>
+
+    <!-- Only report errors, not warnings (line length, constant visibility are informational) -->
+    <arg value="n"/>
 
     <!-- base rules are PSR-12 -->
-    <rule ref="PSR12" >
+    <rule ref="PSR12">
         <!-- Silverstripe uses PascalCase for controller actions and template accessors -->
         <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />
+        <!-- Legacy class names (FS_Test, etc.) -->
+        <exclude name="Squiz.Classes.ValidClassName.NotPascalCase" />
     </rule>
 </ruleset>

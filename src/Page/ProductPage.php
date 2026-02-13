@@ -481,7 +481,7 @@ class ProductPage extends \Page implements PermissionProvider
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
 
         return (FoxyStripeSetting::current_foxystripe_setting()->CartValidation)
-            ?\FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode) :
+            ? \FoxyCart_Helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode) :
             $optionValue;
     }
 
