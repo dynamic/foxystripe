@@ -3,7 +3,6 @@
 namespace Dynamic\FoxyStripe\Test;
 
 use Dynamic\FoxyStripe\Model\OptionItem;
-use Dynamic\FoxyStripe\Model\OrderDetail;
 use Dynamic\FoxyStripe\Page\ProductHolder;
 use Dynamic\FoxyStripe\Page\ProductPage;
 use SilverStripe\ORM\ValidationException;
