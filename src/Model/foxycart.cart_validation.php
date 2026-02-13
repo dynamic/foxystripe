@@ -137,8 +137,7 @@ class FoxyCart_Helper
         // Sign the name/value pairs
         foreach ($pairs as $pair) {
             // Skip the cart excludes
-            if (
-                in_array($pair['name'], self::$cart_excludes)
+            if (in_array($pair['name'], self::$cart_excludes)
                 || in_array($pair['prefix'], self::$cart_excludes_prefixes)
             ) {
                 self::$log[] = '<strong style="color:purple;">Skipping</strong> the reserved parameter or prefix "'
@@ -261,13 +260,12 @@ class FoxyCart_Helper
             $form_original = $form;
 
             // Check for the "code" input, set the matches in $codes
-            if (
-                !preg_match_all(
-                    '%<[^>]*?name=([\'"])([0-9]{1,3}:)?code\1[^>]*?>%i',
-                    $form,
-                    $codes,
-                    PREG_SET_ORDER
-                )
+            if (!preg_match_all(
+                '%<[^>]*?name=([\'"])([0-9]{1,3}:)?code\1[^>]*?>%i',
+                $form,
+                $codes,
+                PREG_SET_ORDER
+            )
             ) {
                 self::$log[] = '<strong style="color:#600;">No code found</strong> for the above form.';
                 continue;
@@ -297,27 +295,25 @@ class FoxyCart_Helper
                 foreach ($inputs[0] as $input) {
                     ++$count['inputs'];
                     // Test to make sure both name and value attributes are found
-                    if (
-                        preg_match(
-                            '%name=([\'"])' . preg_quote($prefix) . '(?![0-9]{1,3})(.+?)\1%i',
-                            $input,
-                            $name
-                        ) > 0
+                    if (preg_match(
+                        '%name=([\'"])' . preg_quote($prefix) . '(?![0-9]{1,3})(.+?)\1%i',
+                        $input,
+                        $name
+                    ) > 0
                     ) {
                         preg_match('%value=([\'"])(.*?)\1%i', $input, $value);
                         $value = (count($value) > 0) ? $value : array('', '', '');
                         preg_match('%type=([\'"])(.*?)\1%i', $input, $type);
                         $type = (count($type) > 0) ? $type : array('', '', '');
                         // Skip the cart excludes
-                        if (
-                            in_array(
-                                $prefix . $name[2],
-                                self::$cart_excludes
-                            ) || in_array(substr(
-                                $prefix . $name[2],
-                                0,
-                                2
-                            ), self::$cart_excludes_prefixes)
+                        if (in_array(
+                            $prefix . $name[2],
+                            self::$cart_excludes
+                        ) || in_array(substr(
+                            $prefix . $name[2],
+                            0,
+                            2
+                        ), self::$cart_excludes_prefixes)
                         ) {
                             self::$log[] = '<strong style="color:purple;">Skipping</strong> 
                                 the reserved parameter or prefix "' . $prefix . $name[2] . '" = ' . $value[2];

@@ -192,8 +192,7 @@ class FoxyStripePurchaseForm extends Form
             if ($this->product->Image() || ProductPage::has_extension(ProductPageLegacy::class)) {
                 if ($this->product->Image()) {
                     $image = $this->product->Image()->Pad(80, 80)->absoluteURL;
-                } elseif (
-                    ProductPage::has_extension(ProductPageLegacy::class) &&
+                } elseif (ProductPage::has_extension(ProductPageLegacy::class) &&
                     $this->product->PreviewImage()->exists()
                 ) {
                     $image = $this->product->PreviewImage()->Pad(80, 80)->absoluteURL;

@@ -2,7 +2,6 @@
 
 namespace Dynamic\FoxyStripe\Page;
 
-
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use Dynamic\FoxyStripe\Model\OptionItem;
@@ -233,13 +232,13 @@ class ProductPage extends \Page implements PermissionProvider
             // Cateogry Dropdown field w/ add new
             $source = function () {
                     return ProductCategory::get()->map()->toArray();
-                }
+            }
                     ;
                 $catField = DropdownField::create('CategoryID', _t('ProductPage.Category', 'FoxyCart Category'), $source())
                     ->setEmptyString('')
                     ->setDescription(_t(
-                    'ProductPage.CategoryDescription',
-                    'Required, must also exist in 
+                        'ProductPage.CategoryDescription',
+                        'Required, must also exist in 
                     <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
                         FoxyCart Categories
                     </a>.
@@ -247,35 +246,35 @@ class ProductPage extends \Page implements PermissionProvider
                         <a href="admin/settings">
                             Settings > FoxyStripe > Categories
                         </a>'
-                ));
-                if (class_exists('QuickAddNewExtension')) {
-                    $catField->useAddNew('ProductCategory', $source);
-                }
+                    ));
+            if (class_exists('QuickAddNewExtension')) {
+                $catField->useAddNew('ProductCategory', $source);
+            }
 
                 $fields->addFieldsToTab(
                     'Root.Main',
-                [
+                    [
                     TextField::create('Code')
                     ->setTitle(_t('ProductPage.Code', 'Product Code'))
                     ->setDescription(_t(
-                    'ProductPage.CodeDescription',
-                    'Required, must be unique. Product identifier used by FoxyCart in transactions'
-                )),
+                        'ProductPage.CodeDescription',
+                        'Required, must be unique. Product identifier used by FoxyCart in transactions'
+                    )),
                     CurrencyField::create('Price')
                     ->setTitle(_t('ProductPage.Price', 'Price'))
                     ->setDescription(_t(
-                    'ProductPage.PriceDescription',
-                    'Base price for this product. Can be modified using Product Options'
-                )),
+                        'ProductPage.PriceDescription',
+                        'Base price for this product. Can be modified using Product Options'
+                    )),
                     NumericField::create('Weight')
                     ->setTitle(_t('ProductPage.Weight', 'Weight'))
                     ->setDescription(_t(
-                    'ProductPage.WeightDescription',
-                    'Base weight for this product in lbs. Can be modified using Product Options'
-                ))
+                        'ProductPage.WeightDescription',
+                        'Base weight for this product in lbs. Can be modified using Product Options'
+                    ))
                     ->setScale(2),
                     $catField,
-                ],
+                    ],
                     'Content'
                 );
 
@@ -296,25 +295,25 @@ class ProductPage extends \Page implements PermissionProvider
                     CheckboxField::create('Available')
                     ->setTitle(_t('ProductPage.Available', 'Available for purchase'))
                     ->setDescription(_t(
-                    'ProductPage.AvailableDescription',
-                    'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
-                )),
+                        'ProductPage.AvailableDescription',
+                        'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
+                    )),
                     TextField::create('ReceiptTitle')
                     ->setTitle(_t('ProductPage.ReceiptTitle', 'Product Title for Receipt'))
                     ->setDescription(_t(
-                    'ProductPage.ReceiptTitleDescription',
-                    'Optional'
-                )),
+                        'ProductPage.ReceiptTitleDescription',
+                        'Optional'
+                    )),
                 ]);
 
                 // Options Tab
                 $fields->addFieldsToTab('Root.Options', [
                     $prodOptField
                     ->setDescription(_t(
-                    'Page.OptionsDescrip',
-                    '<p>Product Options allow products to be customized by attributes such as size or color.
+                        'Page.OptionsDescrip',
+                        '<p>Product Options allow products to be customized by attributes such as size or color.
                     Options can also modify the product\'s price, weight or code.<br></p>'
-                )),
+                    )),
                 ]);
 
                 // Images tab
@@ -327,14 +326,14 @@ class ProductPage extends \Page implements PermissionProvider
                     $images,
                 ]);
 
-                if (FoxyCart::store_name_warning() !== null) {
-                    $fields->addFieldToTab('Root.Main', LiteralField::create('StoreSubDomainHeaderWarning', _t(
-                        'ProductPage.StoreSubDomainHeaderWarning',
-                        '<p class="message error">Store sub-domain must be entered in the 
+            if (FoxyCart::store_name_warning() !== null) {
+                $fields->addFieldToTab('Root.Main', LiteralField::create('StoreSubDomainHeaderWarning', _t(
+                    'ProductPage.StoreSubDomainHeaderWarning',
+                    '<p class="message error">Store sub-domain must be entered in the 
                         <a href="/admin/settings/">site settings</a></p>'
-                    )), 'Title');
-                }
-            });
+                )), 'Title');
+            }
+        });
 
         return parent::getCMSFields();
     }
@@ -426,8 +425,7 @@ class ProductPage extends \Page implements PermissionProvider
             $product = self::get()->byID($this->ID);
             if (isset($product->ParentID)) {
                 $origParent = $product->ParentID;
-            }
-            else {
+            } else {
                 $origParent = null;
             }
             $currentParent = $this->ParentID;
@@ -479,8 +477,7 @@ class ProductPage extends \Page implements PermissionProvider
         $method = 'name',
         $output = false,
         $urlEncode = false
-        )
-    {
+    ) {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
 
         return (FoxyStripeSetting::current_foxystripe_setting()->CartValidation)
