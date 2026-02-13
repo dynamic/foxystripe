@@ -2,10 +2,17 @@ name: CI
 
 on:
   push:
+    branches:
+      - master
+      - '[0-9]'
   pull_request:
+    branches:
+      - master
+      - '[0-9]'
   workflow_dispatch:
 
 jobs:
   ci:
     name: CI
     uses: silverstripe/gha-ci/.github/workflows/ci.yml@v2
+
