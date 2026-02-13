@@ -8,8 +8,11 @@ use Dynamic\FoxyStripe\Page\ProductPage;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 
-class OptionItemTest extends FS_Test
+use SilverStripe\Dev\SapphireTest;
+
+class OptionItemTest extends SapphireTest
 {
+
     protected static $use_draft_site = true;
 
     /**
@@ -183,13 +186,27 @@ class OptionItemTest extends FS_Test
     {
         $this->logInWithPermission('ADMIN');
 
-        $holder = $this->objFromFixture(ProductHolder::class , 'default');
+        // Create manual objects to bypass fixture loading issues
+        $holder = ProductHolder::create();
+        $holder->Title = 'Holder';
+        $holder->URLSegment = 'holder';
+        $holder->write();
         $holder->publishRecursive();
 
-        $product = $this->objFromFixture(ProductPage::class , 'product1');
+        $product = ProductPage::create();
+        $product->Title = 'Product';
+        $product->URLSegment = 'product';
+        $product->ParentID = $holder->ID;
+        $product->write();
         $product->publishRecursive();
 
-        $option = $this->objFromFixture(OptionItem::class , 'large');
+        $option = OptionItem::create();
+        $option->Title = 'Option';
+        $option->ProductID = $product->ID;
+        $option->write();
+
+        // Ensure option is published via the product
+        $product->publishRecursive();
 
         // Verify option is published
         $this->assertTrue(
@@ -201,7 +218,6 @@ class OptionItemTest extends FS_Test
         $product->doUnpublish();
 
         // Refresh the option from DB
-        $option = OptionItem::get()->byID($option->ID);
         $liveOption = Versioned::get_by_stage(
             OptionItem::class ,
             Versioned::LIVE

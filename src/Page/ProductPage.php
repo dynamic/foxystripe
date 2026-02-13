@@ -2,6 +2,7 @@
 
 namespace Dynamic\FoxyStripe\Page;
 
+use Dynamic\FoxyStripe\Extension\ProductPageExtension;
 use Dynamic\FoxyStripe\Model\FoxyCart;
 use Dynamic\FoxyStripe\Model\FoxyStripeSetting;
 use Dynamic\FoxyStripe\Model\OptionItem;
@@ -443,6 +444,13 @@ class ProductPage extends \Page implements PermissionProvider
         $this->Code = trim($this->Code);
         $this->ReceiptTitle = trim($this->ReceiptTitle);
     }
+
+    /**
+     * @var array
+     */
+    private static $extensions = [
+        ProductPageExtension::class ,
+    ];
 
     public function onAfterWrite()
     {
