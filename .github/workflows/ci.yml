@@ -14,5 +14,4 @@ on:
 jobs:
   ci:
     name: CI
-    uses: silverstripe/gha-ci/.github/workflows/ci.yml@v2
-
+    uses: dynamic/silverstripe-ci/.github/workflows/ci.yml@v4
