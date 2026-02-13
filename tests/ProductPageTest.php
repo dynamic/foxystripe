@@ -248,9 +248,9 @@ class ProductPageTest extends FS_Test
         $product->doUnpublish(); //unpublish page
         $product->deleteFromStage('Stage'); //remove product from draft site
 
-        $checkDeleted = OptionItem::get()->filter(array('Title' => 'Large', 'ProductID' => $productID))->first();
-        //query same option as above
+        $checkSurvived = OptionItem::get()->filter(array('Title' => 'Large'))->first();
+        //query same option as above - it should survive product deletion
 
-        $this->assertNull($checkDeleted, 'Option should be deleted when product is fully removed');
+        $this->assertNotNull($checkSurvived, 'Option should survive when product is fully removed (preserves order history)');
     }
 }
