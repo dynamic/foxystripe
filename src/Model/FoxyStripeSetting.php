@@ -242,14 +242,14 @@ class FoxyStripeSetting extends DataObject implements PermissionProvider, Templa
 
         // configuration warning
         if (FoxyCart::store_name_warning() !== null) {
-            $fields->insertBefore(LiteralField::create(
+            $fields->insertBefore('StoreDetails', LiteralField::create(
                 'StoreSubDomainHeaderWarning',
                 _t(
                 'FoxyStripeSiteConfig.StoreSubDomainHeadingWarning',
                 '<p class="message error">Store Domain must be entered below
                         </a></p>'
             )
-            ), 'StoreDetails');
+            ));
         }
 
         // products tab

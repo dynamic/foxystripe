@@ -150,7 +150,7 @@ class ProductCategory extends DataObject
             ->displayIf('DeliveryType')->isEqualTo('flat_rate')->end()
         );
 
-        $fields->insertBefore(HeaderField::create('HandlingHD', 'Handling Fees and Discounts', 3), 'HandlingFeeType');
+        $fields->insertBefore('HandlingFeeType', HeaderField::create('HandlingHD', 'Handling Fees and Discounts', 3));
 
         $fields->replaceField(
             'HandlingFeeType',
