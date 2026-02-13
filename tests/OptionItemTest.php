@@ -20,7 +20,7 @@ class OptionItemTest extends SapphireTest
      */
     public function testOptionItemIsVersioned()
     {
-        $option = $this->objFromFixture(OptionItem::class , 'large');
+        $option = $this->objFromFixture(OptionItem::class, 'large');
 
         $this->assertTrue(
             $option->hasExtension(Versioned::class),
@@ -35,7 +35,7 @@ class OptionItemTest extends SapphireTest
     {
         $this->logInWithPermission('ADMIN');
 
-        $option = $this->objFromFixture(OptionItem::class , 'large');
+        $option = $this->objFromFixture(OptionItem::class, 'large');
         $option->publishSingle();
 
         $this->assertTrue(
@@ -44,7 +44,7 @@ class OptionItemTest extends SapphireTest
         );
 
         $liveOption = Versioned::get_by_stage(
-            OptionItem::class ,
+            OptionItem::class,
             Versioned::LIVE
         )->byID($option->ID);
 
@@ -62,7 +62,7 @@ class OptionItemTest extends SapphireTest
     {
         $this->logInWithPermission('ADMIN');
 
-        $option = $this->objFromFixture(OptionItem::class , 'small');
+        $option = $this->objFromFixture(OptionItem::class, 'small');
         $option->publishSingle();
 
         $this->assertTrue($option->isPublished());
@@ -82,7 +82,7 @@ class OptionItemTest extends SapphireTest
     {
         $this->logInWithPermission('Product_CANCRUD');
 
-        $option = $this->objFromFixture(OptionItem::class , 'ordered');
+        $option = $this->objFromFixture(OptionItem::class, 'ordered');
 
         $this->assertTrue(
             $option->OrderDetails()->exists(),
@@ -102,7 +102,7 @@ class OptionItemTest extends SapphireTest
     {
         $this->logInWithPermission('Product_CANCRUD');
 
-        $option = $this->objFromFixture(OptionItem::class , 'large');
+        $option = $this->objFromFixture(OptionItem::class, 'large');
 
         $this->assertFalse(
             $option->OrderDetails()->exists(),
@@ -122,7 +122,7 @@ class OptionItemTest extends SapphireTest
     {
         $this->logInWithPermission('ADMIN');
 
-        $option = $this->objFromFixture(OptionItem::class , 'ordered');
+        $option = $this->objFromFixture(OptionItem::class, 'ordered');
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('This option cannot be deleted as it is part of one or more past orders.');
@@ -137,7 +137,7 @@ class OptionItemTest extends SapphireTest
     {
         $this->logInWithPermission('Product_CANCRUD');
 
-        $option = $this->objFromFixture(OptionItem::class , 'small');
+        $option = $this->objFromFixture(OptionItem::class, 'small');
         $optionID = $option->ID;
 
         $this->assertFalse($option->OrderDetails()->exists());
@@ -158,18 +158,18 @@ class OptionItemTest extends SapphireTest
     {
         $this->logInWithPermission('ADMIN');
 
-        $holder = $this->objFromFixture(ProductHolder::class , 'default');
+        $holder = $this->objFromFixture(ProductHolder::class, 'default');
         $holder->publishRecursive();
 
-        $product = $this->objFromFixture(ProductPage::class , 'product1');
+        $product = $this->objFromFixture(ProductPage::class, 'product1');
         $product->publishRecursive();
 
         $this->assertTrue($product->isPublished());
 
         // Check that owned OptionItems are also published
-        $option = $this->objFromFixture(OptionItem::class , 'large');
+        $option = $this->objFromFixture(OptionItem::class, 'large');
         $liveOption = Versioned::get_by_stage(
-            OptionItem::class ,
+            OptionItem::class,
             Versioned::LIVE
         )->byID($option->ID);
 
@@ -219,7 +219,7 @@ class OptionItemTest extends SapphireTest
 
         // Refresh the option from DB
         $liveOption = Versioned::get_by_stage(
-            OptionItem::class ,
+            OptionItem::class,
             Versioned::LIVE
         )->byID($option->ID);
 
@@ -237,8 +237,8 @@ class OptionItemTest extends SapphireTest
     {
         $this->logInWithPermission('ADMIN');
 
-        $product = $this->objFromFixture(ProductPage::class , 'product1');
-        $option = $this->objFromFixture(OptionItem::class , 'large');
+        $product = $this->objFromFixture(ProductPage::class, 'product1');
+        $option = $this->objFromFixture(OptionItem::class, 'large');
         $optionID = $option->ID;
 
         // Delete the product

@@ -81,22 +81,22 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $has_one = [
-        'Category' => ProductCategory::class ,
+        'Category' => ProductCategory::class,
     ];
 
     /**
      * @var array
      */
     private static $has_many = [
-        'ProductOptions' => OptionItem::class ,
-        'OrderDetails' => OrderDetail::class ,
+        'ProductOptions' => OptionItem::class,
+        'OrderDetails' => OrderDetail::class,
     ];
 
     /**
      * @var array
      */
     private static $many_many = [
-        'Images' => Image::class ,
+        'Images' => Image::class,
     ];
 
     /**
@@ -120,7 +120,7 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $belongs_many_many = [
-        'ProductHolders' => ProductHolder::class ,
+        'ProductHolders' => ProductHolder::class,
     ];
 
     /**
@@ -427,8 +427,7 @@ class ProductPage extends \Page implements PermissionProvider
             $product = self::get()->byID($this->ID);
             if (isset($product->ParentID)) {
                 $origParent = $product->ParentID;
-            }
-            else {
+            } else {
                 $origParent = null;
             }
             $currentParent = $this->ParentID;
@@ -449,7 +448,7 @@ class ProductPage extends \Page implements PermissionProvider
      * @var array
      */
     private static $extensions = [
-        ProductPageExtension::class ,
+        ProductPageExtension::class,
     ];
 
     public function onAfterWrite()

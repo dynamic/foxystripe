@@ -46,7 +46,7 @@ class OptionItem extends DataObject
      * @var array
      */
     private static $extensions = [
-        Versioned::class ,
+        Versioned::class,
     ];
     /**
      * @var array
@@ -67,15 +67,15 @@ class OptionItem extends DataObject
      * @var array
      */
     private static $has_one = array(
-        'Product' => ProductPage::class ,
-        'ProductOptionGroup' => OptionGroup::class ,
+        'Product' => ProductPage::class,
+        'ProductOptionGroup' => OptionGroup::class,
     );
 
     /**
      * @var array
      */
     private static $belongs_many_many = array(
-        'OrderDetails' => OrderDetail::class ,
+        'OrderDetails' => OrderDetail::class,
     );
 
     /**
@@ -226,8 +226,7 @@ class OptionItem extends DataObject
             )->setEmptyString('')
                 ->setDescription(_t('OptionItem.CodeDescription', 'Does code modify or replace base code?')),
             ]);
-        }
-        else {
+        } else {
             $fields->addFieldsToTab(
                 'Root.Modifiers',
             [
@@ -348,9 +347,9 @@ class OptionItem extends DataObject
      */
     public function getGeneratedValue()
     {
-        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
+        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
         $modPriceWithSymbol = self::getOptionModifierActionSymbol($this->PriceModifierAction) . $modPrice;
-        $modWeight = ($this->WeightModifier) ? (string)$this->WeightModifier : '0';
+        $modWeight = ($this->WeightModifier) ? (string) $this->WeightModifier : '0';
         $modWeight = self::getOptionModifierActionSymbol($this->WeightModifierAction) . $modWeight;
         $modCode = self::getOptionModifierActionSymbol($this->CodeModifierAction) . $this->CodeModifier;
 
@@ -362,7 +361,7 @@ class OptionItem extends DataObject
      */
     public function getGeneratedTitle()
     {
-        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
+        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
         $title = $this->Title;
         $title .= ($this->PriceModifier != 0) ? 
             ': (' . self::getOptionModifierActionSymbol(
@@ -458,4 +457,3 @@ class OptionItem extends DataObject
     {
         return Permission::check('Product_CANCRUD');
     }
-}
