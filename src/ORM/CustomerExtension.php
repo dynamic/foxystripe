@@ -43,7 +43,7 @@ class CustomerExtension extends Extension
     public function onBeforeWrite()
     {
         // if Member data was imported from FoxyCart, PasswordEncryption will be set to 'none'.
-        // Change to sh1_v2.4 to ensure SilverStripe is using the same hash as FoxyCart API 1.1
+        // Change to sha1_v2.4 to ensure SilverStripe is using the same hash as FoxyCart API 1.1
         if (!$this->owner->PasswordEncryption && (
         $this->owner->PasswordEncryption == null || $this->owner->PasswordEncryption == 'none'
         )
