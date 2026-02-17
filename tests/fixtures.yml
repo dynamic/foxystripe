@@ -66,9 +66,10 @@ Dynamic\FoxyStripe\Model\OptionItem:
     CodeModifier: 'ABC456'
     PriceModifier: 3.5
     WeightModifierAction: 'Add'
-    CodeModifieraction: 'Add'
+    CodeModifierAction: 'Add'
     PriceModifierAction: 'Subtract'
     Available: 1
+    Product: =>Dynamic\FoxyStripe\Page\ProductPage.product1
     ProductOptionGroup: =>Dynamic\FoxyStripe\Model\OptionGroup.size
 
   small:
@@ -77,9 +78,22 @@ Dynamic\FoxyStripe\Model\OptionItem:
     CodeModifier: 'ABC457'
     PriceModifier: 2.5
     WeightModifierAction: 'Set'
-    CodeModifieraction: 'Subtract'
+    CodeModifierAction: 'Subtract'
     PriceModifierAction: 'Add'
     Available: 0
+    Product: =>Dynamic\FoxyStripe\Page\ProductPage.product1
+    ProductOptionGroup: =>Dynamic\FoxyStripe\Model\OptionGroup.size
+
+  ordered:
+    Title: 'Medium'
+    WeightModifier: 2.5
+    CodeModifier: 'ABC458'
+    PriceModifier: 3.0
+    WeightModifierAction: 'Add'
+    CodeModifierAction: 'Add'
+    PriceModifierAction: 'Add'
+    Available: 1
+    Product: =>Dynamic\FoxyStripe\Page\ProductPage.product1
     ProductOptionGroup: =>Dynamic\FoxyStripe\Model\OptionGroup.size
 
 Dynamic\FoxyStripe\Model\Order:
@@ -93,6 +107,7 @@ Dynamic\FoxyStripe\Model\OrderDetail:
     Price: "$10.00"
     ProductID: =>Dynamic\FoxyStripe\Page\ProductPage.product1
     OrderID: =>Dynamic\FoxyStripe\Model\Order.one
+    OptionItems: =>Dynamic\FoxyStripe\Model\OptionItem.ordered
 
   two:
     Quantity: 1
