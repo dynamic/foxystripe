@@ -66,7 +66,7 @@ Dynamic\FoxyStripe\Model\OptionItem:
     CodeModifier: 'ABC456'
     PriceModifier: 3.5
     WeightModifierAction: 'Add'
-    CodeModifieraction: 'Add'
+    CodeModifierAction: 'Add'
     PriceModifierAction: 'Subtract'
     Available: 1
     Product: =>Dynamic\FoxyStripe\Page\ProductPage.product1
@@ -78,7 +78,7 @@ Dynamic\FoxyStripe\Model\OptionItem:
     CodeModifier: 'ABC457'
     PriceModifier: 2.5
     WeightModifierAction: 'Set'
-    CodeModifieraction: 'Subtract'
+    CodeModifierAction: 'Subtract'
     PriceModifierAction: 'Add'
     Available: 0
     Product: =>Dynamic\FoxyStripe\Page\ProductPage.product1
@@ -90,7 +90,7 @@ Dynamic\FoxyStripe\Model\OptionItem:
     CodeModifier: 'ABC458'
     PriceModifier: 3.0
     WeightModifierAction: 'Add'
-    CodeModifieraction: 'Add'
+    CodeModifierAction: 'Add'
     PriceModifierAction: 'Add'
     Available: 1
     Product: =>Dynamic\FoxyStripe\Page\ProductPage.product1
