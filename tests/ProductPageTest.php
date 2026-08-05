@@ -103,6 +103,41 @@ class ProductPageTest extends FS_Test
         $this->assertTrue($product->Title == 'Test with trailing space');
     }
 
+    /**
+     * A record with a null Code/ReceiptTitle (legacy data, or any write path that
+     * doesn't touch those columns) must not fatal on write — onBeforeWrite() trims
+     * all three DB fields unconditionally on every save, not just when they're being
+     * changed.
+     *
+     * @throws \SilverStripe\ORM\ValidationException
+     */
+    public function testProductWriteWithNullCodeAndReceiptTitle()
+    {
+        $this->logInWithPermission('ADMIN');
+
+        $product = $this->objFromFixture(ProductPage::class, 'product1');
+        $product->Code = null;
+        $product->ReceiptTitle = null;
+
+        // trim(null) already returns '' without fataling — the actual bug is the
+        // E_DEPRECATED notice itself, which some consuming projects' error
+        // handlers escalate to a fatal. Assert no deprecation is raised, not just
+        // that the value comes out right.
+        $deprecations = [];
+        set_error_handler(function ($errno, $errstr) use (&$deprecations) {
+            $deprecations[] = $errstr;
+            return true;
+        }, E_DEPRECATED);
+
+        $product->write();
+
+        restore_error_handler();
+
+        $this->assertSame([], $deprecations);
+        $this->assertSame('', $product->Code);
+        $this->assertSame('', $product->ReceiptTitle);
+    }
+
     public function testProductCategoryCreation()
     {
         $this->logInWithPermission('Product_CANCRUD');
